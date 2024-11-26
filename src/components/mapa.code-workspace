@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		},
+		{
+			"path": "../../../../../../Downloads/MAPA/MAPA"
+		},
+		{
+			"path": "G:/Meu Drive/0 - PROJETOS/SITE_AZUOS"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "MAPA"
+	}
+}
