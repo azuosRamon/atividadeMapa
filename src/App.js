@@ -21,7 +21,7 @@ import styled from "styled-components";
 const imagens = [terreo, primeiro_pavimento, segundo_pavimento, terceiro_pavimento];
 
 const DivGrid2 = styled.div`
-  max-width: 1280px;
+  max-width: 960px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: 3fr 10fr;
