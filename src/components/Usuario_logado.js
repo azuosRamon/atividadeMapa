@@ -1,0 +1,103 @@
+import React from "react";
+import styled from "styled-components";
+import { CgProfile } from "react-icons/cg";
+import Button from "./SubButton";
+
+
+const Container = styled.div`
+    `;
+
+const Box = styled.div`
+    width: 90%;
+    height: auto;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    text-align: center;
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: center;
+`;
+
+const DivContentInformacoes = styled.div`
+    display: flex;
+    justify-content: space-between;
+    margin: 0 10px;
+`;
+
+const Imagem = styled.img`
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+`;
+
+const Titulo3 = styled.h3`
+    color: white;
+    font-size: 20px;
+    padding: 0;
+    margin: 0 auto;
+`;
+
+const ParagrafoInformacao = styled.p`
+color: #f1f1f1;
+font-size: 12px;
+margin: 5px auto;
+`;
+
+const DivContent = styled.div`
+
+    margin-top: 15px;
+`;
+
+const data = [
+    { nome: "Carlos", sobrenome: "Silva", nascimento:"2025-03-25", email:"carlossilva@mail.com", funcao: "Administrador", foto: "" },
+    { nome: "Ana", funcao: "Secretaria", foto: "" },
+    { nome: "Maria", funcao: "Professor", foto: "" },
+]; 
+
+function Usuario({ nome, funcao,foto }) {
+    nome = data[0].nome +' '+ data[0].sobrenome;
+    funcao = data[0].funcao;
+    foto = data[0].foto;
+
+    return (
+        <Container>
+            <Box>
+                <DivContent>
+                    {foto ? (
+                        <Imagem src={foto} alt={`${nome} - foto`} />
+                    ) : (
+                        <CgProfile size={80} color="#999" />
+                    )}
+                    <DivContentInformacoes>
+                        <Titulo3>{nome}</Titulo3>
+                    </DivContentInformacoes>
+                    <DivContentInformacoes>
+                        <ParagrafoInformacao>{funcao}</ParagrafoInformacao>
+                    </DivContentInformacoes>
+                </DivContent>
+                
+                <DivContent>
+                    <Button bgColor="rgb(38, 38, 38)">Perfil</Button>
+                    <Button bgColor="rgb(38, 38, 38)">Períodos e Horários</Button>
+                    <Button bgColor="rgb(38, 38, 38)">Edifício</Button>
+                    <Button bgColor="rgb(38, 38, 38)">Cursos</Button>
+                    <Button bgColor="rgb(38, 38, 38)">Disciplinas</Button>
+                    <Button bgColor="rgb(38, 38, 38)">Professores</Button>
+                    <Button bgColor="rgb(38, 38, 38)">Quadro de aulas</Button>
+                    <Button bgColor="rgb(38, 38, 38)">Adicionar usuário</Button>
+                </DivContent>
+                <DivContent>
+                    <Button bgColor="darkred" hoverColor="red">Sair</Button>
+                </DivContent>
+
+
+            </Box>
+        </Container>
+    )
+}
+export default Usuario;

@@ -10,6 +10,7 @@ font-size: 16px;
 box-sizing: border-box;
 color: white;
 background-color: #333;
+
 &:hover{
     background-color: #222;
     transition: .5s;

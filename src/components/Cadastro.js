@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import Container from "./SubContainer";
 import Box from "./SubBox";
 import Input from "./SubInput";
 import Select from "./SubSelect";
@@ -11,6 +10,19 @@ margin: 0 0 20px;
 color: white;
 `;
 
+const Container = styled.div`
+    width: 90%;
+    height: auto;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    text-align: center;
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: center;
+`;
 function Cadastro(){
     return(
         <Container>
