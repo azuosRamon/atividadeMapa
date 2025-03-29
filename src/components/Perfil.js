@@ -2,37 +2,11 @@ import React, { useState} from "react";
 import styled from "styled-components";
 import Box from "./SubBox";
 import Input from "./SubInput";
-import Select from "./SubSelect";
+import Label from "./SubLabel";
 import Button from "./SubButton";
+import Title from "./SubTitleH2";
+import GridArea from "./SubGridArea";
 
-const Title = styled.h2`
-margin: 0 0 20px;
-color: white;
-`;
-
-const Container = styled.div`
-    height: auto;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    text-align: center;
-    display: grid;
-    grid-template-columns: 1fr;
-    align-items: center;
-`;
-
-const LabelInput = styled.label`
-    display: block;
-    text-transform: uppercase;
-    font-size: 12px;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #cccccc;
-    text-align: left;
-`;
-
-const GridArea = styled.div`
-grid-area: ${(props) => props.$area}
-`;
 
 const FormGrid = styled.form`
 display: grid;
@@ -43,7 +17,24 @@ grid-template-areas:
     "email email email"
     "senhaAtual . ."
     "senhaAtual senhaNova confirmarSenha"
-    ". . botoes"
+    ". . botoes";
+
+@media (min-width: 481px) and (max-width: 968px) {
+    grid-template-columns: 1fr;
+    grid-template-areas: 
+        "nome"
+        "sobrenome"
+        "telefone"
+        "nascimento"
+        "cpf"
+        "matricula"
+        "email"
+        "senhaAtual"
+        "senhaAtual"
+        "senhaNova"
+        "confirmarSenha"
+        "botoes"
+}
 `;
 
 const data = [
@@ -54,51 +45,52 @@ const data = [
 
 
 
-function AtualizarPerfil(id) {
-    id = 0
-    const [nome, trocarNome] = useState(data[id].nome);
-    const [sobrenome, trocarSobrenome] = useState(data[id].sobrenome);
-    const [telefone, trocarTelefone] = useState(data[id].telefone)
-    const [nascimento, trocarNascimento] = useState(data[id].nascimento)
-    const [email, trocarEmail] = useState(data[id].email)
-    const cpf = data[id].cpf;
-    const matricula = data[id].matricula;
+function AtualizarPerfil({id}) {
+    const usuarioDados = data[id] || {};
+
+    const [nome, trocarNome] = useState(usuarioDados.nome) || "";
+    const [sobrenome, trocarSobrenome] = useState(usuarioDados.sobrenome) || "";
+    const [telefone, trocarTelefone] = useState(usuarioDados.telefone || "")
+    const [nascimento, trocarNascimento] = useState(usuarioDados.nascimento || "")
+    const [email, trocarEmail] = useState(usuarioDados.email || "")
+    const cpf = usuarioDados.cpf || "";
+    const matricula = usuarioDados.matricula || "";
+    
     return(
-        <Container>
             <Box>
                 <Title>Atualizar Perfil</Title>
                 <FormGrid>
                     <GridArea $area="nome">
-                        <LabelInput for="nome">Nome:</LabelInput>
+                        <Label htmlFor="nome">Nome:</Label>
                         <Input type="text" id="nome" name="nome" value={nome} required onChange={(e) => trocarNome(e.target.value)}/>
                     </GridArea>
                     <GridArea $area="sobrenome">
-                        <LabelInput for="sobrenome">Sobrenome:</LabelInput>
+                        <Label htmlFor="sobrenome">Sobrenome:</Label>
                         <Input  type="text" id="sobrenome" name="sobrenome" value={sobrenome} required onChange={(e) => trocarSobrenome(e.target.value)} />
                     </GridArea>
                     <GridArea $area="telefone">
-                        <LabelInput for="telefone">telefone:</LabelInput>
+                        <Label htmlFor="telefone">telefone:</Label>
                         <Input  type="text" id="telefone" name="telefone" value={telefone} required onChange={(e) => trocarTelefone(e.target.value)}/>
                     </GridArea>
                     <GridArea $area="nascimento">
-                        <LabelInput for="nascimento">Data de Nascimento:</LabelInput>
+                        <Label htmlFor="nascimento">Data de Nascimento:</Label>
                         <Input type="date" id="nascimento" name="nascimento" value={nascimento}  required onChange={(e) => trocarNascimento(e.target.value)}/>
                     </GridArea>
                     <GridArea $area="email">
-                        <LabelInput for="email">Email:</LabelInput>
+                        <Label htmlFor="email">Email:</Label>
                         <Input type="email" id="email" name="email" value={email} required onChange={(e) => trocarEmail(e.target.value)}/>
                         <Input type="email" id="confirmarEmail" name="confirmarEmail" placeholder="Confirme o email" required/>
                     </GridArea>
                     <GridArea $area="cpf">
-                        <LabelInput for="cpf">CPF:</LabelInput>
-                        <Input type="text" name="cpf" id="cpf" color="gray" value={cpf} readOnly/>
+                        <Label htmlFor="cpf">CPF:</Label>
+                        <Input type="text" name="cpf" id="cpf" $color="gray" value={cpf} readOnly/>
                     </GridArea>
                     <GridArea $area="matricula">
-                        <LabelInput for="matricula">Matrícula:</LabelInput>
-                        <Input type="text" name="matricula" id="matricula" color="gray" value={matricula} readOnly/>
+                        <Label htmlFor="matricula">Matrícula:</Label>
+                        <Input type="text" name="matricula" id="matricula" $color="gray" value={matricula} readOnly/>
                     </GridArea>
                     <GridArea $area="senhaAtual">
-                        <LabelInput for="senhaAtual">Senha:</LabelInput>
+                        <Label htmlFor="senhaAtual">Senha:</Label>
                         <Input type="password" id="senhaAtual" name="senhaAtual" placeholder="Senha atual" required />
                     </GridArea>
                     <GridArea $area="senhaNova">
@@ -113,7 +105,6 @@ function AtualizarPerfil(id) {
 
                 </FormGrid>
             </Box>
-        </Container>
     )
 }
 

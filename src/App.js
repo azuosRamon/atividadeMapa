@@ -8,6 +8,7 @@ import Usuario_logado from "./components/Usuario_logado";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Pesquisa from "./components/Pesquisa";
+import LayoutLogado from "./LayoutLogado";
 import './App.css'
 import RecuperarSenha from "./components/RecuperarSenha";
 import Slide from "./components/Slide";
@@ -19,14 +20,6 @@ import styled from "styled-components";
 
 const imagens = [terreo, primeiro_pavimento, segundo_pavimento, terceiro_pavimento];
 
-const DivGrid2 = styled.div`
-  max-width: 960px;
-  margin: 20px auto;
-  display: grid;
-  grid-template-columns: 3fr 10fr;
-  gap: 10px;
-`;
-
 
 function App() {
   return(
@@ -35,7 +28,7 @@ function App() {
         <Route path="/" element={
           <div className="corpo">
             <Header/>
-            <Pesquisa/>
+            <Pesquisa key={1}/>
             <Slide
               lista_imagens={imagens}
               pagina_inicio={0}
@@ -58,133 +51,31 @@ function App() {
           </div>
         }/>
         <Route path="/logado" element={
-          <div className= "corpo">
-            <Header status={1}/>
-            <DivGrid2>
-              <section>
-                <Usuario_logado/>
-              </section>
-              <aside>
-                <Slide
-                lista_imagens={imagens}
-                pagina_inicio={0}
-              />
-              </aside>
-            </DivGrid2>
-            <Footer/>
-          </div>
+          <LayoutLogado><Slide lista_imagens={imagens} pagina_inicio={0}/></LayoutLogado>
       }/>
         <Route path="/editarPerfil" element={
-          <div className= "corpo">
-            <Header status={1}/>
-            <DivGrid2>
-              <section>
-                <Usuario_logado/>
-              </section>
-              <aside>
-                <Perfil/>
-              </aside>
-            </DivGrid2>
-            <Footer/>
-          </div>
+          <LayoutLogado><Perfil id={0}/></LayoutLogado>
         }/>
         <Route path="/periodoHorarios" element={
-          <div className= "corpo">
-            <Header status={1}/>
-            <DivGrid2>
-              <section>
-                <Usuario_logado/>
-              </section>
-              <aside>
-                <Horarios/>
-              </aside>
-            </DivGrid2>
-            <Footer/>
-          </div>
+          <LayoutLogado><Horarios/></LayoutLogado>
         }/>
         <Route path="/edificio" element={
-          <div className= "corpo">
-            <Header status={1}/>
-            <DivGrid2>
-              <section>
-                <Usuario_logado/>
-              </section>
-              <aside>
-                <Cadastro/>
-              </aside>
-            </DivGrid2>
-            <Footer/>
-          </div>
+          <LayoutLogado><Cadastro/></LayoutLogado>
         }/>
         <Route path="/cursos" element={
-          <div className= "corpo">
-            <Header status={1}/>
-            <DivGrid2>
-              <section>
-                <Usuario_logado/>
-              </section>
-              <aside>
-                <Cadastro/>
-              </aside>
-            </DivGrid2>
-            <Footer/>
-          </div>
+          <LayoutLogado><Cadastro/></LayoutLogado>
         }/>
         <Route path="/disciplinas" element={
-          <div className= "corpo">
-            <Header status={1}/>
-            <DivGrid2>
-              <section>
-                <Usuario_logado/>
-              </section>
-              <aside>
-                <Cadastro/>
-              </aside>
-            </DivGrid2>
-            <Footer/>
-          </div>
+          <LayoutLogado><Cadastro/></LayoutLogado>
         }/>
         <Route path="/professores" element={
-          <div className= "corpo">
-            <Header status={1}/>
-            <DivGrid2>
-              <section>
-                <Usuario_logado/>
-              </section>
-              <aside>
-                <Cadastro/>
-              </aside>
-            </DivGrid2>
-            <Footer/>
-          </div>
+          <LayoutLogado><Cadastro/></LayoutLogado>
         }/>
         <Route path="/quadroAulas" element={
-          <div className= "corpo">
-            <Header status={1}/>
-            <DivGrid2>
-              <section>
-                <Usuario_logado/>
-              </section>
-              <aside>
-                <Cadastro/>
-              </aside>
-            </DivGrid2>
-            <Footer/>
-          </div>
+          <LayoutLogado><Cadastro/></LayoutLogado>
         }/>
         <Route path="/cadastro" element={
-          <div className= "corpo">
-            <Header status={1}/>
-            <DivGrid2>
-              <section>
-                <Usuario_logado/>
-              </section>
-              <aside>
-                <Cadastro/>
-              </aside>
-            </DivGrid2>
-            <Footer/>
-          </div>
+          <LayoutLogado><Cadastro/></LayoutLogado>
         }/>
         <Route path="/slide" element={<Slide/>}/>
 

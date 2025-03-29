@@ -61,26 +61,29 @@ const data = [
 
 
 
-function Usuario({ nome, funcao,foto }) {
+function Usuario({ id }) {
     const telaAtual = useNavigate();
-    nome = data[0].nome +' '+ data[0].sobrenome;
-    funcao = data[0].funcao;
-    foto = data[0].foto;
+
+    const [usuario, setUsuario] = useState(data[id] || {});
+
+    useEffect(() => {
+        setUsuario(data[id] || {});
+    }, [id])
 
     return (
         <Container>
             <Box>
                 <DivContent>
-                    {foto ? (
-                        <Imagem src={foto} alt={`${nome} - foto`} />
+                    {usuario.foto ? (
+                        <Imagem src={usuario.foto} alt={`${usuario.nome} - foto`} />
                     ) : (
                         <CgProfile size={80} color="#999" />
                     )}
                     <DivContentInformacoes>
-                        <Titulo3>{nome}</Titulo3>
+                        <Titulo3>{usuario.nome}</Titulo3>
                     </DivContentInformacoes>
                     <DivContentInformacoes>
-                        <ParagrafoInformacao>{funcao}</ParagrafoInformacao>
+                        <ParagrafoInformacao>{usuario.funcao}</ParagrafoInformacao>
                     </DivContentInformacoes>
                 </DivContent>
                 

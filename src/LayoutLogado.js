@@ -1,0 +1,28 @@
+import React from "react";
+import Header from "./components/Header";
+import Usuario_logado from "./components/Usuario_logado";
+import Footer from "./components/Footer";
+import styled from "styled-components";
+
+const DivGrid2 = styled.div`
+  max-width: 960px;
+  margin: 20px auto;
+  display: grid;
+  grid-template-columns: 3fr 10fr;
+  gap: 10px;
+`;
+
+const LayoutLogado = ({ children }) => (
+  <div className="corpo">
+    <Header status={1} />
+    <DivGrid2>
+      <section>
+        <Usuario_logado id={0} />
+      </section>
+      <aside>{children}</aside>
+    </DivGrid2>
+    <Footer />
+  </div>
+);
+
+export default LayoutLogado;
