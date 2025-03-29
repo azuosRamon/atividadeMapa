@@ -22,10 +22,10 @@ const imagens = [terreo, primeiro_pavimento, segundo_pavimento, terceiro_pavimen
 
 const DivGrid2 = styled.div`
   max-width: 960px;
-  margin: 0 auto;
+  margin: 20px auto;
   display: grid;
   grid-template-columns: 3fr 10fr;
-  padding: 20px;
+  gap: 10px;
 `;
 
 function App() {
@@ -65,13 +65,26 @@ function App() {
                 <Usuario_logado/>
               </section>
               <aside>
-                <Horarios/>
+                <Perfil/>
               </aside>
             </DivGrid2>
             <Footer/>
           </div>
       }/>
-        <Route path="/cadastro" element={<Cadastro/>}/>
+        <Route path="/cadastro" element={
+          <div className= "corpo">
+            <Header/>
+            <DivGrid2>
+              <section>
+                <Usuario_logado/>
+              </section>
+              <aside>
+                <Cadastro/>
+              </aside>
+            </DivGrid2>
+            <Footer/>
+          </div>
+        }/>
         <Route path="/slide" element={<Slide/>}/>
 
       </Routes>

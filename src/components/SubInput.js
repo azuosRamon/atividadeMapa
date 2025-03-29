@@ -8,7 +8,7 @@ border: 1px solid #000;
 border-radius: 5px;
 font-size: 16px;
 box-sizing: border-box;
-color: white;
+color: ${(props) => props.color || '#e2e2e2'};
 background-color: #333;
 
 &:hover{
@@ -18,6 +18,7 @@ background-color: #333;
 &::placeholder{
     color: white;
 }
+
 `;
 
 export default Input;

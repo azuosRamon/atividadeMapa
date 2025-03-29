@@ -1,16 +1,15 @@
-import React from "react";
+import React, { useState} from "react";
 import styled from "styled-components";
 import { CgProfile } from "react-icons/cg";
 import Button from "./SubButton";
+import { useNavigate } from 'react-router-dom';
 
 
 const Container = styled.div`
     `;
 
 const Box = styled.div`
-    width: 90%;
     height: auto;
-    margin: 20px auto;
     padding: 20px;
     background-color: rgba(0, 0, 0, 0.8);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -59,7 +58,11 @@ const data = [
     { nome: "Maria", funcao: "Professor", foto: "" },
 ]; 
 
+
+
+
 function Usuario({ nome, funcao,foto }) {
+    const telaAtual = useNavigate();
     nome = data[0].nome +' '+ data[0].sobrenome;
     funcao = data[0].funcao;
     foto = data[0].foto;
@@ -82,14 +85,14 @@ function Usuario({ nome, funcao,foto }) {
                 </DivContent>
                 
                 <DivContent>
-                    <Button bgColor="rgb(38, 38, 38)">Perfil</Button>
+                    <Button onClick={telaAtual('/logado')} bgColor="rgb(38, 38, 38)">Perfil</Button>
                     <Button bgColor="rgb(38, 38, 38)">Períodos e Horários</Button>
                     <Button bgColor="rgb(38, 38, 38)">Edifício</Button>
                     <Button bgColor="rgb(38, 38, 38)">Cursos</Button>
                     <Button bgColor="rgb(38, 38, 38)">Disciplinas</Button>
                     <Button bgColor="rgb(38, 38, 38)">Professores</Button>
                     <Button bgColor="rgb(38, 38, 38)">Quadro de aulas</Button>
-                    <Button bgColor="rgb(38, 38, 38)">Adicionar usuário</Button>
+                    <Button onClick={telaAtual('/cadastro')} bgColor="rgb(38, 38, 38)">Adicionar usuário</Button>
                 </DivContent>
                 <DivContent>
                     <Button bgColor="darkred" hoverColor="red">Sair</Button>
