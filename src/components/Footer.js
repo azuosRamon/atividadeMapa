@@ -66,7 +66,7 @@ function Footer(){
     return(
         <FooterMenu>
             <Content>
-                <LinkMenu url="">
+                <LinkMenu $url="">
                     <ImagemLogo src={Logo}/>
                 </LinkMenu>
                 <UlMenu>

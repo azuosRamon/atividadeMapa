@@ -11,7 +11,6 @@ import Pesquisa from "./components/Pesquisa";
 import './App.css'
 import RecuperarSenha from "./components/RecuperarSenha";
 import Slide from "./components/Slide";
-
 import terreo from "./components/Plantas/TERREO_PAVIMENTO.png";
 import primeiro_pavimento from "./components/Plantas/PRIMEIRO_PAVIMENTO.png";
 import segundo_pavimento from "./components/Plantas/SEGUNDO_PAVIMENTO.png";
@@ -27,6 +26,7 @@ const DivGrid2 = styled.div`
   grid-template-columns: 3fr 10fr;
   gap: 10px;
 `;
+
 
 function App() {
   return(
@@ -59,7 +59,24 @@ function App() {
         }/>
         <Route path="/logado" element={
           <div className= "corpo">
-            <Header/>
+            <Header status={1}/>
+            <DivGrid2>
+              <section>
+                <Usuario_logado/>
+              </section>
+              <aside>
+                <Slide
+                lista_imagens={imagens}
+                pagina_inicio={0}
+              />
+              </aside>
+            </DivGrid2>
+            <Footer/>
+          </div>
+      }/>
+        <Route path="/editarPerfil" element={
+          <div className= "corpo">
+            <Header status={1}/>
             <DivGrid2>
               <section>
                 <Usuario_logado/>
@@ -70,10 +87,94 @@ function App() {
             </DivGrid2>
             <Footer/>
           </div>
-      }/>
+        }/>
+        <Route path="/periodoHorarios" element={
+          <div className= "corpo">
+            <Header status={1}/>
+            <DivGrid2>
+              <section>
+                <Usuario_logado/>
+              </section>
+              <aside>
+                <Horarios/>
+              </aside>
+            </DivGrid2>
+            <Footer/>
+          </div>
+        }/>
+        <Route path="/edificio" element={
+          <div className= "corpo">
+            <Header status={1}/>
+            <DivGrid2>
+              <section>
+                <Usuario_logado/>
+              </section>
+              <aside>
+                <Cadastro/>
+              </aside>
+            </DivGrid2>
+            <Footer/>
+          </div>
+        }/>
+        <Route path="/cursos" element={
+          <div className= "corpo">
+            <Header status={1}/>
+            <DivGrid2>
+              <section>
+                <Usuario_logado/>
+              </section>
+              <aside>
+                <Cadastro/>
+              </aside>
+            </DivGrid2>
+            <Footer/>
+          </div>
+        }/>
+        <Route path="/disciplinas" element={
+          <div className= "corpo">
+            <Header status={1}/>
+            <DivGrid2>
+              <section>
+                <Usuario_logado/>
+              </section>
+              <aside>
+                <Cadastro/>
+              </aside>
+            </DivGrid2>
+            <Footer/>
+          </div>
+        }/>
+        <Route path="/professores" element={
+          <div className= "corpo">
+            <Header status={1}/>
+            <DivGrid2>
+              <section>
+                <Usuario_logado/>
+              </section>
+              <aside>
+                <Cadastro/>
+              </aside>
+            </DivGrid2>
+            <Footer/>
+          </div>
+        }/>
+        <Route path="/quadroAulas" element={
+          <div className= "corpo">
+            <Header status={1}/>
+            <DivGrid2>
+              <section>
+                <Usuario_logado/>
+              </section>
+              <aside>
+                <Cadastro/>
+              </aside>
+            </DivGrid2>
+            <Footer/>
+          </div>
+        }/>
         <Route path="/cadastro" element={
           <div className= "corpo">
-            <Header/>
+            <Header status={1}/>
             <DivGrid2>
               <section>
                 <Usuario_logado/>

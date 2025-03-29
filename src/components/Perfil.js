@@ -31,7 +31,7 @@ const LabelInput = styled.label`
 `;
 
 const GridArea = styled.div`
-grid-area: ${(props) => props.area}
+grid-area: ${(props) => props.$area}
 `;
 
 const FormGrid = styled.form`
@@ -68,46 +68,46 @@ function AtualizarPerfil(id) {
             <Box>
                 <Title>Atualizar Perfil</Title>
                 <FormGrid>
-                    <GridArea area="nome">
+                    <GridArea $area="nome">
                         <LabelInput for="nome">Nome:</LabelInput>
                         <Input type="text" id="nome" name="nome" value={nome} required onChange={(e) => trocarNome(e.target.value)}/>
                     </GridArea>
-                    <GridArea area="sobrenome">
+                    <GridArea $area="sobrenome">
                         <LabelInput for="sobrenome">Sobrenome:</LabelInput>
                         <Input  type="text" id="sobrenome" name="sobrenome" value={sobrenome} required onChange={(e) => trocarSobrenome(e.target.value)} />
                     </GridArea>
-                    <GridArea area="telefone">
+                    <GridArea $area="telefone">
                         <LabelInput for="telefone">telefone:</LabelInput>
-                        <Input  type="text" id="sobrenome" name="telefone" value={telefone} required onChange={(e) => trocarTelefone(e.target.value)}/>
+                        <Input  type="text" id="telefone" name="telefone" value={telefone} required onChange={(e) => trocarTelefone(e.target.value)}/>
                     </GridArea>
-                    <GridArea area="nascimento">
+                    <GridArea $area="nascimento">
                         <LabelInput for="nascimento">Data de Nascimento:</LabelInput>
                         <Input type="date" id="nascimento" name="nascimento" value={nascimento}  required onChange={(e) => trocarNascimento(e.target.value)}/>
                     </GridArea>
-                    <GridArea area="email">
+                    <GridArea $area="email">
                         <LabelInput for="email">Email:</LabelInput>
                         <Input type="email" id="email" name="email" value={email} required onChange={(e) => trocarEmail(e.target.value)}/>
                         <Input type="email" id="confirmarEmail" name="confirmarEmail" placeholder="Confirme o email" required/>
                     </GridArea>
-                    <GridArea area="cpf">
+                    <GridArea $area="cpf">
                         <LabelInput for="cpf">CPF:</LabelInput>
                         <Input type="text" name="cpf" id="cpf" color="gray" value={cpf} readOnly/>
                     </GridArea>
-                    <GridArea area="matricula">
+                    <GridArea $area="matricula">
                         <LabelInput for="matricula">Matrícula:</LabelInput>
                         <Input type="text" name="matricula" id="matricula" color="gray" value={matricula} readOnly/>
                     </GridArea>
-                    <GridArea area="senhaAtual">
+                    <GridArea $area="senhaAtual">
                         <LabelInput for="senhaAtual">Senha:</LabelInput>
-                        <Input type="password" id="senha" name="senhaAtual" placeholder="Senha atual" required />
+                        <Input type="password" id="senhaAtual" name="senhaAtual" placeholder="Senha atual" required />
                     </GridArea>
-                    <GridArea area="senhaNova">
-                        <Input type="password" id="senha" name="senhaNova" placeholder="Senha nova" required/>
+                    <GridArea $area="senhaNova">
+                        <Input type="password" id="senhaNova" name="senhaNova" placeholder="Senha nova" required/>
                     </GridArea>
-                    <GridArea area="confirmarSenha">
+                    <GridArea $area="confirmarSenha">
                         <Input type="password" id="confirmarSenha" name="confirmarSenha" placeholder="Confirme sua Senha" required/>
                     </GridArea>
-                    <GridArea area="botoes">
+                    <GridArea $area="botoes">
                         <Button type="submit">Salvar</Button>   
                     </GridArea>
 

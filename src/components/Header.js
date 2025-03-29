@@ -105,7 +105,8 @@ const HamburgerIcon = styled.div`
     }
 `;
 
-function Header() {
+function Header({status}) {
+    const LogInOut = status ? "Logout" : "Login";
     const [abrirMenu, setAbrirMenu] = useState(false);
 
     const abrindoMenu = () => {
@@ -121,7 +122,7 @@ function Header() {
                 
                 <UlMenu>
                     <LiMenu><StyledLink to="/"><FaSearchLocation /></StyledLink></LiMenu>
-                    <LiMenu><StyledLink to="/login">Login</StyledLink></LiMenu>
+                    <LiMenu><StyledLink to="/login">{LogInOut}</StyledLink></LiMenu>
                 </UlMenu>
 
                 <HamburgerIcon onClick={abrindoMenu}>
@@ -132,7 +133,7 @@ function Header() {
                     <CelularMenu>
                         <CelularUlMenu>
                             <LiMenu><StyledLink to="/" onClick={abrindoMenu}><FaSearchLocation /></StyledLink></LiMenu>
-                            <LiMenu><StyledLink to="/login" onClick={abrindoMenu}>Login</StyledLink></LiMenu>
+                            <LiMenu><StyledLink to="/login" onClick={abrindoMenu}></StyledLink></LiMenu>
                         </CelularUlMenu>
                     </CelularMenu>
                 )}

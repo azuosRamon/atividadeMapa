@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState, useEffect} from "react";
 import styled from "styled-components";
 import { CgProfile } from "react-icons/cg";
 import Button from "./SubButton";
@@ -85,17 +85,17 @@ function Usuario({ nome, funcao,foto }) {
                 </DivContent>
                 
                 <DivContent>
-                    <Button onClick={telaAtual('/logado')} bgColor="rgb(38, 38, 38)">Perfil</Button>
-                    <Button bgColor="rgb(38, 38, 38)">Períodos e Horários</Button>
-                    <Button bgColor="rgb(38, 38, 38)">Edifício</Button>
-                    <Button bgColor="rgb(38, 38, 38)">Cursos</Button>
-                    <Button bgColor="rgb(38, 38, 38)">Disciplinas</Button>
-                    <Button bgColor="rgb(38, 38, 38)">Professores</Button>
-                    <Button bgColor="rgb(38, 38, 38)">Quadro de aulas</Button>
-                    <Button onClick={telaAtual('/cadastro')} bgColor="rgb(38, 38, 38)">Adicionar usuário</Button>
+                    <Button onClick={()=>{telaAtual('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>
+                    <Button onClick={()=>{telaAtual('/periodoHorarios')}} $bgcolor="rgb(38, 38, 38)">Períodos e Horários</Button>
+                    <Button onClick={()=>{telaAtual('/edificio')}} $bgcolor="rgb(38, 38, 38)">Edifício</Button>
+                    <Button onClick={()=>{telaAtual('/cursos')}} $bgcolor="rgb(38, 38, 38)">Cursos</Button>
+                    <Button onClick={()=>{telaAtual('/disciplinas')}} $bgcolor="rgb(38, 38, 38)">Disciplinas</Button>
+                    <Button onClick={()=>{telaAtual('/professores')}} $bgcolor="rgb(38, 38, 38)">Professores</Button>
+                    <Button onClick={()=>{telaAtual('/quadroAulas')}} $bgcolor="rgb(38, 38, 38)">Quadro de aulas</Button>
+                    <Button onClick={()=>{telaAtual('/cadastro')}} $bgcolor="rgb(38, 38, 38)">Adicionar usuário</Button>
                 </DivContent>
                 <DivContent>
-                    <Button bgColor="darkred" hoverColor="red">Sair</Button>
+                    <Button $bgcolor="darkred" $hovercolor="red">Sair</Button>
                 </DivContent>
 
 
