@@ -71,7 +71,6 @@ function Usuario({ id }) {
     }, [id])
 
     return (
-        <Container>
             <Box>
                 <DivContent>
                     {usuario.foto ? (
@@ -97,13 +96,9 @@ function Usuario({ id }) {
                     <Button onClick={()=>{telaAtual('/quadroAulas')}} $bgcolor="rgb(38, 38, 38)">Quadro de aulas</Button>
                     <Button onClick={()=>{telaAtual('/cadastro')}} $bgcolor="rgb(38, 38, 38)">Adicionar usuário</Button>
                 </DivContent>
-                <DivContent>
-                    <Button $bgcolor="darkred" $hovercolor="red">Sair</Button>
-                </DivContent>
 
 
             </Box>
-        </Container>
     )
 }
 export default Usuario;

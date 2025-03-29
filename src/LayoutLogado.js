@@ -10,16 +10,32 @@ const DivGrid2 = styled.div`
   display: grid;
   grid-template-columns: 3fr 10fr;
   gap: 10px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    }
 `;
+
+const Section = styled.section`
+    @media (max-width: 768px) {
+    display: none;
+    }
+`;
+const Aside = styled.aside`
+    @media (max-width: 768px) {
+        padding: 10px;
+    }
+`;
+
 
 const LayoutLogado = ({ children }) => (
   <div className="corpo">
     <Header status={1} />
     <DivGrid2>
-      <section>
+      <Section>
         <Usuario_logado id={0} />
-      </section>
-      <aside>{children}</aside>
+      </Section>
+      <Aside>{children}</Aside>
     </DivGrid2>
     <Footer />
   </div>

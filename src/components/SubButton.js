@@ -14,6 +14,7 @@ font-size: 16px;
 cursor: pointer;
 
 &:hover{
+transition: .7s;
 background-color:${(props) => props.$hovercolor || '#0056b3'};
 }
 

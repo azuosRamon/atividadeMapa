@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FaSearchLocation, FaBars, FaTimes } from "react-icons/fa";
+import Usuario_logado from './Usuario_logado';
 
 import Logo from './assets/Logo.png'
 
@@ -24,6 +25,11 @@ const Content = styled.div`
     justify-content: space-between;
     align-items: center;
     position: relative;
+
+    @media screen and (max-width: 768px) {
+        z-index: 998;
+        background-color: ${cor_background_menu};
+    }
 `;
 
 const UlMenu = styled.ul`
@@ -55,6 +61,7 @@ const CelularUlMenu = styled.ul`
     list-style: none;
     padding: 0;
     margin: 0;
+    
 `;
 
 const ImagemLogo = styled.img`
@@ -133,7 +140,8 @@ function Header({status}) {
                     <CelularMenu>
                         <CelularUlMenu>
                             <LiMenu><StyledLink to="/" onClick={abrindoMenu}><FaSearchLocation /></StyledLink></LiMenu>
-                            <LiMenu><StyledLink to="/login" onClick={abrindoMenu}></StyledLink></LiMenu>
+                            {status && <LiMenu><Usuario_logado id={0}/></LiMenu>}
+                            <LiMenu><StyledLink to="/login" onClick={abrindoMenu}>{LogInOut}</StyledLink></LiMenu>
                         </CelularUlMenu>
                     </CelularMenu>
                 )}

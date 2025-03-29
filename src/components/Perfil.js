@@ -19,7 +19,7 @@ grid-template-areas:
     "senhaAtual senhaNova confirmarSenha"
     ". . botoes";
 
-@media (min-width: 481px) and (max-width: 968px) {
+@media (max-width: 768px) {
     grid-template-columns: 1fr;
     grid-template-areas: 
         "nome"
