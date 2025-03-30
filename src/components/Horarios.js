@@ -9,12 +9,6 @@ import Title from "./SubTitleH2";
 import GridArea from "./SubGridArea";
 import DivSeparador from "./SubDivSeparador";
 
-const H3 = styled.h3`
-    font-size: 20px;
-    margin-bottom: 15px;
-    text-align: center;
-    color:rgb(203, 203, 203);
-`;
 
 const TabelaContainer = styled.div`
     width: 100%;
@@ -28,8 +22,6 @@ const TabelaHorarios = styled.table`
     text-align: left;
 `;
 
-const Thead = styled.thead`
-`;
 const Th =styled.th`
     background-color: #0066cc;
     color: #fff;
@@ -59,25 +51,7 @@ const Tbody =styled.tbody`
     background-color: rgba(255, 255, 255, 0.3);
 `;
 
-const InputRadio = styled.input`
-padding: 10px;
-margin: 10px 0;
-border: 1px solid #000;
-border-radius: 5px;
-font-size: 16px;
-box-sizing: border-box;
-color: ${(props) => props.$color || '#e2e2e2'};
-background-color: #333;
 
-&:hover{
-    background-color: #222;
-    transition: .5s;
-}
-&::placeholder{
-    color: white;
-}
-
-`;
 
 
 const FormGrid = styled.form`
@@ -142,7 +116,7 @@ function ConfigurarHorarios({ tableHorarios }) {
 
     useEffect(() => {
         setPesquisa(horarios.horarios.filter(data => (data.ano === Number(ano))&&(data.semestre === Number(semestre))));
-    }, [ano, semestre, horarios.horarios])
+    }, [ano, semestre])
 
     useEffect(() => {
         setTermino(adicionarTempo(inicio,0,duracao,0));
