@@ -52,23 +52,17 @@ const DivContent = styled.div`
     margin-top: 15px;
 `;
 
-const data = [
-    { nome: "Carlos", sobrenome: "Silva", nascimento:"2025-03-25", email:"carlossilva@mail.com", funcao: "Administrador", foto: "" },
-    { nome: "Ana", funcao: "Secretaria", foto: "" },
-    { nome: "Maria", funcao: "Professor", foto: "" },
-]; 
 
 
-
-
-function Usuario({ id }) {
+function Usuario({ dados, usuarioId }) {
+    const usuarioDados = dados?.[usuarioId] || {};
     const telaAtual = useNavigate();
 
-    const [usuario, setUsuario] = useState(data[id] || {});
+    const [usuario, setUsuario] = useState(usuarioDados);
 
     useEffect(() => {
-        setUsuario(data[id] || {});
-    }, [id])
+        setUsuario(dados[usuarioId] || {});
+    }, [usuarioId])
 
     return (
             <Box>

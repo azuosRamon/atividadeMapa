@@ -19,6 +19,11 @@ import terceiro_pavimento from "./components/Plantas/TERCEIRO_PAVIMENTO.png";
 import styled from "styled-components";
 
 const imagens = [terreo, primeiro_pavimento, segundo_pavimento, terceiro_pavimento];
+const data = [
+  { id:0, nome: "Carlos", sobrenome: "Silva", telefone: "21912341234",nascimento:"2025-03-24", email:"carlossilva@mail.com", cpf: "111.222.333-44", matricula:"202411122", funcao: "Administrador", foto: "", senha: "admin"},
+  { nome: "Ana", funcao: "Secretaria", foto: "" },
+  { nome: "Maria", funcao: "Professor", foto: "" },
+]; 
 
 
 function App() {
@@ -51,31 +56,31 @@ function App() {
           </div>
         }/>
         <Route path="/logado" element={
-          <LayoutLogado><Slide lista_imagens={imagens} pagina_inicio={0}/></LayoutLogado>
+          <LayoutLogado usuarioDados={data} usuarioId={0}><Slide lista_imagens={imagens} pagina_inicio={0}/></LayoutLogado>
       }/>
         <Route path="/editarPerfil" element={
-          <LayoutLogado><Perfil id={0}/></LayoutLogado>
+          <LayoutLogado usuarioDados={data} usuarioId={0}><Perfil dados={data} usuarioId={0}/></LayoutLogado>
         }/>
         <Route path="/periodoHorarios" element={
-          <LayoutLogado><Horarios/></LayoutLogado>
+          <LayoutLogado usuarioDados={data} usuarioId={0}><Horarios/></LayoutLogado>
         }/>
         <Route path="/edificio" element={
-          <LayoutLogado><Cadastro/></LayoutLogado>
+          <LayoutLogado usuarioDados={data} usuarioId={0}><Cadastro/></LayoutLogado>
         }/>
         <Route path="/cursos" element={
-          <LayoutLogado><Cadastro/></LayoutLogado>
+          <LayoutLogado usuarioDados={data} usuarioId={0}><Cadastro/></LayoutLogado>
         }/>
         <Route path="/disciplinas" element={
-          <LayoutLogado><Cadastro/></LayoutLogado>
+          <LayoutLogado usuarioDados={data} usuarioId={0}><Cadastro/></LayoutLogado>
         }/>
         <Route path="/professores" element={
-          <LayoutLogado><Cadastro/></LayoutLogado>
+          <LayoutLogado usuarioDados={data} usuarioId={0}><Cadastro/></LayoutLogado>
         }/>
         <Route path="/quadroAulas" element={
-          <LayoutLogado><Cadastro/></LayoutLogado>
+          <LayoutLogado usuarioDados={data} usuarioId={0}><Cadastro/></LayoutLogado>
         }/>
         <Route path="/cadastro" element={
-          <LayoutLogado><Cadastro/></LayoutLogado>
+          <LayoutLogado usuarioDados={data} usuarioId={0}><Cadastro/></LayoutLogado>
         }/>
         <Route path="/slide" element={<Slide/>}/>
 

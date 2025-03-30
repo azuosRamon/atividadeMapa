@@ -17,7 +17,8 @@ grid-template-areas:
     "email email email"
     "senhaAtual . ."
     "senhaAtual senhaNova confirmarSenha"
-    ". . botoes";
+    "foto foto foto"
+    "botoes botoes botoes";
 
 @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -33,33 +34,42 @@ grid-template-areas:
         "senhaAtual"
         "senhaNova"
         "confirmarSenha"
+        "foto"
         "botoes"
 }
 `;
 
-const data = [
-    { nome: "Carlos", sobrenome: "Silva", telefone: "21 99999-9999",nascimento:"2025-03-24", email:"carlossilva@mail.com", cpf: "111.222.333-44", matricula:"202411122", funcao: "Administrador", foto: "" },
-    { nome: "Ana", funcao: "Secretaria", foto: "" },
-    { nome: "Maria", funcao: "Professor", foto: "" },
-]; 
 
 
+function AtualizarPerfil({ dados, usuarioId }) {
+    const usuarioDados = dados?.[usuarioId] || {};
 
-function AtualizarPerfil({id}) {
-    const usuarioDados = data[id] || {};
-
-    const [nome, trocarNome] = useState(usuarioDados.nome) || "";
-    const [sobrenome, trocarSobrenome] = useState(usuarioDados.sobrenome) || "";
+    const [nome, trocarNome] = useState(usuarioDados.nome || "");
+    const [sobrenome, trocarSobrenome] = useState(usuarioDados.sobrenome || "");
     const [telefone, trocarTelefone] = useState(usuarioDados.telefone || "")
     const [nascimento, trocarNascimento] = useState(usuarioDados.nascimento || "")
     const [email, trocarEmail] = useState(usuarioDados.email || "")
     const cpf = usuarioDados.cpf || "";
     const matricula = usuarioDados.matricula || "";
+
+    const fazerEnvio = (event) =>{
+        event.preventDefault();
+        console.log({
+            nome,
+            sobrenome,
+            telefone,
+            nascimento,
+            email,
+            cpf,
+            matricula,
+          });
+    }
     
     return(
             <Box>
                 <Title>Atualizar Perfil</Title>
-                <FormGrid>
+                <FormGrid onSubmit={fazerEnvio}>
+                    <Input type="hidden" id="usuarioId" name="usuarioId" value={usuarioId}/>
                     <GridArea $area="nome">
                         <Label htmlFor="nome">Nome:</Label>
                         <Input type="text" id="nome" name="nome" value={nome} required onChange={(e) => trocarNome(e.target.value)}/>
@@ -70,7 +80,7 @@ function AtualizarPerfil({id}) {
                     </GridArea>
                     <GridArea $area="telefone">
                         <Label htmlFor="telefone">telefone:</Label>
-                        <Input  type="text" id="telefone" name="telefone" value={telefone} required onChange={(e) => trocarTelefone(e.target.value)}/>
+                        <Input  type="tel" id="telefone" name="telefone" value={telefone} required onChange={(e) => trocarTelefone(e.target.value)}/>
                     </GridArea>
                     <GridArea $area="nascimento">
                         <Label htmlFor="nascimento">Data de Nascimento:</Label>
@@ -79,7 +89,7 @@ function AtualizarPerfil({id}) {
                     <GridArea $area="email">
                         <Label htmlFor="email">Email:</Label>
                         <Input type="email" id="email" name="email" value={email} required onChange={(e) => trocarEmail(e.target.value)}/>
-                        <Input type="email" id="confirmarEmail" name="confirmarEmail" placeholder="Confirme o email" required/>
+                        <Input type="email" id="confirmarEmail" name="confirmarEmail" placeholder="Confirme o email"/>
                     </GridArea>
                     <GridArea $area="cpf">
                         <Label htmlFor="cpf">CPF:</Label>
@@ -94,10 +104,14 @@ function AtualizarPerfil({id}) {
                         <Input type="password" id="senhaAtual" name="senhaAtual" placeholder="Senha atual" required />
                     </GridArea>
                     <GridArea $area="senhaNova">
-                        <Input type="password" id="senhaNova" name="senhaNova" placeholder="Senha nova" required/>
+                        <Input type="password" id="senhaNova" name="senhaNova" placeholder="Senha nova"/>
                     </GridArea>
                     <GridArea $area="confirmarSenha">
-                        <Input type="password" id="confirmarSenha" name="confirmarSenha" placeholder="Confirme sua Senha" required/>
+                        <Input type="password" id="confirmarSenha" name="confirmarSenha" placeholder="Confirme sua Senha"/>
+                    </GridArea>
+                    <GridArea $area="foto">
+                        <Label htmlFor="foto">Foto:</Label>
+                        <Input type="file" id="foto" name="foto"/>
                     </GridArea>
                     <GridArea $area="botoes">
                         <Button type="submit">Salvar</Button>   

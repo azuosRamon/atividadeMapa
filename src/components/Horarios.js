@@ -1,109 +1,182 @@
-import React from "react";
+import React, { useState} from "react";
 import styled from "styled-components";
 import Box from "./SubBox";
 import Input from "./SubInput";
 import Select from "./SubSelect";
+import Label from "./SubLabel";
 import Button from "./SubButton";
+import Title from "./SubTitleH2";
+import GridArea from "./SubGridArea";
 
-const Title = styled.h2`
-margin: 0 0 20px;
-color: white;
-`;
-
-const Container = styled.div`
-    width: 90%;
-    height: auto;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: rgba(0, 0, 0, 0.8);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+const H3 = styled.h3`
+    font-size: 20px;
+    margin-bottom: 15px;
     text-align: center;
-    display: grid;
-    grid-template-columns: 1fr;
-    align-items: center;
+    color:rgb(203, 203, 203);
 `;
 
-const LabelInput = styled.label`
-    display: block;
-    text-transform: uppercase;
-    font-size: 12px;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #cccccc;
+const DivSeparador = styled.div`
+    height: 1px;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.2);
+    margin: 30px 0;
+`;
+const TabelaContainer = styled.div`
+    width: 100%;
+    overflow-x: auto;
+    margin-bottom: 25px;
+`;
+const TabelaHorarios = styled.table`
+    width: 100%;
+    border-collapse: collapse;
     text-align: left;
 `;
 
-const GridArea = styled.div`
-grid-area: ${(props) => props.area}
+const Thead = styled.thead`
+`;
+const Th =styled.th`
+    background-color: #0066cc;
+    color: #fff;
+    font-weight: bold;
+    padding: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+`;
+const Td =styled.td`
+    padding: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+`;
+const Tr =styled.tr`
+
+&:hover{
+    background-color: rgba(255, 255, 255, 0.1);
+}
+`;
+const Tbody =styled.tbody`
+    background-color: rgba(255, 255, 255, 0.1);
+`;
+
+const InputRadio = styled.input`
+padding: 10px;
+margin: 10px 0;
+border: 1px solid #000;
+border-radius: 5px;
+font-size: 16px;
+box-sizing: border-box;
+color: ${(props) => props.$color || '#e2e2e2'};
+background-color: #333;
+
+&:hover{
+    background-color: #222;
+    transition: .5s;
+}
+&::placeholder{
+    color: white;
+}
+
 `;
 
 const FormGrid = styled.form`
 display: grid;
 grid-template-columns: 1fr 1fr 1fr;
 grid-template-areas: 
-    "nome sobrenome telefone"
-    "nascimento cpf matricula"
-    "email email email"
-    "senhaAtual . ."
-    "senhaAtual senhaNova confirmarSenha"
-    ". . botoes"
+    "ano . semestre"
+    "tabela tabela tabela"
+    "adicionar . alterar"
+    "adicionar . alterar"
+    "inicio duracao termino"
+    "botoes botoes botoes";
+
+@media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    grid-template-areas: 
+
+        "botoes";
+}
 `;
 
-const data = [
-    { nome: "Carlos", sobrenome: "Silva", telefone: "21 99999-9999",nascimento:"2025-03-24", email:"carlossilva@mail.com", cpf: "111.222.333-44", matricula:"202411122", funcao: "Administrador", foto: "" },
-    { nome: "Ana", funcao: "Secretaria", foto: "" },
-    { nome: "Maria", funcao: "Professor", foto: "" },
-]; 
+const horarios = {
+    "horarios":[
+        { "id": 1, "ano": 2025, "semestre": 1, "horaInicio": "07:30", "horaFim": "09:00" },
+        { "id": 2, "ano": 2025, "semestre": 1, "horaInicio": "09:15", "horaFim": "10:45" },
+        { "id": 3, "ano": 2025, "semestre": 1, "horaInicio": "11:00", "horaFim": "12:30" }
+    ] 
+}
 
-function Horarios(nome, sobrenome, telefone, nascimento, email, cpf, matricula) {
-    nome = data[0].nome;
-    sobrenome = data[0].sobrenome;
-    nascimento = data[0].nascimento;
-    email = data[0].email;
-    cpf = data[0].cpf;
-    matricula = data[0].matricula;
-    telefone = data[0].telefone;
+function AtualizarPerfil({ tableHorarios }) {
+    const data = tableHorarios || {};
+
+    const [ano, setAno] = useState(data.ano || 2025);
+    const [semestre, setSemestre] = useState(data.semestre || 1);
+    const [inicio, setInicio] = useState("");
+    const [termino, setTermino] = useState("");
+    const [duracao, setDuracao] = useState(50);
+
+    const fazerEnvio = (event) =>{
+        event.preventDefault();
+        console.log({ 
+            ano, semestre, inicio, termino, duracao
+          });
+    }
+    
     return(
-        <Container>
             <Box>
-                <Title>Atualizar Perfil</Title>
-                <FormGrid>
-                    <GridArea area="nome">
-                        <LabelInput for="nome">Ano:</LabelInput>
-                        <Input type="text" id="nome" name="nome" value={nome} required/>
+                <Title>Configurar Horários</Title>
+                <FormGrid onSubmit={fazerEnvio}>
+                    <GridArea $area="ano">
+                        <Label htmlFor="ano">Ano:</Label>
+                        <Input type="text" id="ano" name="ano" value={ano} required onChange={(e) => setAno(e.target.value)}/>
                     </GridArea>
-                    <GridArea area="sobrenome">
-                        <LabelInput for="sobrenome">Semestre:</LabelInput>
-                        <Input  type="text" id="sobrenome" name="sobrenome" value={sobrenome} required/>
+                    <GridArea $area="semestre">
+                        <Label htmlFor="semestre">Semestre:</Label>
+                        <Select type="text" id="semestre" name="semestre" required onChange={(e) => setSemestre(e.target.value)}>
+                        <option value="1">1</option>
+                        <option value="1">2</option>
+                        </Select>
                     </GridArea>
-                    <GridArea area="telefone">
-                        <LabelInput for="telefone">id:</LabelInput>
-                        <Input  type="text" id="sobrenome" name="telefone" value={telefone} required/>
+                    <GridArea $area="tabela">
+                        <DivSeparador></DivSeparador>
+                        
+                        <H3>Horários Cadastrados</H3>
+
+                        <TabelaContainer>
+                            <TabelaHorarios>
+                                <thead>
+                                    <Tr>
+                                        <Th>ID</Th>
+                                        <Th>INÍCIO</Th>
+                                        <Th>TÉRMINO</Th>
+                                    </Tr>
+                                </thead>
+                                <Tbody id="tabela-horarios">
+                                </Tbody>
+                            </TabelaHorarios>
+                        </TabelaContainer>
+                        
+                        <DivSeparador></DivSeparador>
                     </GridArea>
-                    <GridArea area="nascimento">
-                        <LabelInput for="nascimento">Início:</LabelInput>
-                        <Input type="date" id="nascimento" name="nascimento" value={nascimento}  required/>
+
+                    <GridArea $area="alterar">
+                        <InputRadio type="radio" id="alterar-horario" name="opcao-horario" value="alterar" onchange="alternarModo(this)"/>
+                        <Label for="alterar-horario">ALTERAR HORÁRIO</Label>
                     </GridArea>
-                    <GridArea area="cpf">
-                        <LabelInput for="cpf">Duração:</LabelInput>
-                        <Input type="text" name="cpf" id="cpf" value={cpf} required/>
+                    <GridArea $area="adicionar">
+                        <InputRadio type="radio" id="adicionar-horario" name="opcao-horario" value="adicionar" checked onchange="alternarModo(this)"/>
+                        <Label for="adicionar-horario">ADICIONAR HORÁRIO</Label>
                     </GridArea>
-                    <GridArea area="matricula">
-                        <LabelInput for="matricula">Término:</LabelInput>
-                        <Input type="text" name="matricula" id="matricula" value={matricula} required/>
+                    <GridArea $area="inicio">
                     </GridArea>
-                    <GridArea area="limpar">
-                        <Button type="submit">Limpar</Button>   
+                    <GridArea $area="duracao">
                     </GridArea>
-                    <GridArea area="salvar">
+                    <GridArea $area="termino">
+                    </GridArea>
+                    <GridArea $area="botoes">
+                        <Button type="reset">Limpar</Button>   
                         <Button type="submit">Salvar</Button>   
                     </GridArea>
 
                 </FormGrid>
             </Box>
-        </Container>
     )
 }
 
-export default Horarios;
+export default AtualizarPerfil;
