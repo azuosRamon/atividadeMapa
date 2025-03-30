@@ -6,6 +6,7 @@ import Label from "./SubLabel";
 import Button from "./SubButton";
 import Title from "./SubTitleH2";
 import GridArea from "./SubGridArea";
+import DivSeparador from "./SubDivSeparador";
 
 
 const FormGrid = styled.form`
@@ -68,6 +69,7 @@ function AtualizarPerfil({ dados, usuarioId }) {
     return(
             <Box>
                 <Title>Atualizar Perfil</Title>
+                <DivSeparador></DivSeparador>
                 <FormGrid onSubmit={fazerEnvio}>
                     <Input type="hidden" id="usuarioId" name="usuarioId" value={usuarioId}/>
                     <GridArea $area="nome">

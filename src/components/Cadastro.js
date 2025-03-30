@@ -4,6 +4,7 @@ import Box from "./SubBox";
 import Input from "./SubInput";
 import Select from "./SubSelect";
 import Button from "./SubButton";
+import DivSeparador from "./SubDivSeparador";
 
 const Title = styled.h2`
 margin: 0 0 20px;
@@ -24,9 +25,9 @@ function Cadastro(){
         <Container>
             <Box>
                 <Title>Novo Usuário</Title>
+                <DivSeparador></DivSeparador>
                 <form>
                     <Input type="text" placeholder="Nome" required/>
-                    <Input type="date" placeholder="Data de nascimento" required/>
                     <Input type="email" placeholder="Email" required/>
                     <Input type="text" placeholder="CPF" required/>
                     <Input type="text" placeholder="Matricula" required/>
