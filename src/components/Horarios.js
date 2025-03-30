@@ -93,7 +93,15 @@ grid-template-areas:
 @media (max-width: 768px) {
     grid-template-columns: 1fr;
     grid-template-areas: 
-
+        "ano"
+        "semestre"
+        "tabela"
+        "operacao"
+        "idHorario"
+        "inicio" 
+        "duracao" 
+        "termino"
+        "reset"
         "botoes";
 }
 `;
@@ -103,9 +111,12 @@ const horarios = {
         { "id": 1, "ano": 2024, "semestre": 2, "horaInicio": "18:50", "horaTermino": "19:40" },
         { "id": 2, "ano": 2024, "semestre": 2, "horaInicio": "19:40", "horaTermino": "20:30" },
         { "id": 3, "ano": 2024, "semestre": 2, "horaInicio": "20:30", "horaTermino": "21:20" },
-        { "id": 4, "ano": 2025, "semestre": 1, "horaInicio": "18:50", "horaTermino": "19:40" },
         { "id": 5, "ano": 2025, "semestre": 1, "horaInicio": "19:40", "horaTermino": "20:30" },
         { "id": 6, "ano": 2025, "semestre": 1, "horaInicio": "20:30", "horaTermino": "21:20" },
+        { "id": 7, "ano": 2025, "semestre": 1, "horaInicio": "18:50", "horaTermino": "19:40" },
+        { "id": 8, "ano": 2025, "semestre": 1, "horaInicio": "19:40", "horaTermino": "20:30" },
+        { "id": 9, "ano": 2025, "semestre": 1, "horaInicio": "20:30", "horaTermino": "21:20" },
+        { "id": 10, "ano": 2025, "semestre": 1, "horaInicio": "21:20", "horaTermino": "22:10" },
     ] 
 }
 
