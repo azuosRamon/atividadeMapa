@@ -58,7 +58,7 @@ display: grid;
 grid-template-columns: 1fr 1fr 1fr;
 grid-template-areas: 
     "tabela tabela tabela"
-    "operacao operacao idCurso"
+    "operacao operacao idDisciplina"
     "nome nome nome"
     "reset . botoes";
 
@@ -67,47 +67,48 @@ grid-template-areas:
     grid-template-areas: 
         "tabela"
         "operacao"
-        "idCurso"
+        "idDisciplina"
         "nome"
         "reset"
         "botoes";
 }
 `;
 
-const cursos = {
-    "cursos":[
-        { "id": 1, "nome": "Engenharia Civil"},
-        { "id": 2, "nome": "Engenharia de Software"},
-        { "id": 3, "nome": "Engenharia Ambiental"},
-        { "id": 5, "nome": "Engenharia de Petróleo e Gás"},
-        { "id": 6, "nome": "Engenharia Elétrica"},
-        { "id": 7, "nome": "Engenharia de Telecomunicações"},
-        { "id": 8, "nome": "Engenharia Alimentos"},
+const disciplinas = {
+    "disciplinas":[
+        { "id": 1, "nome": "Empreendedorismo e inovação"},
+        { "id": 2, "nome": "Banco de Dados Relacionais"},
+        { "id": 3, "nome": "Estrutura de Dados Avançados"},
+        { "id": 4, "nome": "Gestão Ambiental e Desenvolvimento Sustentável"},
+        { "id": 5, "nome": "Infraestrutura de TI"},
+        { "id": 6, "nome": "Interface Humano-Computador"},
+        { "id": 7, "nome": "Práticas Extensionistas Integradoras IV"},
+        { "id": 8, "nome": "Processo de Desenvolvimento de Software"},
     ] 
 }
 
 
-function ConfigurarCursos({ tableCursos }) {
-    const data = tableCursos || {};
+function ConfigurarDisciplinas({ tableDisciplinas }) {
+    const data = tableDisciplinas || {};
     const [pesquisa, setPesquisa] = useState([]);
     const [operacao, setOperacao] = useState(1);
-    const [idCursos, setId] = useState("");
+    const [idDisciplinas, setId] = useState("");
     const [nome, setNome] = useState("");
 
     const pesquisa2 = useMemo(() => {
-        return cursos.cursos.filter(curso => 
-            (idCursos ? curso.id === idCursos : curso.nome.toLowerCase().includes(nome.toLowerCase()))
+        return disciplinas.disciplinas.filter(disciplina => 
+            (idDisciplinas ? disciplina.id === idDisciplinas : disciplina.nome.toLowerCase().includes(nome.toLowerCase()))
         );
-    }, [nome, idCursos]);
+    }, [nome, idDisciplinas]);
     
     useEffect(() => {
         setPesquisa(pesquisa2);
     }, [pesquisa2]);
 
     useEffect(() => {
-        const cursoSelecionado = cursos.cursos.find(curso => curso.id === Number(idCursos));
-        setNome(cursoSelecionado ? cursoSelecionado.nome : "");
-    }, [idCursos]);
+        const disciplinaSelecionada = disciplinas.disciplinas.find(disciplina => disciplina.id === Number(idDisciplinas));
+        setNome(disciplinaSelecionada ? disciplinaSelecionada.nome : "");
+    }, [idDisciplinas]);
 
 
     const fazerEnvio = (event) =>{
@@ -116,7 +117,7 @@ function ConfigurarCursos({ tableCursos }) {
     }
     return(
             <Box>
-                <Title>Cursos</Title>
+                <Title>Disciplinas</Title>
                 <FormGrid onSubmit={fazerEnvio}>
                     <GridArea $area="tabela">
                         <DivSeparador></DivSeparador>
@@ -130,15 +131,15 @@ function ConfigurarCursos({ tableCursos }) {
                                 </thead>
                                 <Tbody>
                                 {pesquisa.length > 0 ? (
-                                        pesquisa.map(curso => (
-                                            <Tr key={curso.id}>
-                                                <Td>{curso.id}</Td>
-                                                <Td>{curso.nome}</Td>
+                                        pesquisa.map(disciplina => (
+                                            <Tr key={disciplina.id}>
+                                                <Td>{disciplina.id}</Td>
+                                                <Td>{disciplina.nome}</Td>
                                             </Tr>
                                         ))
                                     ) : (
                                         <Tr>
-                                            <Td colSpan="2">Nenhum curso encontrado</Td>
+                                            <Td colSpan="2">Nenhuma disciplina encontrada</Td>
                                         </Tr>
                                     )}
                                 </Tbody>
@@ -150,18 +151,18 @@ function ConfigurarCursos({ tableCursos }) {
 
                     <GridArea $area="operacao">
                         <Label htmlFor="operacao">Operacao:</Label>
-                            <Select id="operacao" autoFocus name="operacao" required onChange={(e) => {setOperacao(e.target.value); setId("")}}>
-                            <option value="1">Adicionar Curso</option>
-                            <option value="2">Alterar Curso</option>
-                            <option value="3">Deletar Curso</option>
+                            <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(e.target.value); setId("")}}>
+                            <option value="1">Adicionar Disciplina</option>
+                            <option value="2">Alterar Disciplina</option>
+                            <option value="3">Deletar Disciplina</option>
                             </Select>
                     </GridArea>
-                    <GridArea $area="idCurso">
-                        <Label htmlFor="idCurso">ID:</Label>
-                        <Input type="number" id="idCurso" name="idCurso" disabled={!operacao || Number(operacao)<=1} onChange={(e) => setId(e.target.value ? Number(e.target.value) : "")}/>
+                    <GridArea $area="idDisciplina">
+                        <Label htmlFor="idDisciplina">ID:</Label>
+                        <Input type="number" id="idDisciplina" name="idDisciplina" disabled={!operacao || Number(operacao)<=1} onChange={(e) => setId(e.target.value ? Number(e.target.value) : "")}/>
                     </GridArea>
                     <GridArea $area="nome">
-                        <Label htmlFor="nome">Nome do Curso:</Label>
+                        <Label htmlFor="nome">Nome da Disciplina:</Label>
                         <Input type="text" id="nome" value={nome} name="nome" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setNome(e.target.value)} required/>
                     </GridArea>
                     <GridArea $area="reset" onClick={()=> setId("")}>
@@ -176,4 +177,4 @@ function ConfigurarCursos({ tableCursos }) {
     )
 }
 
-export default ConfigurarCursos;
+export default ConfigurarDisciplinas;

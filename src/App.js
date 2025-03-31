@@ -5,6 +5,7 @@ import Cadastro from "./components/Cadastro";
 import Horarios from "./components/Horarios";
 import Perfil from "./components/Perfil";
 import Cursos from "./components/Curso";
+import Disciplinas from "./components/Disciplina";
 import Usuario_logado from "./components/Usuario_logado";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -66,19 +67,19 @@ function App() {
           <LayoutLogado usuarioDados={data} usuarioId={0}><Horarios/></LayoutLogado>
         }/>
         <Route path="/edificio" element={
-          <LayoutLogado usuarioDados={data} usuarioId={0}><Cadastro/></LayoutLogado>
+          <LayoutLogado usuarioDados={data} usuarioId={0}></LayoutLogado>
         }/>
         <Route path="/cursos" element={
           <LayoutLogado usuarioDados={data} usuarioId={0}><Cursos/></LayoutLogado>
         }/>
         <Route path="/disciplinas" element={
-          <LayoutLogado usuarioDados={data} usuarioId={0}><Cadastro/></LayoutLogado>
+          <LayoutLogado usuarioDados={data} usuarioId={0}><Disciplinas/></LayoutLogado>
         }/>
         <Route path="/professores" element={
-          <LayoutLogado usuarioDados={data} usuarioId={0}><Cadastro/></LayoutLogado>
+          <LayoutLogado usuarioDados={data} usuarioId={0}></LayoutLogado>
         }/>
         <Route path="/quadroAulas" element={
-          <LayoutLogado usuarioDados={data} usuarioId={0}><Cadastro/></LayoutLogado>
+          <LayoutLogado usuarioDados={data} usuarioId={0}></LayoutLogado>
         }/>
         <Route path="/cadastro" element={
           <LayoutLogado usuarioDados={data} usuarioId={0}><Cadastro/></LayoutLogado>
