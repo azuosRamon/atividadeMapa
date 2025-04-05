@@ -6,6 +6,7 @@ import Horarios from "./components/Horarios";
 import Perfil from "./components/Perfil";
 import Cursos from "./components/Curso";
 import Disciplinas from "./components/Disciplina";
+import Edificio from "./components/Edificio";
 import Usuario_logado from "./components/Usuario_logado";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -67,7 +68,7 @@ function App() {
           <LayoutLogado usuarioDados={data} usuarioId={0}><Horarios/></LayoutLogado>
         }/>
         <Route path="/edificio" element={
-          <LayoutLogado usuarioDados={data} usuarioId={0}></LayoutLogado>
+          <LayoutLogado usuarioDados={data} usuarioId={0}><Edificio/></LayoutLogado>
         }/>
         <Route path="/cursos" element={
           <LayoutLogado usuarioDados={data} usuarioId={0}><Cursos/></LayoutLogado>
