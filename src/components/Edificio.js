@@ -8,53 +8,22 @@ import Button from "./SubButton";
 import Title from "./SubTitleH2";
 import GridArea from "./SubGridArea";
 import DivSeparador from "./SubDivSeparador";
-
-
-const TabelaContainer = styled.div`
-    width: 100%;
-    height: 200px;
-    overflow-x: auto;
-    margin-bottom: 25px;
-`;
-const TabelaHorarios = styled.table`
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-`;
-
-const Th =styled.th`
-    background-color: #0066cc;
-    color: #fff;
-    font-weight: bold;
-    padding: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    text-align: center;
-    
-`;
-const Td =styled.td`
-    text-align: center;
-    color: #fff;
-    padding: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-
-
-`;
-const Tr =styled.tr`
-&:nth-child(2n){
-    background-color: rgba(255, 255, 255, 0.2);
-}
-&:hover{
-    background-color: rgba(0, 102, 204, 0.2);
-}
-`;
-const Tbody =styled.tbody`
-    background-color: rgba(255, 255, 255, 0.3);
-`;
+import { FaChevronRight } from "react-icons/fa";
+import TabelaCompleta from "./Tabela";
 
 
 
 const FormGrid = styled.form`
+height: ${(props) => (props.$mostrar ? 'auto' : '0')};
+opacity: ${(props) => (props.$mostrar ? 1 : 0)};
+transform: ${(props) => (props.$mostrar ? 'scale(1)' : 'scale(0.98)')};
+pointer-events: ${(props) => (props.$mostrar ? 'auto' : 'none')};
+transition: 
+opacity 0.2s ease, 
+height 0.2s ease, 
+transform 0.5s ease;
 display: grid;
+box-sizing: border-box;
 grid-template-columns: 1fr 1fr 1fr;
 grid-template-areas: 
     "tabela tabela tabela"
@@ -75,6 +44,20 @@ grid-template-areas:
         "reset"
         "botoes";
 }
+`;
+
+const DivColapse = styled.div`
+display: flex;
+justify-content: flex-start;
+align-items: center;
+`;
+const Span = styled.span`
+color: white;
+display: inline-block;
+transition: transform 0.3s ease;
+transform: rotate(${props => (props.$ativo ? '90deg' : '0deg')});
+margin: auto 15px;
+font-size: 24px;
 `;
 
 const disciplinas = {
@@ -105,6 +88,9 @@ function ConfigurarDisciplinas({ tableDisciplinas }) {
     const [estado, setEstado] = useState("");
     const [rua, setRua] = useState("");
     const [complemento, setComplemento] = useState("");
+    const [campus, setCampus] = useState(true)
+    const [blocos, setBlocos] = useState(false)
+    const [andares, setAndares] = useState(false)
 
     const pesquisa2 = useMemo(() => {
         return disciplinas.disciplinas.filter(disciplina => 
@@ -128,34 +114,14 @@ function ConfigurarDisciplinas({ tableDisciplinas }) {
     }
     return(
             <Box>
-                <Title>Campus</Title>
-                <FormGrid onSubmit={fazerEnvio}>
+                <DivColapse onClick={()=>setCampus(campus => !campus)}>
+                    <Span $ativo={campus}><FaChevronRight /></Span>
+                    <Title>Campus</Title>
+                </DivColapse>
+                <FormGrid $mostrar={campus} onSubmit={fazerEnvio}>
                     <GridArea $area="tabela">
                         <DivSeparador></DivSeparador>
-                        <TabelaContainer>
-                            <TabelaHorarios>
-                                <thead>
-                                    <Tr>
-                                        <Th>ID</Th>
-                                        <Th>NOME</Th>
-                                    </Tr>
-                                </thead>
-                                <Tbody>
-                                {pesquisa.length > 0 ? (
-                                        pesquisa.map(disciplina => (
-                                            <Tr key={disciplina.id}>
-                                                <Td>{disciplina.id}</Td>
-                                                <Td>{disciplina.nome}</Td>
-                                            </Tr>
-                                        ))
-                                    ) : (
-                                        <Tr>
-                                            <Td colSpan="2">Nenhuma disciplina encontrada</Td>
-                                        </Tr>
-                                    )}
-                                </Tbody>
-                            </TabelaHorarios>
-                        </TabelaContainer>
+                        <TabelaCompleta dados={pesquisa}></TabelaCompleta>
                         
                         <DivSeparador></DivSeparador>
                     </GridArea>
@@ -178,7 +144,7 @@ function ConfigurarDisciplinas({ tableDisciplinas }) {
                     </GridArea>
                     <GridArea $area="cep">
                         <Label htmlFor="cep">Cep:</Label>
-                        <Input type="numero" id="cep" value={cep} name="cep" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setCep(e.target.value)} required/>
+                        <Input type="number" id="cep" value={cep} name="cep" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setCep(e.target.value)} required/>
                     </GridArea>
                     <GridArea $area="cidade">
                         <Label htmlFor="cidade">Cidade:</Label>
@@ -198,7 +164,7 @@ function ConfigurarDisciplinas({ tableDisciplinas }) {
                     </GridArea>
                     <GridArea $area="qtdBlocos">
                         <Label htmlFor="qtdBlocos">Quandidade de blocos:</Label>
-                        <Input type="numero" id="qtdBlocos" value={qtdBlocos} name="qtdBlocos" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setQtdBlocos(e.target.value)} required/>
+                        <Input type="number" id="qtdBlocos" value={qtdBlocos} name="qtdBlocos" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setQtdBlocos(e.target.value)} required/>
                     </GridArea>
                     <GridArea $area="reset" onClick={()=> setId("")}>
                         <Button $bgcolor="rgb(38, 38, 38)" type="reset">Limpar</Button>   
@@ -209,34 +175,13 @@ function ConfigurarDisciplinas({ tableDisciplinas }) {
 
                 </FormGrid>
                 <DivSeparador></DivSeparador>
-                <Title>Blocos</Title>
-                <FormGrid onSubmit={fazerEnvio}>
+                <DivColapse onClick={()=>setBlocos(blocos => !blocos)}>
+                    <Span $ativo={blocos}><FaChevronRight /></Span>
+                    <Title>Blocos</Title>
+                </DivColapse>
+                <FormGrid $mostrar={blocos} onSubmit={fazerEnvio}>
                     <GridArea $area="tabela">
                         <DivSeparador></DivSeparador>
-                        <TabelaContainer>
-                            <TabelaHorarios>
-                                <thead>
-                                    <Tr>
-                                        <Th>ID</Th>
-                                        <Th>NOME</Th>
-                                    </Tr>
-                                </thead>
-                                <Tbody>
-                                {pesquisa.length > 0 ? (
-                                        pesquisa.map(disciplina => (
-                                            <Tr key={disciplina.id}>
-                                                <Td>{disciplina.id}</Td>
-                                                <Td>{disciplina.nome}</Td>
-                                            </Tr>
-                                        ))
-                                    ) : (
-                                        <Tr>
-                                            <Td colSpan="2">Nenhuma disciplina encontrada</Td>
-                                        </Tr>
-                                    )}
-                                </Tbody>
-                            </TabelaHorarios>
-                        </TabelaContainer>
                         
                         <DivSeparador></DivSeparador>
                     </GridArea>
@@ -262,7 +207,7 @@ function ConfigurarDisciplinas({ tableDisciplinas }) {
                                 </GridArea>
                                 <GridArea $area="qtdBlocos">
                                     <Label htmlFor="qtdBlocos">Quandidade de andares:</Label>
-                                    <Input type="numero" id="qtdBlocos" value={qtdBlocos} name="qtdBlocos" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setNome(e.target.value)} required/>
+                                    <Input type="number" id="qtdBlocos" value={qtdBlocos} name="qtdBlocos" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setNome(e.target.value)} required/>
                                 </GridArea>
                             </React.Fragment>
                         ))                                            
