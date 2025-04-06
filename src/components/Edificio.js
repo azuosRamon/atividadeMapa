@@ -10,6 +10,7 @@ import GridArea from "./SubGridArea";
 import DivSeparador from "./SubDivSeparador";
 import { FaChevronRight } from "react-icons/fa";
 import TabelaCompleta from "./Tabela";
+import CampusOpcoes from "./Campus";
 
 
 
@@ -50,6 +51,12 @@ const DivColapse = styled.div`
 display: flex;
 justify-content: flex-start;
 align-items: center;
+background-color: rgb(38, 38, 38);
+border-radius: 5px;
+padding: 10px;
+margin-bottom: 20px;
+margin-top: 20px;
+
 `;
 const Span = styled.span`
 color: white;
@@ -73,6 +80,12 @@ const disciplinas = {
     ] 
 }
 
+const dados_json = {
+    "campus":[
+        { "id": 1, "nome": "Campus I", "cidade": "Maricá", "estado" : "RJ", "cep": "24900-000", "logradouro": "Avenida Roberto Silveira", "complemento": "rodoviaria" },
+        { "id": 2, "nome": "Campus II", "cidade": "Maricá", "estado" : "RJ", "cep": "24900-000", "logradouro": "Avenida Roberto Silveira", "complemento": "quadra" }
+    ] 
+}
 
 function ConfigurarDisciplinas({ tableDisciplinas }) {
     const data = tableDisciplinas || {};
@@ -83,11 +96,6 @@ function ConfigurarDisciplinas({ tableDisciplinas }) {
     const [qtdBlocos, setQtdBlocos] = useState(0);
     const [qtdAndares, setQtdAndares] = useState(0);
     const [qtdSalas, setQtdSalas] = useState(0);
-    const [cep, setCep] = useState();
-    const [cidade, setCidade] = useState("");
-    const [estado, setEstado] = useState("");
-    const [rua, setRua] = useState("");
-    const [complemento, setComplemento] = useState("");
     const [campus, setCampus] = useState(true)
     const [blocos, setBlocos] = useState(false)
     const [andares, setAndares] = useState(false)
@@ -114,77 +122,20 @@ function ConfigurarDisciplinas({ tableDisciplinas }) {
     }
     return(
             <Box>
-                <DivColapse onClick={()=>setCampus(campus => !campus)}>
-                    <Span $ativo={campus}><FaChevronRight /></Span>
-                    <Title>Campus</Title>
-                </DivColapse>
-                <FormGrid $mostrar={campus} onSubmit={fazerEnvio}>
-                    <GridArea $area="tabela">
-                        <DivSeparador></DivSeparador>
-                        <TabelaCompleta dados={pesquisa}></TabelaCompleta>
-                        
-                        <DivSeparador></DivSeparador>
-                    </GridArea>
-
-                    <GridArea $area="operacao">
-                        <Label htmlFor="operacao">Operacao:</Label>
-                            <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(e.target.value); setId("")}}>
-                            <option value="1">Adicionar Campus</option>
-                            <option value="2">Alterar Campus</option>
-                            <option value="3">Deletar Campus</option>
-                            </Select>
-                    </GridArea>
-                    <GridArea $area="idCampus">
-                        <Label htmlFor="idCampus">ID:</Label>
-                        <Input type="number" id="idCampus" name="idCampus" disabled={!operacao || Number(operacao)<=1} onChange={(e) => setId(e.target.value ? Number(e.target.value) : "")}/>
-                    </GridArea>
-                    <GridArea $area="nome">
-                        <Label htmlFor="nome">Nome do Campus:</Label>
-                        <Input type="text" id="nome" value={nome} name="nome" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setNome(e.target.value)} required/>
-                    </GridArea>
-                    <GridArea $area="cep">
-                        <Label htmlFor="cep">Cep:</Label>
-                        <Input type="number" id="cep" value={cep} name="cep" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setCep(e.target.value)} required/>
-                    </GridArea>
-                    <GridArea $area="cidade">
-                        <Label htmlFor="cidade">Cidade:</Label>
-                        <Input type="text" id="cidade" value={cidade} name="cidade" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setCidade(e.target.value)} required/>
-                    </GridArea>
-                    <GridArea $area="estado">
-                        <Label htmlFor="estado">Estado:</Label>
-                        <Input type="text" id="estado" value={estado} name="estado" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setEstado(e.target.value)} required/>
-                    </GridArea>
-                    <GridArea $area="rua">
-                        <Label htmlFor="rua">Rua:</Label>
-                        <Input type="text" id="rua" value={rua} name="rua" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setRua(e.target.value)} required/>
-                    </GridArea>
-                    <GridArea $area="complemento">
-                        <Label htmlFor="complemento">Complemento:</Label>
-                        <Input type="text" id="complemento" value={complemento} name="complemento" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setComplemento(e.target.value)} required/>
-                    </GridArea>
-                    <GridArea $area="qtdBlocos">
-                        <Label htmlFor="qtdBlocos">Quandidade de blocos:</Label>
-                        <Input type="number" id="qtdBlocos" value={qtdBlocos} name="qtdBlocos" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setQtdBlocos(e.target.value)} required/>
-                    </GridArea>
-                    <GridArea $area="reset" onClick={()=> setId("")}>
-                        <Button $bgcolor="rgb(38, 38, 38)" type="reset">Limpar</Button>   
-                    </GridArea>
-                    <GridArea $area="botoes">
-                        <Button type="submit">Salvar</Button>   
-                    </GridArea>
-
-                </FormGrid>
+                <Label htmlFor="operacao">Selecione a tabela a visualizar:</Label>
+                    <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(e.target.value); setId("")}}>
+                    <option value={pesquisa}>Campus</option>
+                    <option value="2">Blocos</option>
+                    <option value="3">Andares</option>
+                    </Select>
+                <TabelaCompleta dados={pesquisa}></TabelaCompleta>
                 <DivSeparador></DivSeparador>
-                <DivColapse onClick={()=>setBlocos(blocos => !blocos)}>
+                <CampusOpcoes dados={dados_json.campus}></CampusOpcoes>
+                <DivColapse onClick={()=>{setBlocos(blocos => !blocos); setCampus(false)}}>
                     <Span $ativo={blocos}><FaChevronRight /></Span>
                     <Title>Blocos</Title>
                 </DivColapse>
                 <FormGrid $mostrar={blocos} onSubmit={fazerEnvio}>
-                    <GridArea $area="tabela">
-                        <DivSeparador></DivSeparador>
-                        
-                        <DivSeparador></DivSeparador>
-                    </GridArea>
 
                     <GridArea $area="operacao">
                         <Label htmlFor="operacao">Operacao:</Label>

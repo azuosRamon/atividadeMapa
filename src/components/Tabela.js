@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useState, useEffect, useMemo} from "react";
 import styled from "styled-components";
-
+import Input from "./SubInput";
+import Label from "./SubLabel";
+import GridArea from "./SubGridArea";
+import { Form } from "react-router-dom";
 
 const TabelaContainer = styled.div`
     width: 100%;
     height: auto;
-    max-height: 200px;
+    max-height: 250px;
     overflow-x: auto;
-    margin-bottom: 25px;
 `;
 const Tabela = styled.table`
     width: 100%;
@@ -43,35 +45,85 @@ const Tr =styled.tr`
 const Tbody =styled.tbody`
     background-color: rgba(255, 255, 255, 0.3);
 `;
+const FormGrid = styled.form`
+display: grid;
+box-sizing: border-box;
+grid-template-columns: 1fr 1fr 1fr;
+grid-template-areas: 
+    "tabela tabela tabela"
+    "nome nome idItem";
+
+@media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    grid-template-areas: 
+        "idItem"
+        "nome";
+}
+`;
 
 
+function TabelaCompleta({ dados }){
+    const data = dados || {};
+    const [pesquisa, setPesquisa] = useState([]);
+    const [idItem, setId] = useState("");
+    const [nome, setNome] = useState("");
 
-const TabelaCompleta = ({ dados }) => {
+    const pesquisa2 = useMemo(() => {
+        return data.filter(item => 
+            (idItem ? item.id === idItem : item.nome.toLowerCase().includes(nome.toLowerCase()))
+        );
+    }, [nome, idItem]);
+    
+    useEffect(() => {
+        setPesquisa(pesquisa2);
+    }, [pesquisa2]);
+
+    useEffect(() => {
+        const itemSelecionado = data.find(item => item.id === Number(idItem));
+        setNome(itemSelecionado ? itemSelecionado.nome : "");
+    }, [idItem]);
+    
     return (
-        <TabelaContainer>
-            <Tabela>
-                <thead>
-                    <Tr>
-                        <Th>ID</Th>
-                        <Th>NOME</Th>
-                    </Tr>
-                </thead>
-                <Tbody>
-                {dados.length > 0 ? (
-                        dados.map(item => (
-                            <Tr key={item.id}>
-                                <Td>{item.id}</Td>
-                                <Td>{item.nome}</Td>
+        <FormGrid>
+            <GridArea $area="tabela">
+                <TabelaContainer>
+                    <Tabela>
+                        <thead>
+                            <Tr>
+                                <Th>ID</Th>
+                                <Th>NOME</Th>
                             </Tr>
-                        ))
-                    ) : (
-                        <Tr>
-                            <Td colSpan="2">Dados não encontrados!</Td>
-                        </Tr>
-                    )}
-                </Tbody>
-            </Tabela>
-        </TabelaContainer>
+                        </thead>
+                        <Tbody>
+                        {/*console.log(Object.keys(pesquisa))*/}
+                        {pesquisa.length > 0 ? (
+                                pesquisa.map(item => (
+                                    <Tr key={item.id}>
+                                        <Td>{item.id}</Td>
+                                        <Td>{item.nome}</Td>
+                                    </Tr>
+                                ))
+                            ) : (
+                                <Tr>
+                                    <Td colSpan="2">Dados não encontrados!</Td>
+                                </Tr>
+                            )}
+                        </Tbody>
+                    </Tabela>
+                </TabelaContainer>
+            </GridArea>
+
+            <GridArea $area="idItem">
+                <Label htmlFor="idItem">ID:</Label>
+                <Input type="number" id="idItem" name="idItem" onChange={(e) => setId(e.target.value ? Number(e.target.value) : "")}/>
+            </GridArea>
+            <GridArea $area="nome">
+                <Label htmlFor="nome">Nome:</Label>
+                <Input type="text" id="nome" value={nome} name="nome"  onChange={(e) => setNome(e.target.value)}/>
+
+            </GridArea>
+        </FormGrid>
+
     )
 }
 
