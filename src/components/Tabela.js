@@ -10,8 +10,9 @@ const TabelaContainer = styled.div`
     height: auto;
     max-height: 250px;
     overflow-x: auto;
-`;
-const Tabela = styled.table`
+    margin-bottom: 15px;
+    `;
+    const Tabela = styled.table`
     width: 100%;
     border-collapse: collapse;
     text-align: left;
@@ -56,13 +57,15 @@ grid-template-areas:
 @media (max-width: 768px) {
     grid-template-columns: 1fr;
     grid-template-areas: 
+        "tabela"
         "idItem"
         "nome";
 }
 `;
 
 
-function TabelaCompleta({ dados }){
+
+function TabelaCompleta({ dados, lista=[]  }){
     const data = dados || {};
     const [pesquisa, setPesquisa] = useState([]);
     const [idItem, setId] = useState("");
@@ -70,7 +73,11 @@ function TabelaCompleta({ dados }){
 
     const pesquisa2 = useMemo(() => {
         return data.filter(item => 
-            (idItem ? item.id === idItem : item.nome.toLowerCase().includes(nome.toLowerCase()))
+            (idItem ? item.id === idItem : Object.values(item).some(
+                valor =>
+                    valor &&
+                    valor.toString().toLowerCase().includes(nome.toLowerCase())
+            ) )
         );
     }, [nome, idItem]);
     
@@ -90,8 +97,9 @@ function TabelaCompleta({ dados }){
                     <Tabela>
                         <thead>
                             <Tr>
-                                <Th>ID</Th>
-                                <Th>NOME</Th>
+                            {lista.map((campo) => (
+                                    <Th key={campo}>{campo.toUpperCase()}</Th>
+                                ))}
                             </Tr>
                         </thead>
                         <Tbody>
@@ -99,13 +107,14 @@ function TabelaCompleta({ dados }){
                         {pesquisa.length > 0 ? (
                                 pesquisa.map(item => (
                                     <Tr key={item.id}>
-                                        <Td>{item.id}</Td>
-                                        <Td>{item.nome}</Td>
+                                        {lista.map((campo) => (
+                                            <Td key={campo}>{item[campo]}</Td>
+                                        ))}
                                     </Tr>
                                 ))
                             ) : (
                                 <Tr>
-                                    <Td colSpan="2">Dados não encontrados!</Td>
+                                    <Td colSpan={lista.length}>Dados não encontrados!</Td>
                                 </Tr>
                             )}
                         </Tbody>
@@ -118,7 +127,7 @@ function TabelaCompleta({ dados }){
                 <Input type="number" id="idItem" name="idItem" onChange={(e) => setId(e.target.value ? Number(e.target.value) : "")}/>
             </GridArea>
             <GridArea $area="nome">
-                <Label htmlFor="nome">Nome:</Label>
+                <Label htmlFor="nome">Pesquisa:</Label>
                 <Input type="text" id="nome" value={nome} name="nome"  onChange={(e) => setNome(e.target.value)}/>
 
             </GridArea>

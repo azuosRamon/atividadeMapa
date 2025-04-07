@@ -58,6 +58,17 @@ margin-bottom: 20px;
 margin-top: 20px;
 
 `;
+
+const DivColapseContent = styled.div`
+height: ${(props) => (props.$mostrar ? 'auto' : '0')};
+opacity: ${(props) => (props.$mostrar ? 1 : 0)};
+transform: ${(props) => (props.$mostrar ? 'scale(1)' : 'scale(0.98)')};
+pointer-events: ${(props) => (props.$mostrar ? 'auto' : 'none')};
+transition: 
+opacity 0.2s ease, 
+height 0.2s ease, 
+transform 0.5s ease;
+`;
 const Span = styled.span`
 color: white;
 display: inline-block;
@@ -82,38 +93,25 @@ const disciplinas = {
 
 const dados_json = {
     "campus":[
-        { "id": 1, "nome": "Campus I", "cidade": "Maricá", "estado" : "RJ", "cep": "24900-000", "logradouro": "Avenida Roberto Silveira", "complemento": "rodoviaria" },
-        { "id": 2, "nome": "Campus II", "cidade": "Maricá", "estado" : "RJ", "cep": "24900-000", "logradouro": "Avenida Roberto Silveira", "complemento": "quadra" }
+        { "id": 1, "blocos": 1, "nome": "Campus I", "cidade": "Maricá", "estado" : "RJ", "cep": "24900000", "logradouro": "Avenida Roberto Silveira", "complemento": "rodoviaria" },
+        { "id": 2, "blocos": 4,"nome": "Campus II", "cidade": "Maricá", "estado" : "RJ", "cep": "24900000", "logradouro": "Avenida Roberto Silveira", "complemento": "quadra" },
+        { "id": 3, "blocos": 1,"nome": "Campus III", "cidade": "Vassouras", "estado" : "RJ", "cep": "27700000", "logradouro": "Av. Expedicionário Oswaldo de Almeida Ramos", "complemento": "280" }
     ] 
 }
 
 function ConfigurarDisciplinas({ tableDisciplinas }) {
     const data = tableDisciplinas || {};
-    const [pesquisa, setPesquisa] = useState([]);
     const [operacao, setOperacao] = useState(1);
-    const [idDisciplinas, setId] = useState("");
+    const [consulta, setConsulta] = useState(false);
     const [nome, setNome] = useState("");
+    const [idItem, setId] = useState("");
     const [qtdBlocos, setQtdBlocos] = useState(0);
     const [qtdAndares, setQtdAndares] = useState(0);
     const [qtdSalas, setQtdSalas] = useState(0);
-    const [campus, setCampus] = useState(true)
+    const [campus, setCampus] = useState(false)
     const [blocos, setBlocos] = useState(false)
     const [andares, setAndares] = useState(false)
 
-    const pesquisa2 = useMemo(() => {
-        return disciplinas.disciplinas.filter(disciplina => 
-            (idDisciplinas ? disciplina.id === idDisciplinas : disciplina.nome.toLowerCase().includes(nome.toLowerCase()))
-        );
-    }, [nome, idDisciplinas]);
-    
-    useEffect(() => {
-        setPesquisa(pesquisa2);
-    }, [pesquisa2]);
-
-    useEffect(() => {
-        const disciplinaSelecionada = disciplinas.disciplinas.find(disciplina => disciplina.id === Number(idDisciplinas));
-        setNome(disciplinaSelecionada ? disciplinaSelecionada.nome : "");
-    }, [idDisciplinas]);
 
 
     const fazerEnvio = (event) =>{
@@ -122,15 +120,22 @@ function ConfigurarDisciplinas({ tableDisciplinas }) {
     }
     return(
             <Box>
+                <DivColapse onClick={()=>{setConsulta(consulta => !consulta)}}>
+                    <Span $ativo={consulta}><FaChevronRight /></Span>
+                    <Title>Consultar dados</Title>
+                </DivColapse>
+                <DivColapseContent $mostrar={consulta}>
                 <Label htmlFor="operacao">Selecione a tabela a visualizar:</Label>
-                    <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(e.target.value); setId("")}}>
-                    <option value={pesquisa}>Campus</option>
+                    <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(e.target.value)}}>
+                    <option value={dados_json.campus}>Campus</option>
                     <option value="2">Blocos</option>
                     <option value="3">Andares</option>
                     </Select>
-                <TabelaCompleta dados={pesquisa}></TabelaCompleta>
-                <DivSeparador></DivSeparador>
+                <TabelaCompleta dados={dados_json.campus} lista={["id", "nome", "cidade", "logradouro"]}></TabelaCompleta>
+                </DivColapseContent>
+
                 <CampusOpcoes dados={dados_json.campus}></CampusOpcoes>
+
                 <DivColapse onClick={()=>{setBlocos(blocos => !blocos); setCampus(false)}}>
                     <Span $ativo={blocos}><FaChevronRight /></Span>
                     <Title>Blocos</Title>
@@ -162,7 +167,7 @@ function ConfigurarDisciplinas({ tableDisciplinas }) {
                                 </GridArea>
                             </React.Fragment>
                         ))                                            
-                    ): (console.log(""))}
+                    ): ""}
                     <GridArea $area="reset" onClick={()=> setId("")}>
                         <Button $bgcolor="rgb(38, 38, 38)" type="reset">Limpar</Button>   
                     </GridArea>

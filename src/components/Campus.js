@@ -28,9 +28,9 @@ grid-template-columns: 1fr 1fr 1fr;
 grid-template-areas: 
     "tabela tabela tabela"
     "operacao operacao idCampus"
-    "nome nome qtdBlocos"
+    "nome nome blocos"
     "cep cidade estado"
-    "rua rua rua"
+    "logradouro logradouro logradouro"
     "complemento complemento complemento"
     "reset . botoes";
 
@@ -66,13 +66,6 @@ margin: auto 15px;
 font-size: 24px;
 `;
 
-const dados_json = {
-    "campus":[
-        { "id": 1, "nome": "Campus I", "cidade": "Maricá", "estado" : "RJ", "cep": "24900-000", "logradouro": "Avenida Roberto Silveira", "complemento": "rodoviaria" },
-        { "id": 2, "nome": "Campus II", "cidade": "Maricá", "estado" : "RJ", "cep": "24900-000", "logradouro": "Avenida Roberto Silveira", "complemento": "quadra" }
-    ] 
-}
-
 
 function CampusOpcoes({ dados }) {
     const data = dados || {};
@@ -80,13 +73,13 @@ function CampusOpcoes({ dados }) {
     const [operacao, setOperacao] = useState(1);
     const [idItem, setId] = useState("");
     const [nome, setNome] = useState("");
-    const [qtdBlocos, setQtdBlocos] = useState(0);
+    const [blocos, setQtdBlocos] = useState(0);
     const [cep, setCep] = useState();
     const [cidade, setCidade] = useState("");
     const [estado, setEstado] = useState("");
-    const [rua, setRua] = useState("");
+    const [logradouro, setLogradouro] = useState("");
     const [complemento, setComplemento] = useState("");
-    const [campus, setCampus] = useState(true)
+    const [campus, setCampus] = useState(false)
 
     const pesquisa2 = useMemo(() => {
         return data.filter(item => 
@@ -101,6 +94,12 @@ function CampusOpcoes({ dados }) {
     useEffect(() => {
         const itemSelecionado = data.find(item => item.id === Number(idItem));
         setNome(itemSelecionado ? itemSelecionado.nome : "");
+        setCidade(itemSelecionado ? itemSelecionado.cidade : "");
+        setEstado(itemSelecionado ? itemSelecionado.estado : "");
+        setCep(itemSelecionado ? itemSelecionado.cep : "");
+        setLogradouro(itemSelecionado ? itemSelecionado.logradouro : "");
+        setComplemento(itemSelecionado ? itemSelecionado.complemento : "");
+        setQtdBlocos(itemSelecionado ? itemSelecionado.blocos : 0);
     }, [idItem]);
 
 
@@ -149,17 +148,17 @@ function CampusOpcoes({ dados }) {
                         <Label htmlFor="estado">Estado:</Label>
                         <Input type="text" id="estado" value={estado} name="estado" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setEstado(e.target.value)} required/>
                     </GridArea>
-                    <GridArea $area="rua">
-                        <Label htmlFor="rua">Rua:</Label>
-                        <Input type="text" id="rua" value={rua} name="rua" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setRua(e.target.value)} required/>
+                    <GridArea $area="logradouro">
+                        <Label htmlFor="logradouro">Rua:</Label>
+                        <Input type="text" id="logradouro" value={logradouro} name="logradouro" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setLogradouro(e.target.value)} required/>
                     </GridArea>
                     <GridArea $area="complemento">
                         <Label htmlFor="complemento">Complemento:</Label>
                         <Input type="text" id="complemento" value={complemento} name="complemento" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setComplemento(e.target.value)} required/>
                     </GridArea>
-                    <GridArea $area="qtdBlocos">
-                        <Label htmlFor="qtdBlocos">Quandidade de blocos:</Label>
-                        <Input type="number" id="qtdBlocos" value={qtdBlocos} name="qtdBlocos" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setQtdBlocos(e.target.value)} required/>
+                    <GridArea $area="blocos">
+                        <Label htmlFor="blocos">Quandidade de blocos:</Label>
+                        <Input type="number" id="blocos" value={blocos} name="blocos" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setQtdBlocos(e.target.value)} required/>
                     </GridArea>
                     <GridArea $area="reset" onClick={()=> setId("")}>
                         <Button $bgcolor="rgb(38, 38, 38)" type="reset">Limpar</Button>   
