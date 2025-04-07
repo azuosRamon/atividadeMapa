@@ -84,7 +84,11 @@ function TabelaCompleta({ dados, lista=[]  }){
     useEffect(() => {
         setPesquisa(pesquisa2);
     }, [pesquisa2]);
-
+    useEffect(() => {
+        setId("");
+        setNome("");
+        setPesquisa(dados); // ou [] se preferir limpar completamente
+      }, [dados]);
     useEffect(() => {
         const itemSelecionado = data.find(item => item.id === Number(idItem));
         setNome(itemSelecionado ? itemSelecionado.nome : "");

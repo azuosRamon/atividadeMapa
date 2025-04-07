@@ -36,8 +36,8 @@ font-size: 24px;
 `;
 
 
-function Colapse({ nome, children }) {
-    const [status, setStatus] = useState(false);
+function Colapse({ nome, children, estadoInicial = false }) {
+    const [status, setStatus] = useState(estadoInicial);
 
     return(
             <div>

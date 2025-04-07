@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo} from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Box from "./SubBox";
 import Select from "./SubSelect";
@@ -50,10 +50,14 @@ const dados_json = {
         { "id": 3, "blocos": 1,"nome": "Campus III", "cidade": "Vassouras", "estado" : "RJ", "cep": "27700000", "logradouro": "Av. Expedicionário Oswaldo de Almeida Ramos", "complemento": "280" }
     ],
     "blocos":[
-        { "id": 1, "nome": "A", "pavimentos": 4, "imagem": "caminho/a.png", "campusId" : 1}
+        { "id": 1, "nome": "A", "pavimentos": 4, "imagem": "caminho/a.png", "campusId" : 1},
+        { "id": 2, "nome": "B", "pavimentos": 4, "imagem": "caminho/a.png", "campusId" : 2}
     ],
     "pavimentos":[
-        { "id": 1, "numero": "1", "salas": 20, "imagem": "caminho/a.png", "blocoId" : 1}
+        { "id": 1, "numero": "1", "salas": 20, "imagem": "caminho/a.png", "blocoId" : 1},
+        { "id": 2, "numero": "2", "salas": 17, "imagem": "caminho/a.png", "blocoId" : 1},
+        { "id": 3, "numero": "3", "salas": 23, "imagem": "caminho/a.png", "blocoId" : 1},
+        { "id": 4, "numero": "4", "salas": 5, "imagem": "caminho/a.png", "blocoId" : 1}
 
     ]
 }
@@ -68,14 +72,16 @@ function ConfigurarEdificio({ dados }) {
     ]
     return(
             <Box>
-                <Colapse nome = "Consultar dados">
+                <Colapse nome = "Consultar dados" estadoInicial={true}>
                     <Label htmlFor="operacao">Selecione a tabela a visualizar:</Label>
                         <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(Number(e.target.value))}}>
-                        <option value="0">Campus</option>
-                        <option value="1">Blocos</option>
-                        <option value="2">Pavimentos</option>
+                            {selecionarDados.map((_, idx) => (
+                                <option key={idx} value={idx}>
+                                    {["Campus", "Blocos", "Pavimentos"][idx]}
+                                </option>
+                                ))}
                         </Select>
-                    <TabelaCompleta dados={selecionarDados[operacao][0]} lista={selecionarDados[operacao][1]}></TabelaCompleta>
+                    <TabelaCompleta key={operacao} dados={selecionarDados[operacao][0]} lista={selecionarDados[operacao][1]}></TabelaCompleta>
                 </Colapse>
 
                 <Colapse nome = "Campus">
