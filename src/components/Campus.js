@@ -1,34 +1,20 @@
 import React, { useState, useEffect, useMemo} from "react";
 import styled from "styled-components";
-import Box from "./SubBox";
 import Select from "./SubSelect";
 import Input from "./SubInput";
 import Label from "./SubLabel";
 import Button from "./SubButton";
-import Title from "./SubTitleH2";
 import GridArea from "./SubGridArea";
-import DivSeparador from "./SubDivSeparador";
-import { FaChevronRight } from "react-icons/fa";
-import TabelaCompleta from "./Tabela";
 
 
 
 const FormGrid = styled.form`
-height: ${(props) => (props.$mostrar ? 'auto' : '0')};
-opacity: ${(props) => (props.$mostrar ? 1 : 0)};
-transform: ${(props) => (props.$mostrar ? 'scale(1)' : 'scale(0.98)')};
-pointer-events: ${(props) => (props.$mostrar ? 'auto' : 'none')};
-transition: 
-opacity 0.2s ease, 
-height 0.2s ease, 
-transform 0.5s ease;
 display: grid;
 box-sizing: border-box;
 grid-template-columns: 1fr 1fr 1fr;
 grid-template-areas: 
-    "tabela tabela tabela"
     "operacao operacao idCampus"
-    "nome nome blocos"
+    "nome nome nome"
     "cep cidade estado"
     "logradouro logradouro logradouro"
     "complemento complemento complemento"
@@ -36,34 +22,16 @@ grid-template-areas:
 
 @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    grid-template-areas: 
-        "tabela"
-        "operacao"
-        "idCampus"
-        "nome"
-        "reset"
-        "botoes";
+    grid-template-areas:
+           "operacao"
+           "idCampus"
+            "nome"
+            "cep"
+            "cidade estado"
+            "logradouro"
+            "complemento"
+            "reset . botoes";
 }
-`;
-
-const DivColapse = styled.div`
-display: flex;
-justify-content: flex-start;
-align-items: center;
-background-color: rgb(38, 38, 38);
-border-radius: 5px;
-padding: 10px;
-margin-bottom: 20px;
-margin-top: 20px;
-
-`;
-const Span = styled.span`
-color: white;
-display: inline-block;
-transition: transform 0.3s ease;
-transform: rotate(${props => (props.$ativo ? '90deg' : '0deg')});
-margin: auto 15px;
-font-size: 24px;
 `;
 
 
@@ -110,12 +78,7 @@ function CampusOpcoes({ dados }) {
 
     return(
             <div>
-
-                <DivColapse onClick={()=>setCampus(campus => !campus)}>
-                    <Span $ativo={campus}><FaChevronRight /></Span>
-                    <Title>Campus</Title>
-                </DivColapse>
-                <FormGrid $mostrar={campus} onSubmit={fazerEnvio}>
+                <FormGrid onSubmit={fazerEnvio}>
                     <GridArea $area="tabela">
                         
                     </GridArea>
@@ -155,10 +118,6 @@ function CampusOpcoes({ dados }) {
                     <GridArea $area="complemento">
                         <Label htmlFor="complemento">Complemento:</Label>
                         <Input type="text" id="complemento" value={complemento} name="complemento" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setComplemento(e.target.value)} required/>
-                    </GridArea>
-                    <GridArea $area="blocos">
-                        <Label htmlFor="blocos">Quandidade de blocos:</Label>
-                        <Input type="number" id="blocos" value={blocos} name="blocos" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setQtdBlocos(e.target.value)} required/>
                     </GridArea>
                     <GridArea $area="reset" onClick={()=> setId("")}>
                         <Button $bgcolor="rgb(38, 38, 38)" type="reset">Limpar</Button>   
