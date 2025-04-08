@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo} from "react";
 import styled from "styled-components";
+import GridArea from "./SubGridArea";
 import Input from "./SubInput";
 import Label from "./SubLabel";
-import GridArea from "./SubGridArea";
 import { Form } from "react-router-dom";
 
 const TabelaContainer = styled.div`

@@ -8,7 +8,7 @@ import CampusOpcoes from "./EdificioCampus";
 import BlocosOpcoes from "./EdificioBlocos";
 import PavimentosOpcoes from "./EdificioPavimentos";
 import Colapse from "./SubColapse";
-
+import TabelaCompletaTeste from "./TabelaEditavel";
 
 
 const dados_json = {
@@ -18,17 +18,23 @@ const dados_json = {
         { "id": 3, "blocos": 1,"nome": "Campus III", "cidade": "Vassouras", "estado" : "RJ", "cep": "27700000", "logradouro": "Av. Expedicionário Oswaldo de Almeida Ramos", "complemento": "280" }
     ],
     "blocos":[
-        { "id": 1, "nome": "A", "pavimentos": 4, "imagem": "caminho/a.png", "campusId" : 1},
-        { "id": 2, "nome": "A", "pavimentos": 2, "imagem": "caminho/a.png", "campusId" : 2},
-        { "id": 3, "nome": "B", "pavimentos": 4, "imagem": "caminho/a.png", "campusId" : 2},
-        { "id": 4, "nome": "C", "pavimentos": 2, "imagem": "caminho/a.png", "campusId" : 2}
+        { "id": 1, "nome": "A", "imagem": "caminho/a.png", "campusId" : 1},
+        { "id": 2, "nome": "A", "imagem": "caminho/a.png", "campusId" : 2},
+        { "id": 3, "nome": "B", "imagem": "caminho/a.png", "campusId" : 2},
+        { "id": 4, "nome": "C", "imagem": "caminho/a.png", "campusId" : 2}
     ],
     "pavimentos":[
-        { "id": 1, "numero": "1", "salas": 20, "imagem": "caminho/a.png", "blocoId" : 1},
-        { "id": 2, "numero": "2", "salas": 17, "imagem": "caminho/a.png", "blocoId" : 1},
-        { "id": 3, "numero": "3", "salas": 23, "imagem": "caminho/a.png", "blocoId" : 1},
-        { "id": 4, "numero": "4", "salas": 5, "imagem": "caminho/a.png", "blocoId" : 1}
+        { "id": 1, "numero": "1", "imagem": "caminho/a.png", "blocoId" : 1},
+        { "id": 2, "numero": "2", "imagem": "caminho/b.png", "blocoId" : 1},
+        { "id": 3, "numero": "3", "imagem": "caminho/c.png", "blocoId" : 1},
+        { "id": 4, "numero": "4", "imagem": "caminho/d.png", "blocoId" : 1}
 
+    ],
+    "salas":[
+        {"id": 1, "numero": 10, "imagem": "sala10.png", "pavimentoId": 1},
+        {"id": 2, "numero": 11, "imagem": "sala11.png", "pavimentoId": 1},
+        {"id": 3, "numero": 12, "imagem": "sala12.png", "pavimentoId": 1},
+        {"id": 4, "numero": 13, "imagem": "sala13.png", "pavimentoId": 1}
     ]
 }
 
@@ -63,6 +69,9 @@ function ConfigurarEdificio({ dados }) {
                 </Colapse>
                <Colapse nome = "Pavimentos">
                     <PavimentosOpcoes dados={dados_json}></PavimentosOpcoes>
+                </Colapse>
+               <Colapse nome = "Salas">
+                    <TabelaCompletaTeste dados={dados_json.salas} lista={["id", "numero", "pavimentoId", "imagem"]}></TabelaCompletaTeste>
                 </Colapse>
             </Box>
     )

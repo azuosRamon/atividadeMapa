@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Input from "./SubInput";
 import Select from "./SubSelect";
@@ -15,7 +15,7 @@ grid-template-areas:
     "campusId campusId campusId"
     "blocoId blocoId blocoId"
     "operacao operacao blocosId"
-    "nome nome nome"
+    "nome nome imagem"
     "reset . botoes";
 
 @media (max-width: 768px) {
@@ -37,7 +37,12 @@ function BlocosOpcoes({ dados }) {
     const [nome, setNome] = useState("");
     const [idItem, setId] = useState("");
     const [campusSelecionado, setCampusSelecionado] = useState(dados?.campus?.[0]?.id || "");
+    const [imagem, setImagem] = useState(dados?.pavimentos?.[0]?.imagem || "");
 
+    useEffect(() => {
+            const itemSelecionado = data.pavimentos.find(item => item.id === Number(idItem));
+            setNome(itemSelecionado ? itemSelecionado.numero : "");
+        }, [idItem]);
 
     const fazerEnvio = (event) =>{
         event.preventDefault();
@@ -86,12 +91,16 @@ function BlocosOpcoes({ dados }) {
                                 </Select>
                         </GridArea>
                         <GridArea $area="blocosId">
-                            <Label htmlFor="blocosId">ID do Bloco:</Label>
+                            <Label htmlFor="blocosId">ID do Pavimento:</Label>
                             <Input type="number" id="blocosId" name="blocosId" alt="Apenas para alteração ou exclusão" disabled={!operacao || Number(operacao)<=1} onChange={(e) => setId(e.target.value ? Number(e.target.value) : "")}/>
                         </GridArea>
                         <GridArea $area="nome">
-                            <Label htmlFor="nome">Nome ou Número do bloco:</Label>
+                            <Label htmlFor="nome">Número do pavimento:</Label>
                             <Input type="text" id="nome" value={nome} name="nome" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setNome(e.target.value)} required/>
+                        </GridArea>
+                        <GridArea $area="imagem">
+                            <Label htmlFor="imagem">Foto do pavimento:</Label>
+                            <Input type="file" id="imagem" name="imagem" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setImagem(e.target.value)}/>
                         </GridArea>
 
                         <GridArea $area="reset" onClick={()=> setId("")}>
