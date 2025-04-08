@@ -14,7 +14,7 @@ grid-template-columns: 1fr 1fr 1fr;
 grid-template-areas: 
     "campusId campusId campusId"
     "blocoId blocoId blocoId"
-    "operacao operacao blocosId"
+    "operacao operacao pavimentosId"
     "nome nome imagem"
     "reset . botoes";
 
@@ -22,9 +22,11 @@ grid-template-areas:
     grid-template-columns: 1fr;
     grid-template-areas: 
         "campusId"
+        "blocoId"
         "operacao"
-        "blocosId"
+        "pavimentosId"
         "nome"
+        "imagem"
         "reset"
         "botoes";
 }
@@ -90,9 +92,9 @@ function BlocosOpcoes({ dados }) {
                                 <option value="3">Deletar</option>
                                 </Select>
                         </GridArea>
-                        <GridArea $area="blocosId">
-                            <Label htmlFor="blocosId">ID do Pavimento:</Label>
-                            <Input type="number" id="blocosId" name="blocosId" alt="Apenas para alteração ou exclusão" disabled={!operacao || Number(operacao)<=1} onChange={(e) => setId(e.target.value ? Number(e.target.value) : "")}/>
+                        <GridArea $area="pavimentosId">
+                            <Label htmlFor="pavimentosId">ID do Pavimento:</Label>
+                            <Input type="number" id="pavimentosId" name="pavimentosId" alt="Apenas para alteração ou exclusão" disabled={!operacao || Number(operacao)<=1} onChange={(e) => setId(e.target.value ? Number(e.target.value) : "")}/>
                         </GridArea>
                         <GridArea $area="nome">
                             <Label htmlFor="nome">Número do pavimento:</Label>

@@ -6,16 +6,21 @@ import Button from "./SubButton";
 
 const TabelaContainer = styled.div`
     width: 100%;
-    height: auto;
-    max-height: 250px;
     overflow-x: auto;
     margin-bottom: 15px;
-    `;
+    max-width: 80vw;
+
+  @media (max-width: 768px) {
+    -webkit-overflow-scrolling: touch;
+  }
+`;
+
 const Tabela = styled.table`
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-    border-radius: 5px;
+  width: max-content;
+  border-collapse: collapse;
+  text-align: left;
+  border-radius: 5px;
+width: 100%;
 `;
 
 const Th =styled.th`
@@ -25,12 +30,21 @@ const Th =styled.th`
     padding: 12px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     text-align: center;
+
+    @media (max-width: 768px) {
+        font-size: 12px
+    };
+    
 `;
 const Td =styled.td`
     text-align: center;
     color: #fff;
     padding: 12px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
+    @media (max-width: 768px) {
+    padding: 0;
+    };
 
 
 `;
@@ -80,7 +94,11 @@ background-color:${(props) => props.$hovercolor || '#0056b3'};
     height: fit-content;
 }
 `;
-
+const Wrapper = styled.div`
+  width: 100%;
+  overflow-x: hidden;
+  padding: 0 10px;
+`;
 
 const dados_json = {
     "campus":[
@@ -141,63 +159,85 @@ function TabelaCompletaTeste({dados, lista, itensMax = 5}){
 
 
     return (
-        <div>
+        <Wrapper>
             
+        <TabelaContainer>
 
-        <Tabela>
-      <thead>
-        <Tr>
-          {lista.map((col) => (
-            <Th key={col}>{col.toUpperCase()}</Th>
-          ))}
-          <Th>AÇÕES</Th>
-        </Tr>
-      </thead>
-      <Tbody>
-        {//dadosTemporarios.map((linha, indice) => (
-        dadosTemporarios.slice((paginaAtual - 1) * itensPorPagina, paginaAtual * itensPorPagina)
-            .map((linha, indice) => {
-                const indiceReal = (paginaAtual - 1) * itensPorPagina + indice;
-                return (
-                <Tr key={indiceReal}>
+            <Tabela>
+        <thead>
+            <Tr>
             {lista.map((col) => (
-                
-              <Td key={col}>
-                {editarIndice === indice ? ( col !== "id" ?(
-                    <Input
-                      value={linha[col]}
-                      onChange={(e) => observarModificacao(e, indice, col)}
-                      type={col === "imagem" ? "file" : col === "numero" ? "number" : "text"}
-                    />
-                  ) : (
-                    linha[col]
-                  )
-                ): (
-                    linha[col]
-                  )
-            }
-              </Td>
+                <Th key={col}>{col.toUpperCase()}</Th>
             ))}
-            <Td>
-              {editarIndice === indice ? (
-                <>
-                  <Button $bgcolor="#52ece6" $hovercolor="#fff" onClick={() => salvarEdicao(indice)}>💾</Button>
-                  <Button $bgcolor="rgb(38,38,38)" $hovercolor="#fff" onClick={cancelarEdicao}>❌</Button>
+            <Th>AÇÕES</Th>
+            </Tr>
+        </thead>
+        <Tbody>
+            {//dadosTemporarios.map((linha, indice) => (
+            dadosTemporarios.slice((paginaAtual - 1) * itensPorPagina, paginaAtual * itensPorPagina)
+                .map((linha, indice) => {
+                    const indiceReal = (paginaAtual - 1) * itensPorPagina + indice;
+                    return (
+                    <Tr key={indiceReal}>
+                {lista.map((col) => (
+                    
+                <Td key={col}>
+                    {editarIndice === indice ? ( col !== "id" ?(
+                        col === "imagem" ? (
+                            <input
+                            type="file"
+                            onChange={(e) => {
+                                const file = e.target.files[0];
+                                if (file) {
+                                observarModificacao({ target: { value: file.name } }, indice, col);
+                                }
+                            }}
+                            />
+                        ) : (
+                            <Input
+                            type="text"
+                            value={linha[col]}
+                            onChange={(e) => observarModificacao(e, indice, col)}
+                            />
+                        )
+                    ) : (
+                        linha[col]
+                    )
+                    ): (
+                        linha[col]
+                    )
+                }
+                </Td>
+                ))}
+                <Td>
+                {editarIndice === indice ? (
+                    <>
+                    <Button $bgcolor="#52ece6" $hovercolor="#fff" onClick={() => salvarEdicao(indice)}>💾</Button>
+                    <Button $bgcolor="rgb(38,38,38)" $hovercolor="#fff" onClick={cancelarEdicao}>❌</Button>
+                    </>
+                ) : (<>
+                
+                <Button $bgcolor="rgb(38,38,38)" onClick={() => setEditarIndice(indice)}>✏️</Button>
+                <Button $bgcolor="darkred" onClick={() => {
+                    removerLinha(indice);
+                    
+                    const totalItens = dadosTemporarios.length - 1;
+                    const totalPaginas = Math.ceil(totalItens / itensPorPagina);
+
+                    if ((paginaAtual > totalPaginas) && totalPaginas > 0){
+                        setPaginaAtual(totalPaginas);
+                    }
+                    
+                    
+                }}>🗑️</Button>
                 </>
-              ) : (<>
-              
-              <Button $bgcolor="rgb(38,38,38)" onClick={() => setEditarIndice(indice)}>✏️</Button>
-              <Button $bgcolor="darkred" onClick={() => {
-                removerLinha(indice);
-                setPaginaAtual(Math.ceil((dadosTemporarios.length - 1) / itensPorPagina));
-              }}>🗑️</Button>
-              </>
-              )}
-            </Td>
-          </Tr>
-        )})}
-      </Tbody>
-    </Tabela>
+                )}
+                </Td>
+            </Tr>
+            )})}
+        </Tbody>
+        </Tabela>
+        </TabelaContainer>
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', margin: '15px 0' }}>
 
         {Array.from({ length: Math.ceil(dadosTemporarios.length / itensPorPagina) }, (_, i) => (
@@ -216,7 +256,7 @@ function TabelaCompletaTeste({dados, lista, itensMax = 5}){
         setPaginaAtual(Math.ceil((dadosTemporarios.length + 1) / itensPorPagina))
         setEditarIndice(dadosTemporarios.length);
     }}>➕ Adicionar item</Button>
-        </div>
+        </Wrapper>
     )
 
 }

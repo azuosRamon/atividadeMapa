@@ -25,6 +25,10 @@ const Th =styled.th`
     padding: 12px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     text-align: center;
+
+    @media (max-width: 768px) {
+        font-size: 12px
+    };
     
 `;
 const Td =styled.td`
@@ -32,6 +36,10 @@ const Td =styled.td`
     color: #fff;
     padding: 12px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+
+    @media (max-width: 768px) {
+    padding: 0;
+    };
 
 
 `;

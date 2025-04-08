@@ -14,6 +14,7 @@ const Box = styled.div`
     
     @media (max-width: 768px) {
         padding: 5%;
+        min-width: 0px;
     }
 `;
 
