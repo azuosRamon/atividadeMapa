@@ -22,8 +22,10 @@ grid-template-areas:
     grid-template-areas: 
         "campusId"
         "operacao"
+        "blocosId"
         "nome"
-        "reset . botoes";
+        "reset"
+        "botoes";
 }
 `;
 
@@ -33,8 +35,6 @@ function BlocosOpcoes({ dados }) {
     const [operacao, setOperacao] = useState(1);
     const [nome, setNome] = useState("");
     const [idItem, setId] = useState("");
-    const [blocos, setBlocos] = useState(false)
-
 
 
     const fazerEnvio = (event) =>{

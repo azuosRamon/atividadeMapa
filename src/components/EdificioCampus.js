@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo} from "react";
+import React, { useState, useEffect} from "react";
 import styled from "styled-components";
 import Select from "./SubSelect";
 import Input from "./SubInput";
@@ -27,37 +27,26 @@ grid-template-areas:
            "idCampus"
             "nome"
             "cep"
-            "cidade estado"
+            "cidade"
+            "estado"
             "logradouro"
             "complemento"
-            "reset . botoes";
+            "reset"
+            "botoes";
 }
 `;
 
 
 function CampusOpcoes({ dados }) {
     const data = dados || {};
-    const [pesquisa, setPesquisa] = useState([]);
     const [operacao, setOperacao] = useState(1);
     const [idItem, setId] = useState("");
     const [nome, setNome] = useState("");
-    const [blocos, setQtdBlocos] = useState(0);
     const [cep, setCep] = useState();
     const [cidade, setCidade] = useState("");
     const [estado, setEstado] = useState("");
     const [logradouro, setLogradouro] = useState("");
     const [complemento, setComplemento] = useState("");
-    const [campus, setCampus] = useState(false)
-
-    const pesquisa2 = useMemo(() => {
-        return data.filter(item => 
-            (idItem ? item.id === idItem : item.nome.toLowerCase().includes(nome.toLowerCase()))
-        );
-    }, [nome, idItem]);
-    
-    useEffect(() => {
-        setPesquisa(pesquisa2);
-    }, [pesquisa2]);
 
     useEffect(() => {
         const itemSelecionado = data.find(item => item.id === Number(idItem));
@@ -67,7 +56,6 @@ function CampusOpcoes({ dados }) {
         setCep(itemSelecionado ? itemSelecionado.cep : "");
         setLogradouro(itemSelecionado ? itemSelecionado.logradouro : "");
         setComplemento(itemSelecionado ? itemSelecionado.complemento : "");
-        setQtdBlocos(itemSelecionado ? itemSelecionado.blocos : 0);
     }, [idItem]);
 
 
@@ -79,10 +67,6 @@ function CampusOpcoes({ dados }) {
     return(
             <div>
                 <FormGrid onSubmit={fazerEnvio}>
-                    <GridArea $area="tabela">
-                        
-                    </GridArea>
-
                     <GridArea $area="operacao">
                         <Label htmlFor="operacao">Operacao:</Label>
                             <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(e.target.value); setId("")}}>

@@ -4,43 +4,11 @@ import Box from "./SubBox";
 import Select from "./SubSelect";
 import Label from "./SubLabel";
 import TabelaCompleta from "./Tabela";
-import CampusOpcoes from "./Campus";
-import BlocosOpcoes from "./Blocos";
+import CampusOpcoes from "./EdificioCampus";
+import BlocosOpcoes from "./EdificioBlocos";
+import PavimentosOpcoes from "./EdificioPavimentos";
 import Colapse from "./SubColapse";
 
-
-const FormGrid = styled.form`
-height: ${(props) => (props.$mostrar ? 'auto' : '0')};
-opacity: ${(props) => (props.$mostrar ? 1 : 0)};
-transform: ${(props) => (props.$mostrar ? 'scale(1)' : 'scale(0.98)')};
-pointer-events: ${(props) => (props.$mostrar ? 'auto' : 'none')};
-transition: 
-opacity 0.2s ease, 
-height 0.2s ease, 
-transform 0.5s ease;
-display: grid;
-box-sizing: border-box;
-grid-template-columns: 1fr 1fr 1fr;
-grid-template-areas: 
-    "tabela tabela tabela"
-    "operacao operacao idCampus"
-    "nome nome qtdBlocos"
-    "cep cidade estado"
-    "rua rua rua"
-    "complemento complemento complemento"
-    "reset . botoes";
-
-@media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    grid-template-areas: 
-        "tabela"
-        "operacao"
-        "idCampus"
-        "nome"
-        "reset"
-        "botoes";
-}
-`;
 
 
 const dados_json = {
@@ -51,7 +19,9 @@ const dados_json = {
     ],
     "blocos":[
         { "id": 1, "nome": "A", "pavimentos": 4, "imagem": "caminho/a.png", "campusId" : 1},
-        { "id": 2, "nome": "B", "pavimentos": 4, "imagem": "caminho/a.png", "campusId" : 2}
+        { "id": 2, "nome": "A", "pavimentos": 2, "imagem": "caminho/a.png", "campusId" : 2},
+        { "id": 3, "nome": "B", "pavimentos": 4, "imagem": "caminho/a.png", "campusId" : 2},
+        { "id": 4, "nome": "C", "pavimentos": 2, "imagem": "caminho/a.png", "campusId" : 2}
     ],
     "pavimentos":[
         { "id": 1, "numero": "1", "salas": 20, "imagem": "caminho/a.png", "blocoId" : 1},
@@ -90,6 +60,9 @@ function ConfigurarEdificio({ dados }) {
 
                <Colapse nome = "Blocos">
                     <BlocosOpcoes dados={dados_json}></BlocosOpcoes>
+                </Colapse>
+               <Colapse nome = "Pavimentos">
+                    <PavimentosOpcoes dados={dados_json}></PavimentosOpcoes>
                 </Colapse>
             </Box>
     )
