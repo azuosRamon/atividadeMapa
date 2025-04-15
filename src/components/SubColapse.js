@@ -17,14 +17,15 @@ margin-top: 20px;
 `;
 
 const DivColapseContent = styled.div`
-height: ${(props) => (props.$mostrar ? 'auto' : '0')};
-opacity: ${(props) => (props.$mostrar ? 1 : 0)};
-transform: ${(props) => (props.$mostrar ? 'scale(1)' : 'scale(0.98)')};
-pointer-events: ${(props) => (props.$mostrar ? 'auto' : 'none')};
-transition: 
-opacity 0.2s ease, 
-height 0.2s ease, 
-transform 0.5s ease;
+  height: ${(props) => (props.$mostrar ? 'auto' : '0')};
+  opacity: ${(props) => (props.$mostrar ? 1 : 0)};
+  transform: ${(props) => (props.$mostrar ? 'scale(1)' : 'scale(0.98)')};
+  pointer-events: ${(props) => (props.$mostrar ? 'auto' : 'none')};
+  overflow: hidden;
+  transition: 
+    opacity 0.2s ease, 
+    height 0.2s ease, 
+    transform 0.5s ease;
 `;
 const Span = styled.span`
 color: white;

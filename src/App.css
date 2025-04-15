@@ -1,5 +1,6 @@
 .corpo {
   background-image: url('./components/assets/background.jpg');
+  overflow-x: hidden;
 }
 
 

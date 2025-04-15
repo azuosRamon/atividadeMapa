@@ -183,7 +183,7 @@ function App() {
           <LayoutLogado usuarioDados={data} usuarioId={0}><MenuHorarios tableHorarios={dadosJson.horarios}/></LayoutLogado>
         }/>
         <Route path="/edificio" element={
-          <LayoutLogado usuarioDados={data} usuarioId={0}><MenuEdificios/></LayoutLogado>
+          <LayoutLogado usuarioDados={data} usuarioId={0}><MenuEdificios dados={dadosJson}/></LayoutLogado>
         }/>
         <Route path="/cursos" element={
           <LayoutLogado usuarioDados={data} usuarioId={0}><MenuCursos tableCursos={dadosJson.cursos}/></LayoutLogado>
