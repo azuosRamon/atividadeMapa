@@ -17,9 +17,9 @@ const FormGrid = styled.form`
 display: grid;
 grid-template-columns: 1fr 1fr 1fr;
 grid-template-areas: 
-    "ano semestre dia"
-    "tabela tabela tabela"
-    "operacao operacao id"
+"operacao id ."
+"tabela tabela tabela"
+"ano semestre dia"
     "inicio termino campus"
     "blocos pavimentos salas"
     "separar separar separar"
@@ -57,8 +57,8 @@ function ConfigurarQuadroAulas({ table, imagens }) {
     const [pesquisa, setPesquisa] = useState([]);
     const [operacao, setOperacao] = useState();
     const [id, setId] = useState("");
-    const [idInicio, setIdIncio] = useState("");
-    const [idtermino, setIdtermino] = useState("");
+    const [idInicio, setIdIncio] = useState(1);
+    const [idtermino, setIdtermino] = useState(1);
     const [idCampus, setIdCampus] = useState(1);
     const [idBloco, setIdBloco] = useState(1);
     const [idPavimento, setIdPavimento] = useState(0);
@@ -66,7 +66,7 @@ function ConfigurarQuadroAulas({ table, imagens }) {
     const [idDisciplina, setIdDisciplina] = useState("");
     const [idProfessor, setIdProfessor] = useState("");
     const [idCurso, setIdCurso] = useState("");
-    const [dia, setDia] = useState("");
+    const [dia, setDia] = useState(2);
     const [ano, setAno] = useState(data.ano || 2025);
     const [semestre, setSemestre] = useState(data.semestre || 1);
     const [inicio, setInicio] = useState();
@@ -75,6 +75,7 @@ function ConfigurarQuadroAulas({ table, imagens }) {
     const [pavimentos, setPavimentos] = useState([])
     const [salas, setSalas] = useState([])
     const listaSalas = ["001","002"]
+    const [salasAtivas, setSalasAtivas] = useState([]);
     const limparFormulario = () => {
         setOperacao();
         setId("");
@@ -93,12 +94,39 @@ function ConfigurarQuadroAulas({ table, imagens }) {
         setInicio("00:00");
       };
 
-    useEffect(()=>{
-        data.quadroDeAulas.filter(item => item.inicioId === idInicio)
-        console.log(inicio)
-        console.log(idInicio)
-    },[inicio, termino])
-
+      useEffect(() => {
+        if (!idInicio || !idtermino || !dia) {
+          setSalasAtivas([]);
+          return;
+        }
+      
+        const inicio = Number(idInicio);
+        const termino = Number(idtermino);
+      
+        // Filtra as aulas no intervalo e no dia certo
+        const aulasFiltradas = data.quadroDeAulas.filter(item =>
+          item.inicioId >= inicio &&
+          item.inicioId < termino &&
+          item.diaSemana === Number(dia)
+        );
+      
+        // Pega os salaIds dessas aulas
+        const salaIdsFiltradas = aulasFiltradas.map(item => item.salaId);
+      
+        // Busca as imagens correspondentes dessas salas
+        const imagensSalas = data.salas
+          .filter(sala => salaIdsFiltradas.includes(sala.id))
+          .map(sala => sala.imagem);
+      
+        // Remove duplicatas
+        const imagensUnicas = [...new Set(imagensSalas)];
+      
+        // Atualiza o estado
+        setSalasAtivas(imagensUnicas);
+      
+        console.log("Salas ativas no dia", dia, "entre horários:", imagensUnicas);
+      
+      }, [idInicio, idtermino, dia, data.quadroDeAulas, data.salas]);
     useEffect(() => {
         setPesquisa(data.horarios.filter(data => (data.ano === Number(ano))&&(data.semestre === Number(semestre))));
     }, [ano, semestre])
@@ -167,7 +195,7 @@ function ConfigurarQuadroAulas({ table, imagens }) {
                                 <Slide
                                     lista_imagens={imagens}
                                     pagina_inicio={idPavimento}
-                                    listaSalasAtivas={listaSalas}                                />
+                                    listaSalasAtivas={salasAtivas}                                />
                             </Colapse>
                         <DivSeparador></DivSeparador>
                     </GridArea>
@@ -178,6 +206,18 @@ function ConfigurarQuadroAulas({ table, imagens }) {
                             <option value="1">Adicionar</option>
                             <option value="2">Alterar</option>
                             <option value="3">Deletar</option>
+                            </Select>
+                    </GridArea>
+                    <GridArea $area="dia">
+                        <Label htmlFor="dia">Dia da Semana:</Label>
+                            <Select id="dia" value={dia} name="dia" required onChange={(e) => setDia(e.target.value)}>
+                            <option value="1">Domingo</option>
+                            <option value="2">Segunda Feira</option>
+                            <option value="3">Terça Feira</option>
+                            <option value="4">Quarta Feira</option>
+                            <option value="5">Quinta Feira</option>
+                            <option value="6">Sexta Feira</option>
+                            <option value="7">Sábado</option>
                             </Select>
                     </GridArea>
                     <GridArea $area="id">
@@ -215,7 +255,7 @@ function ConfigurarQuadroAulas({ table, imagens }) {
                     </GridArea>
                     <GridArea $area="blocos">
                         <Label htmlFor="blocos">Bloco:</Label>
-                            <Select id="blocos" name="blocos" onChange={(e) => setIdBloco(e.target.value)} required>
+                            <Select id="blocos" name="blocos" value={blocos} onChange={(e) => setIdBloco(e.target.value)} required>
                                 { 
                                 blocos.length > 0 ? (
                                     blocos.map(item => (
@@ -228,7 +268,7 @@ function ConfigurarQuadroAulas({ table, imagens }) {
                     </GridArea>
                     <GridArea $area="pavimentos">
                         <Label htmlFor="pavimentos">Pavimento:</Label>
-                            <Select id="pavimentos" name="pavimentos" onChange={(e) => setIdPavimento(e.target.value)} required>
+                            <Select id="pavimentos" name="pavimentos" value={pavimentos} onChange={(e) => setIdPavimento(e.target.value)} required>
                             { 
                                 pavimentos.length > 0 ? (
                                     pavimentos.map(item => (
@@ -241,7 +281,7 @@ function ConfigurarQuadroAulas({ table, imagens }) {
                     </GridArea>
                     <GridArea $area="salas">
                         <Label htmlFor="salas">Sala:</Label>
-                            <Select id="salas"  name="salas" onChange={(e) => setIdSala(e.target.value)} required>
+                            <Select id="salas"  name="salas" value={salas} onChange={(e) => setIdSala(e.target.value)} required>
                             { 
                                 salas.length > 0 ? (
                                     salas.map(item => (

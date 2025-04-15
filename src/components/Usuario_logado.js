@@ -91,7 +91,7 @@ function Usuario({ dados, usuarioId, fecharMenu, mobile=false }) {
                     <Button onClick={()=>{navegar('/edificio')}} $bgcolor="rgb(38, 38, 38)">Edifício</Button>
                     <Button onClick={()=>{navegar('/cursos')}} $bgcolor="rgb(38, 38, 38)">Cursos</Button>
                     <Button onClick={()=>{navegar('/disciplinas')}} $bgcolor="rgb(38, 38, 38)">Disciplinas</Button>
-                    <Button onClick={()=>{navegar('/professores')}} $bgcolor="rgb(38, 38, 38)">Professores</Button>
+                    <Button onClick={()=>{navegar('/tabelas')}} $bgcolor="rgb(38, 38, 38)">Tabelas</Button>
                     <Button onClick={()=>{navegar('/quadroAulas')}} $bgcolor="rgb(38, 38, 38)">Quadro de aulas</Button>
                     <Button onClick={()=>{navegar('/cadastro')}} $bgcolor="rgb(38, 38, 38)">Adicionar usuário</Button>
                 </DivContent>

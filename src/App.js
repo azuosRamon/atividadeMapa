@@ -20,6 +20,7 @@ import primeiro_pavimento from "./components/Plantas/PRIMEIRO_PAVIMENTO.png";
 import segundo_pavimento from "./components/Plantas/SEGUNDO_PAVIMENTO.png";
 import terceiro_pavimento from "./components/Plantas/TERCEIRO_PAVIMENTO.png";
 import BotaoFlutuante from "./components/SubButtonFlutuante";
+import Tabelas from "./components/Tabelas";
 
 const imagens = [terreo, primeiro_pavimento, segundo_pavimento, terceiro_pavimento];
 const data = [
@@ -129,15 +130,16 @@ const dadosJson = {
         { "id": 8, "nome": "Processo de Desenvolvimento de Software"},
     ],
     "quadroDeAulas":[
-      { "id": 1, "disciplinaId": 1, "cursoId":1, "professorId":1, "diaSemana":[1], "inicioId":1,"terminoId": 1, "campusId":1, "blocoId":1, "pavimentoId":0,"salaId": 0},
-      { "id": 2, "disciplinaId": 2, "cursoId":2, "professorId":2, "diaSemana":[2], "inicioId":2,"terminoId": 2, "campusId":1, "blocoId":1, "pavimentoId":1,"salaId": 1},
-      { "id": 3, "disciplinaId": 3, "cursoId":1, "professorId":3, "diaSemana":[3], "inicioId":3,"terminoId": 3, "campusId":1, "blocoId":1, "pavimentoId":2,"salaId": 1},
-      { "id": 4, "disciplinaId": 4, "cursoId":4, "professorId":4, "diaSemana":[4], "inicioId":4,"terminoId": 4, "campusId":1, "blocoId":1, "pavimentoId":3,"salaId": 1},
-      { "id": 5, "disciplinaId": 5, "cursoId":3, "professorId":5, "diaSemana":[5], "inicioId":1,"terminoId": 1, "campusId":1, "blocoId":1, "pavimentoId":0,"salaId": 1},
-      { "id": 6, "disciplinaId": 1, "cursoId":2, "professorId":6, "diaSemana":[1], "inicioId":2,"terminoId": 2, "campusId":1, "blocoId":1, "pavimentoId":1,"salaId": 1},
-      { "id": 7, "disciplinaId": 2, "cursoId":1, "professorId":7, "diaSemana":[2], "inicioId":3,"terminoId": 3, "campusId":1, "blocoId":1, "pavimentoId":2,"salaId": 1},
-      { "id": 8, "disciplinaId": 3, "cursoId":2, "professorId":8, "diaSemana":[3], "inicioId":4,"terminoId": 4, "campusId":1, "blocoId":1, "pavimentoId":3,"salaId": 1},
-      { "id": 9, "disciplinaId": 1, "cursoId":2, "professorId":9, "diaSemana":[4], "inicioId":1,"terminoId": 1, "campusId":1, "blocoId":1, "pavimentoId":1,"salaId": 1}
+      { "id": 1, "disciplinaId": 1, "cursoId":1, "pessoasId":1, "diaSemana":7, "inicioId":1,"terminoId": 1, "campusId":1, "blocoId":1, "pavimentoId":0,"salaId": 1},
+      { "id": 2, "disciplinaId": 2, "cursoId":2, "pessoasId":2, "diaSemana":2, "inicioId":2,"terminoId": 2, "campusId":1, "blocoId":1, "pavimentoId":1,"salaId": 2},
+      { "id": 3, "disciplinaId": 3, "cursoId":1, "pessoasId":3, "diaSemana":3, "inicioId":3,"terminoId": 3, "campusId":1, "blocoId":1, "pavimentoId":2,"salaId": 10},
+      { "id": 4, "disciplinaId": 4, "cursoId":4, "pessoasId":4, "diaSemana":4, "inicioId":4,"terminoId": 4, "campusId":1, "blocoId":1, "pavimentoId":3,"salaId": 18},
+      { "id": 5, "disciplinaId": 5, "cursoId":3, "pessoasId":5, "diaSemana":5, "inicioId":1,"terminoId": 3, "campusId":1, "blocoId":1, "pavimentoId":0,"salaId": 3},
+      { "id": 6, "disciplinaId": 1, "cursoId":2, "pessoasId":6, "diaSemana":7, "inicioId":2,"terminoId": 2, "campusId":1, "blocoId":1, "pavimentoId":1,"salaId": 13},
+      { "id": 7, "disciplinaId": 2, "cursoId":1, "pessoasId":7, "diaSemana":2, "inicioId":3,"terminoId": 3, "campusId":1, "blocoId":1, "pavimentoId":2,"salaId": 20},
+      { "id": 8, "disciplinaId": 3, "cursoId":2, "pessoasId":8, "diaSemana":3, "inicioId":4,"terminoId": 3, "campusId":1, "blocoId":1, "pavimentoId":3,"salaId": 34},
+      { "id": 9, "disciplinaId": 1, "cursoId":2, "pessoasId":9, "diaSemana":4, "inicioId":1,"terminoId": 1, "campusId":1, "blocoId":1, "pavimentoId":1,"salaId": 6},
+      { "id": 10, "disciplinaId": 1, "cursoId":2, "pessoasId":1, "diaSemana":5, "inicioId":1,"terminoId": 3, "campusId":1, "blocoId":1, "pavimentoId":1,"salaId": 6}
     ]
 }
 
@@ -189,8 +191,8 @@ function App() {
         <Route path="/disciplinas" element={
           <LayoutLogado usuarioDados={data} usuarioId={0}><MenuDisciplinas tableDisciplinas={dadosJson.disciplinas}/></LayoutLogado>
         }/>
-        <Route path="/professores" element={
-          <LayoutLogado usuarioDados={data} usuarioId={0}></LayoutLogado>
+        <Route path="/tabelas" element={
+          <LayoutLogado usuarioDados={data} usuarioId={0}><Tabelas dados={dadosJson}></Tabelas></LayoutLogado>
         }/>
         <Route path="/quadroAulas" element={
           <LayoutLogado usuarioDados={data} usuarioId={0}><MenuQuadroAulas table={dadosJson} imagens={imagens}/></LayoutLogado>

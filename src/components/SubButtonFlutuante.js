@@ -99,6 +99,7 @@ transition: transform 0.3s ease;
 transform: rotate(${props => (props.$ativo ? '90deg' : '0deg')});
 margin-top: 5px;
 font-size: 24px;
+margin-left: auto;
 `;
 
 
