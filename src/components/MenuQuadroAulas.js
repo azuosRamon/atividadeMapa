@@ -30,16 +30,24 @@ grid-template-areas:
 @media (max-width: 768px) {
     grid-template-columns: 1fr;
     grid-template-areas: 
-        "ano"
-        "semestre"
-        "tabela"
-        "operacao"
-        "idHorario"
-        "inicio" 
-        "duracao" 
-        "termino"
-        "reset"
-        "botoes";
+    "ano"
+    "semestre"
+    "dia"
+    "tabela"
+    "operacao"
+    "id"
+    "inicio"
+    "termino"
+    "campus"
+    "blocos"
+    "pavimentos"
+    "salas"
+    "separar"
+    "cursos"
+    "professores"
+    "disciplinas"
+    "reset"
+    "botoes";
 }
 `;
 
