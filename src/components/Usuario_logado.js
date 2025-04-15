@@ -54,7 +54,7 @@ const DivContent = styled.div`
 
 
 
-function Usuario({ dados, usuarioId }) {
+function Usuario({ dados, usuarioId, fecharMenu, mobile=false }) {
     const usuarioDados = dados?.[usuarioId] || {};
     const telaAtual = useNavigate();
 
@@ -64,6 +64,10 @@ function Usuario({ dados, usuarioId }) {
         setUsuario(dados[usuarioId] || {});
     }, [usuarioId])
 
+    const navegar = (rota) => {
+        telaAtual(rota);
+        if (mobile) fecharMenu();
+      }
     return (
             <Box>
                 <DivContent>
@@ -81,14 +85,15 @@ function Usuario({ dados, usuarioId }) {
                 </DivContent>
                 
                 <DivContent>
-                    <Button onClick={()=>{telaAtual('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>
-                    <Button onClick={()=>{telaAtual('/periodoHorarios')}} $bgcolor="rgb(38, 38, 38)">Períodos e Horários</Button>
-                    <Button onClick={()=>{telaAtual('/edificio')}} $bgcolor="rgb(38, 38, 38)">Edifício</Button>
-                    <Button onClick={()=>{telaAtual('/cursos')}} $bgcolor="rgb(38, 38, 38)">Cursos</Button>
-                    <Button onClick={()=>{telaAtual('/disciplinas')}} $bgcolor="rgb(38, 38, 38)">Disciplinas</Button>
-                    <Button onClick={()=>{telaAtual('/professores')}} $bgcolor="rgb(38, 38, 38)">Professores</Button>
-                    <Button onClick={()=>{telaAtual('/quadroAulas')}} $bgcolor="rgb(38, 38, 38)">Quadro de aulas</Button>
-                    <Button onClick={()=>{telaAtual('/cadastro')}} $bgcolor="rgb(38, 38, 38)">Adicionar usuário</Button>
+                    <Button onClick={()=>{navegar('/logado')}} $bgcolor="rgb(38, 38, 38)">Início</Button>
+                    <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>
+                    <Button onClick={()=>{navegar('/periodoHorarios')}} $bgcolor="rgb(38, 38, 38)">Períodos e Horários</Button>
+                    <Button onClick={()=>{navegar('/edificio')}} $bgcolor="rgb(38, 38, 38)">Edifício</Button>
+                    <Button onClick={()=>{navegar('/cursos')}} $bgcolor="rgb(38, 38, 38)">Cursos</Button>
+                    <Button onClick={()=>{navegar('/disciplinas')}} $bgcolor="rgb(38, 38, 38)">Disciplinas</Button>
+                    <Button onClick={()=>{navegar('/professores')}} $bgcolor="rgb(38, 38, 38)">Professores</Button>
+                    <Button onClick={()=>{navegar('/quadroAulas')}} $bgcolor="rgb(38, 38, 38)">Quadro de aulas</Button>
+                    <Button onClick={()=>{navegar('/cadastro')}} $bgcolor="rgb(38, 38, 38)">Adicionar usuário</Button>
                 </DivContent>
 
 

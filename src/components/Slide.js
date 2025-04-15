@@ -2,8 +2,81 @@ import React, { useState, useEffect} from "react";
 import styled from "styled-components";
 import { CiSquareChevLeft } from "react-icons/ci";
 import { CiSquareChevRight } from "react-icons/ci";
+import sala001 from "./salasAtivadas/001.png";
+import sala002 from "./salasAtivadas/002.png";
+import sala003 from "./salasAtivadas/003.png";
+import sala004 from "./salasAtivadas/004.png";
+import sala005 from "./salasAtivadas/005.png";
+import sala006 from "./salasAtivadas/006.png";
+import sala007 from "./salasAtivadas/007.png";
+import sala008 from "./salasAtivadas/008.png";
+import sala110 from "./salasAtivadas/110.png";
+import sala111 from "./salasAtivadas/111.png";
+import sala112 from "./salasAtivadas/112.png";
+import sala114 from "./salasAtivadas/114.png";
+import sala115 from "./salasAtivadas/115.png";
+import sala116 from "./salasAtivadas/116.png";
+import sala117 from "./salasAtivadas/117.png";
+import sala201 from "./salasAtivadas/201.png";
+import sala202 from "./salasAtivadas/202.png";
+import sala203 from "./salasAtivadas/203.png";
+import sala204 from "./salasAtivadas/204.png";
+import sala222 from "./salasAtivadas/222.png";
+import sala223 from "./salasAtivadas/223.png";
+import sala224 from "./salasAtivadas/224.png";
+import sala225 from "./salasAtivadas/225.png";
+import sala226 from "./salasAtivadas/226.png";
+import sala227 from "./salasAtivadas/227.png";
+import sala228 from "./salasAtivadas/228.png";
+import sala301 from "./salasAtivadas/301.png";
+import sala302 from "./salasAtivadas/302.png";
+import sala303 from "./salasAtivadas/303.png";
+import sala304 from "./salasAtivadas/304.png";
+import sala334 from "./salasAtivadas/334.png";
+import sala335 from "./salasAtivadas/335.png";
+import sala336 from "./salasAtivadas/336.png";
+import sala337 from "./salasAtivadas/337.png";
+import sala338 from "./salasAtivadas/338.png";
+import sala339 from "./salasAtivadas/339.png";
 
-
+const imagensSalas = {
+    "001": sala001,
+    "002": sala002,
+    "003": sala003,
+    "004": sala004,
+    "005": sala005,
+    "006": sala006,
+    "007": sala007,
+    "008": sala008,
+    "110": sala110,
+    "111": sala111,
+    "112": sala112,
+    "114": sala114,
+    "115": sala115,
+    "116": sala116,
+    "117": sala117,
+    "201": sala201,
+    "202": sala202,
+    "203": sala203,
+    "204": sala204,
+    "222": sala222,
+    "223": sala223,
+    "224": sala224,
+    "225": sala225,
+    "226": sala226,
+    "227": sala227,
+    "228": sala228,
+    "301": sala301,
+    "302": sala302,
+    "303": sala303,
+    "304": sala304,
+    "334": sala334,
+    "335": sala335,
+    "336": sala336,
+    "337": sala337,
+    "338": sala338,
+    "339": sala339,
+  };
 
 const DivContent = styled.div`
 background-color: #222;
@@ -47,6 +120,15 @@ const DivItem = styled.div`
     position: relative;
 `;
 const Imagem = styled.img`
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  position: ${(props) => (props.$sobrepor ? "absolute" : "relative")};
+  top: 0;
+  left: 0;
+`;
+/*
+const Imagem = styled.img`
     padding: 0;
     margin: 0;
     width: 40%;
@@ -56,7 +138,7 @@ const Imagem = styled.img`
     @media (min-width: 481px) and (max-width: 780px) {
     width: 70%;
     }
-`;
+`;*/
 const UlNavegar = styled.ul`
     display: flex;
     justify-content: space-evenly;
@@ -128,9 +210,20 @@ background-color: #999;
 margin: 0;
 `;
 
+const DivSobreposta = styled.div`
+  position: relative;
+  display: inline-block;
+  width: 40%;
+  @media (max-width: 480px) {
+    width: 90%;
+  }
+  @media (min-width: 481px) and (max-width: 780px) {
+    width: 70%;
+  }
+`;
 
-
-function Slide({lista_imagens, pagina_inicio}){
+function Slide({lista_imagens, pagina_inicio, listaSalasAtivas=[], pavimento = 0}){
+    /*listaSalasAtivas = ["001","002","003","004","005","006","007","008","110","111","112","114","115","116","117","201", "202","203","204","222","223","224","225","226","227","228","301","302","303", "304","334","335","336","337","338","339"]*/
     const [slide_atual, mudarSlide] = useState(0);
     const total_slides = lista_imagens.length;
     let [startX, mudarStartX] = useState(null);
@@ -208,29 +301,27 @@ function Slide({lista_imagens, pagina_inicio}){
                     onTouchEnd={handleEnd}
                     ></SliderMover>
                 <DivSlide 
-                    translate={-slide_atual * 25}
-                    $lista_imagens_informada = {lista_imagens}
-                    >
-                    <DivItem
-                        $lista_imagens_informada={lista_imagens}
-                    >
-                        <Imagem src={lista_imagens[0]}/>
+                translate={-slide_atual * 25}
+                $lista_imagens_informada={lista_imagens}
+                >
+                {lista_imagens.map((imagemBase, indice) => (
+                    <DivItem key={indice} $lista_imagens_informada={lista_imagens}>
+                    <DivSobreposta>
+                        <Imagem src={imagemBase} alt={`Planta pavimento ${indice}`} />
+
+                        {indice === slide_atual && (
+                        listaSalasAtivas
+                            .filter((item) => Math.floor(parseInt(item, 10) / 100) === indice)
+                            .map((item) => (
+                            imagensSalas[item] ? (
+                                <Imagem key={item} src={imagensSalas[item]} $sobrepor />
+                            ) : null
+                            ))
+                        )}
+
+                    </DivSobreposta>
                     </DivItem>
-                    <DivItem
-                        $lista_imagens_informada={lista_imagens}
-                    >
-                        <Imagem src={lista_imagens[1]}/>
-                    </DivItem>
-                    <DivItem
-                        $lista_imagens_informada={lista_imagens}
-                    >
-                        <Imagem src={lista_imagens[2]}/>
-                    </DivItem>
-                    <DivItem
-                        $lista_imagens_informada={lista_imagens}
-                    >
-                        <Imagem src={lista_imagens[3]}/>
-                    </DivItem>
+                ))}
                 </DivSlide>
                 <UlNavegar>
                     {

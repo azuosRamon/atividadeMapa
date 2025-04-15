@@ -7,7 +7,7 @@ import Logo from './assets/Logo.png'
 import DivSeparador from './SubDivSeparador';
 
 const cor_hover_menu = '#003d82';
-const cor_background_menu = 'rgba(0,0,0,0.8)';
+const cor_background_menu = 'rgba(0,0,0,1)';
 const cor_da_borda = 'rgba(0, 0, 0, .5)';
 
 const HeaderMenu = styled.header`
@@ -99,9 +99,9 @@ const StyledLink = styled(Link)`
 const HamburgerIcon = styled.div`
     display: none;
     color: white;
-    font-size: 1.5rem;
+    font-size: 2rem;
     cursor: pointer;
-    margin-right: 10px;
+    margin-right: 30px;
     z-index: 999;
     @media screen and (max-width: 768px) {
         display: block;
@@ -140,7 +140,7 @@ function Header({dados, userId, status}) {
                     <CelularMenu $abrir={abrirMenu}>
                         <DivSeparador></DivSeparador>
                             <LiMenu><StyledLink to="/" onClick={()=> setAbrirMenu(false)}><FaSearchLocation /></StyledLink></LiMenu>
-                             {status && <Usuario_logado dados={dados} usuarioId={Number(userId)}/>}
+                             {status && <Usuario_logado mobile={true} fecharMenu={() => setAbrirMenu(false)} dados={dados} usuarioId={Number(userId)}/>}
                             <LiMenu><StyledLink to="/login" onClick={()=> setAbrirMenu(false)}>{LogInOut}</StyledLink></LiMenu>
                     </CelularMenu>
         </HeaderMenu>

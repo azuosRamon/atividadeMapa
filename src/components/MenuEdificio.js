@@ -3,15 +3,26 @@ import styled from "styled-components";
 import Box from "./SubBox";
 import Select from "./SubSelect";
 import Label from "./SubLabel";
-import TabelaCompleta from "./Tabela";
+import TabelaCompleta from "./SubTabela";
 import CampusOpcoes from "./EdificioCampus";
 import BlocosOpcoes from "./EdificioBlocos";
 import PavimentosOpcoes from "./EdificioPavimentos";
 import Colapse from "./SubColapse";
-import TabelaCompletaTeste from "./TabelaEditavel";
+import TabelaCompletaTeste from "./SubTabelaEditavel";
 
 
 const dados_json = {
+    "horarios":[
+        { "id": 1, "ano": 2024, "semestre": 2, "horaInicio": "18:50", "horaTermino": "19:40" },
+        { "id": 2, "ano": 2024, "semestre": 2, "horaInicio": "19:40", "horaTermino": "20:30" },
+        { "id": 3, "ano": 2024, "semestre": 2, "horaInicio": "20:30", "horaTermino": "21:20" },
+        { "id": 5, "ano": 2025, "semestre": 1, "horaInicio": "19:40", "horaTermino": "20:30" },
+        { "id": 6, "ano": 2025, "semestre": 1, "horaInicio": "20:30", "horaTermino": "21:20" },
+        { "id": 7, "ano": 2025, "semestre": 1, "horaInicio": "18:50", "horaTermino": "19:40" },
+        { "id": 8, "ano": 2025, "semestre": 1, "horaInicio": "19:40", "horaTermino": "20:30" },
+        { "id": 9, "ano": 2025, "semestre": 1, "horaInicio": "20:30", "horaTermino": "21:20" },
+        { "id": 10, "ano": 2025, "semestre": 1, "horaInicio": "21:20", "horaTermino": "22:10" },
+    ],
     "campus":[
         { "id": 1, "blocos": 1, "nome": "Campus I", "cidade": "Maricá", "estado" : "RJ", "cep": "24900000", "logradouro": "Avenida Roberto Silveira", "complemento": "rodoviaria" },
         { "id": 2, "blocos": 4,"nome": "Campus II", "cidade": "Maricá", "estado" : "RJ", "cep": "24900000", "logradouro": "Avenida Roberto Silveira", "complemento": "quadra" },
@@ -43,8 +54,8 @@ function ConfigurarEdificio({ dados }) {
     const [operacao, setOperacao] = useState(0);
     const selecionarDados = [
         [dados_json.campus,["id", "nome", "cidade", "logradouro"]],
-        [dados_json.blocos,["id", "nome", "campusId", "pavimentos"]],
-        [dados_json.pavimentos,["id", "numero", "blocoId", "salas"]]
+        [dados_json.blocos,["id", "nome", "campusId"]],
+        [dados_json.pavimentos,["id", "numero", "blocoId"]]
     ]
     return(
             <Box>

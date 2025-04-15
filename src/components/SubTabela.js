@@ -73,7 +73,7 @@ grid-template-areas:
 
 
 
-function TabelaCompleta({ dados, lista=[]  }){
+function TabelaCompleta({ dados, lista=[], camposPesquisa=true  }){
     const data = dados || {};
     const [pesquisa, setPesquisa] = useState([]);
     const [idItem, setId] = useState("");
@@ -133,16 +133,19 @@ function TabelaCompleta({ dados, lista=[]  }){
                     </Tabela>
                 </TabelaContainer>
             </GridArea>
+            { (camposPesquisa ? (
+                <GridArea $area="idItem">
+                    <Label htmlFor="idItem">ID:</Label>
+                    <Input type="number" id="idItem" name="idItem" onChange={(e) => setId(e.target.value ? Number(e.target.value) : "")}/>
+                </GridArea>
+            ): null)}
+            { (camposPesquisa ? (
+                <GridArea $area="nome">
+                    <Label htmlFor="nome">Pesquisa:</Label>
+                    <Input type="text" id="nome" value={nome} name="nome"  onChange={(e) => setNome(e.target.value)}/>
 
-            <GridArea $area="idItem">
-                <Label htmlFor="idItem">ID:</Label>
-                <Input type="number" id="idItem" name="idItem" onChange={(e) => setId(e.target.value ? Number(e.target.value) : "")}/>
-            </GridArea>
-            <GridArea $area="nome">
-                <Label htmlFor="nome">Pesquisa:</Label>
-                <Input type="text" id="nome" value={nome} name="nome"  onChange={(e) => setNome(e.target.value)}/>
-
-            </GridArea>
+                </GridArea>
+            ): null)}
         </FormGrid>
 
     )

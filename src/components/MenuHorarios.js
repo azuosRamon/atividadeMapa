@@ -8,50 +8,8 @@ import Button from "./SubButton";
 import Title from "./SubTitleH2";
 import GridArea from "./SubGridArea";
 import DivSeparador from "./SubDivSeparador";
-
-
-const TabelaContainer = styled.div`
-    width: 100%;
-    max-height: 200px;
-    overflow-x: auto;
-    margin-bottom: 25px;
-`;
-const TabelaHorarios = styled.table`
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-`;
-
-const Th =styled.th`
-    background-color: #0066cc;
-    color: #fff;
-    font-weight: bold;
-    padding: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    text-align: center;
-    
-`;
-const Td =styled.td`
-    text-align: center;
-    color: #fff;
-    padding: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-
-
-`;
-const Tr =styled.tr`
-&:nth-child(2n){
-    background-color: rgba(255, 255, 255, 0.2);
-}
-&:hover{
-    background-color: rgba(0, 102, 204, 0.2);
-}
-`;
-const Tbody =styled.tbody`
-    background-color: rgba(255, 255, 255, 0.3);
-`;
-
-
+import TabelaCompleta from "./SubTabela";
+import Colapse from "./SubColapse"
 
 
 const FormGrid = styled.form`
@@ -80,19 +38,6 @@ grid-template-areas:
 }
 `;
 
-const horarios = {
-    "horarios":[
-        { "id": 1, "ano": 2024, "semestre": 2, "horaInicio": "18:50", "horaTermino": "19:40" },
-        { "id": 2, "ano": 2024, "semestre": 2, "horaInicio": "19:40", "horaTermino": "20:30" },
-        { "id": 3, "ano": 2024, "semestre": 2, "horaInicio": "20:30", "horaTermino": "21:20" },
-        { "id": 5, "ano": 2025, "semestre": 1, "horaInicio": "19:40", "horaTermino": "20:30" },
-        { "id": 6, "ano": 2025, "semestre": 1, "horaInicio": "20:30", "horaTermino": "21:20" },
-        { "id": 7, "ano": 2025, "semestre": 1, "horaInicio": "18:50", "horaTermino": "19:40" },
-        { "id": 8, "ano": 2025, "semestre": 1, "horaInicio": "19:40", "horaTermino": "20:30" },
-        { "id": 9, "ano": 2025, "semestre": 1, "horaInicio": "20:30", "horaTermino": "21:20" },
-        { "id": 10, "ano": 2025, "semestre": 1, "horaInicio": "21:20", "horaTermino": "22:10" },
-    ] 
-}
 
 function adicionarTempo(horario, horas = 0, minutos = 0, segundos = 0) {
     const [h, m, s = 0] = horario.split(":").map(Number);
@@ -115,7 +60,7 @@ function ConfigurarHorarios({ tableHorarios }) {
     const [termino, setTermino] = useState(adicionarTempo(inicio, 0,duracao,0));
 
     useEffect(() => {
-        setPesquisa(horarios.horarios.filter(data => (data.ano === Number(ano))&&(data.semestre === Number(semestre))));
+        setPesquisa(data.filter(data => (data.ano === Number(ano))&&(data.semestre === Number(semestre))));
     }, [ano, semestre])
 
     useEffect(() => {
@@ -147,26 +92,9 @@ function ConfigurarHorarios({ tableHorarios }) {
                     </GridArea>
                     <GridArea $area="tabela">
                         <DivSeparador></DivSeparador>
-                        <TabelaContainer>
-                            <TabelaHorarios>
-                                <thead>
-                                    <Tr>
-                                        <Th>ID</Th>
-                                        <Th>INÍCIO</Th>
-                                        <Th>TÉRMINO</Th>
-                                    </Tr>
-                                </thead>
-                                <Tbody id="tabela-horarios">
-                                    {pesquisa.map(horario => (
-                                        <Tr key={horario.id}>
-                                            <Td>{horario.id}</Td>
-                                            <Td>{horario.horaInicio}</Td>
-                                            <Td>{horario.horaTermino}</Td>
-                                        </Tr>
-                                    ))}
-                                </Tbody>
-                            </TabelaHorarios>
-                        </TabelaContainer>
+                            <Colapse marginBottom={'0px'} nome = "Consultar dados" estadoInicial={true}>
+                                <TabelaCompleta dados={pesquisa} lista={['id', 'inicio', 'termino']} camposPesquisa={false}></TabelaCompleta>
+                            </Colapse>
                         
                         <DivSeparador></DivSeparador>
                     </GridArea>

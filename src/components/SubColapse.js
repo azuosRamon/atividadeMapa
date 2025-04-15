@@ -11,7 +11,7 @@ align-items: center;
 background-color: rgb(38, 38, 38);
 border-radius: 5px;
 padding: 10px;
-margin-bottom: 20px;
+margin-bottom: ${(props) => (props.$marginBottom? '20px' : '0px')};;
 margin-top: 20px;
 
 `;
@@ -36,12 +36,12 @@ font-size: 24px;
 `;
 
 
-function Colapse({ nome, children, estadoInicial = false }) {
+function Colapse({ nome, children, estadoInicial = false}) {
     const [status, setStatus] = useState(estadoInicial);
 
     return(
             <div>
-                <DivColapse onClick={()=>{setStatus(status => !status)}}>
+                <DivColapse $marginBottom={status} onClick={()=>{setStatus(status => !status)}}>
                     <Span $ativo={status}><FaChevronRight /></Span>
                     <Title>{nome}</Title>
                 </DivColapse>

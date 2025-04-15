@@ -8,49 +8,8 @@ import Button from "./SubButton";
 import Title from "./SubTitleH2";
 import GridArea from "./SubGridArea";
 import DivSeparador from "./SubDivSeparador";
-
-
-const TabelaContainer = styled.div`
-    width: 100%;
-    height: 200px;
-    overflow-x: auto;
-    margin-bottom: 25px;
-`;
-const TabelaHorarios = styled.table`
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-`;
-
-const Th =styled.th`
-    background-color: #0066cc;
-    color: #fff;
-    font-weight: bold;
-    padding: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    text-align: center;
-    
-`;
-const Td =styled.td`
-    text-align: center;
-    color: #fff;
-    padding: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-
-
-`;
-const Tr =styled.tr`
-&:nth-child(2n){
-    background-color: rgba(255, 255, 255, 0.2);
-}
-&:hover{
-    background-color: rgba(0, 102, 204, 0.2);
-}
-`;
-const Tbody =styled.tbody`
-    background-color: rgba(255, 255, 255, 0.3);
-`;
-
+import TabelaCompleta from "./SubTabela";
+import Colapse from "./SubColapse"
 
 
 const FormGrid = styled.form`
@@ -74,17 +33,7 @@ grid-template-areas:
 }
 `;
 
-const cursos = {
-    "cursos":[
-        { "id": 1, "nome": "Engenharia Civil"},
-        { "id": 2, "nome": "Engenharia de Software"},
-        { "id": 3, "nome": "Engenharia Ambiental"},
-        { "id": 5, "nome": "Engenharia de Petróleo e Gás"},
-        { "id": 6, "nome": "Engenharia Elétrica"},
-        { "id": 7, "nome": "Engenharia de Telecomunicações"},
-        { "id": 8, "nome": "Engenharia Alimentos"},
-    ] 
-}
+
 
 
 function ConfigurarCursos({ tableCursos }) {
@@ -95,7 +44,7 @@ function ConfigurarCursos({ tableCursos }) {
     const [nome, setNome] = useState("");
 
     const pesquisa2 = useMemo(() => {
-        return cursos.cursos.filter(curso => 
+        return data.filter(curso => 
             (idCursos ? curso.id === idCursos : curso.nome.toLowerCase().includes(nome.toLowerCase()))
         );
     }, [nome, idCursos]);
@@ -105,7 +54,7 @@ function ConfigurarCursos({ tableCursos }) {
     }, [pesquisa2]);
 
     useEffect(() => {
-        const cursoSelecionado = cursos.cursos.find(curso => curso.id === Number(idCursos));
+        const cursoSelecionado = data.find(curso => curso.id === Number(idCursos));
         setNome(cursoSelecionado ? cursoSelecionado.nome : "");
     }, [idCursos]);
 
@@ -120,30 +69,10 @@ function ConfigurarCursos({ tableCursos }) {
                 <FormGrid onSubmit={fazerEnvio}>
                     <GridArea $area="tabela">
                         <DivSeparador></DivSeparador>
-                        <TabelaContainer>
-                            <TabelaHorarios>
-                                <thead>
-                                    <Tr>
-                                        <Th>ID</Th>
-                                        <Th>NOME</Th>
-                                    </Tr>
-                                </thead>
-                                <Tbody>
-                                {pesquisa.length > 0 ? (
-                                        pesquisa.map(curso => (
-                                            <Tr key={curso.id}>
-                                                <Td>{curso.id}</Td>
-                                                <Td>{curso.nome}</Td>
-                                            </Tr>
-                                        ))
-                                    ) : (
-                                        <Tr>
-                                            <Td colSpan="2">Nenhum curso encontrado</Td>
-                                        </Tr>
-                                    )}
-                                </Tbody>
-                            </TabelaHorarios>
-                        </TabelaContainer>
+                        <Colapse marginBottom={'0px'} nome = "Consultar dados" estadoInicial={true}>
+                            <TabelaCompleta dados={pesquisa} lista={['id', 'nome']} camposPesquisa={false}></TabelaCompleta>
+                        </Colapse>
+
                         
                         <DivSeparador></DivSeparador>
                     </GridArea>

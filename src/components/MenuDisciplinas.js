@@ -8,49 +8,8 @@ import Button from "./SubButton";
 import Title from "./SubTitleH2";
 import GridArea from "./SubGridArea";
 import DivSeparador from "./SubDivSeparador";
-
-
-const TabelaContainer = styled.div`
-    width: 100%;
-    height: 200px;
-    overflow-x: auto;
-    margin-bottom: 25px;
-`;
-const TabelaHorarios = styled.table`
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-`;
-
-const Th =styled.th`
-    background-color: #0066cc;
-    color: #fff;
-    font-weight: bold;
-    padding: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    text-align: center;
-    
-`;
-const Td =styled.td`
-    text-align: center;
-    color: #fff;
-    padding: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-
-
-`;
-const Tr =styled.tr`
-&:nth-child(2n){
-    background-color: rgba(255, 255, 255, 0.2);
-}
-&:hover{
-    background-color: rgba(0, 102, 204, 0.2);
-}
-`;
-const Tbody =styled.tbody`
-    background-color: rgba(255, 255, 255, 0.3);
-`;
-
+import TabelaCompleta from "./SubTabela";
+import Colapse from "./SubColapse"
 
 
 const FormGrid = styled.form`
@@ -74,18 +33,6 @@ grid-template-areas:
 }
 `;
 
-const disciplinas = {
-    "disciplinas":[
-        { "id": 1, "nome": "Empreendedorismo e inovação"},
-        { "id": 2, "nome": "Banco de Dados Relacionais"},
-        { "id": 3, "nome": "Estrutura de Dados Avançados"},
-        { "id": 4, "nome": "Gestão Ambiental e Desenvolvimento Sustentável"},
-        { "id": 5, "nome": "Infraestrutura de TI"},
-        { "id": 6, "nome": "Interface Humano-Computador"},
-        { "id": 7, "nome": "Práticas Extensionistas Integradoras IV"},
-        { "id": 8, "nome": "Processo de Desenvolvimento de Software"},
-    ] 
-}
 
 
 function ConfigurarDisciplinas({ tableDisciplinas }) {
@@ -96,7 +43,7 @@ function ConfigurarDisciplinas({ tableDisciplinas }) {
     const [nome, setNome] = useState("");
 
     const pesquisa2 = useMemo(() => {
-        return disciplinas.disciplinas.filter(disciplina => 
+        return data.filter(disciplina => 
             (idDisciplinas ? disciplina.id === idDisciplinas : disciplina.nome.toLowerCase().includes(nome.toLowerCase()))
         );
     }, [nome, idDisciplinas]);
@@ -106,7 +53,7 @@ function ConfigurarDisciplinas({ tableDisciplinas }) {
     }, [pesquisa2]);
 
     useEffect(() => {
-        const disciplinaSelecionada = disciplinas.disciplinas.find(disciplina => disciplina.id === Number(idDisciplinas));
+        const disciplinaSelecionada = data.find(disciplina => disciplina.id === Number(idDisciplinas));
         setNome(disciplinaSelecionada ? disciplinaSelecionada.nome : "");
     }, [idDisciplinas]);
 
@@ -121,31 +68,9 @@ function ConfigurarDisciplinas({ tableDisciplinas }) {
                 <FormGrid onSubmit={fazerEnvio}>
                     <GridArea $area="tabela">
                         <DivSeparador></DivSeparador>
-                        <TabelaContainer>
-                            <TabelaHorarios>
-                                <thead>
-                                    <Tr>
-                                        <Th>ID</Th>
-                                        <Th>NOME</Th>
-                                    </Tr>
-                                </thead>
-                                <Tbody>
-                                {pesquisa.length > 0 ? (
-                                        pesquisa.map(disciplina => (
-                                            <Tr key={disciplina.id}>
-                                                <Td>{disciplina.id}</Td>
-                                                <Td>{disciplina.nome}</Td>
-                                            </Tr>
-                                        ))
-                                    ) : (
-                                        <Tr>
-                                            <Td colSpan="2">Nenhuma disciplina encontrada</Td>
-                                        </Tr>
-                                    )}
-                                </Tbody>
-                            </TabelaHorarios>
-                        </TabelaContainer>
-                        
+                        <Colapse marginBottom={'0px'} nome = "Consultar dados" estadoInicial={true}>
+                            <TabelaCompleta dados={pesquisa} lista={['id', 'nome']} camposPesquisa={false}></TabelaCompleta>
+                        </Colapse>
                         <DivSeparador></DivSeparador>
                     </GridArea>
 
