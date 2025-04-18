@@ -3,7 +3,7 @@ import styled from "styled-components";
 import GridArea from "./SubGridArea";
 import Input from "./SubInput";
 import Button from "./SubButton";
-
+import cores from "./Cores";
 const TabelaContainer = styled.div`
     width: 100%;
     overflow-x: auto;
@@ -24,7 +24,7 @@ width: 100%;
 `;
 
 const Th =styled.th`
-    background-color: #0066cc;
+    background-color: ${cores.cor3};
     color: #fff;
     font-weight: bold;
     padding: 12px;
@@ -38,7 +38,7 @@ const Th =styled.th`
 `;
 const Td =styled.td`
     text-align: center;
-    color: #fff;
+    color: ${cores.corTexto};
     padding: 12px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 
@@ -53,7 +53,7 @@ const Tr =styled.tr`
     background-color: rgba(255, 255, 255, 0.2);
 }
 &:hover{
-    background-color: rgba(0, 102, 204, 0.2);
+    background-color: rgba(195, 195, 195, 0.2);
 }
 `;
 const Tbody =styled.tbody`
@@ -79,7 +79,7 @@ grid-template-areas:
 const ButtonTrocarPagina = styled.button`
 padding: 10px;
 background-color:${(props) => props.$bgcolor || 'rgb(96, 96, 96)'};
-color: white;
+color: ${cores.corTexto};
 border: none;
 border-radius: 5px;
 font-size: 16px;
@@ -87,7 +87,7 @@ cursor: pointer;
 
 &:hover{
 transition: .7s;
-background-color:${(props) => props.$hovercolor || '#0056b3'};
+background-color:${(props) => props.$hovercolor || cores.cor2};
 }
 
 @media (min-width: 481px) and (max-width: 968px) {
@@ -100,26 +100,6 @@ const Wrapper = styled.div`
   padding: 0 10px;
 `;
 
-const dados_json = {
-    "campus":[
-        { "id": 1, "blocos": 1, "nome": "Campus I", "cidade": "Maricá", "estado" : "RJ", "cep": "24900000", "logradouro": "Avenida Roberto Silveira", "complemento": "rodoviaria" },
-        { "id": 2, "blocos": 4,"nome": "Campus II", "cidade": "Maricá", "estado" : "RJ", "cep": "24900000", "logradouro": "Avenida Roberto Silveira", "complemento": "quadra" },
-        { "id": 3, "blocos": 1,"nome": "Campus III", "cidade": "Vassouras", "estado" : "RJ", "cep": "27700000", "logradouro": "Av. Expedicionário Oswaldo de Almeida Ramos", "complemento": "280" }
-    ],
-    "blocos":[
-        { "id": 1, "nome": "A", "imagem": "caminho/a.png", "campusId" : 1},
-        { "id": 2, "nome": "A", "imagem": "caminho/a.png", "campusId" : 2},
-        { "id": 3, "nome": "B", "imagem": "caminho/a.png", "campusId" : 2},
-        { "id": 4, "nome": "C", "imagem": "caminho/a.png", "campusId" : 2}
-    ],
-    "pavimentos":[
-        { "id": 1, "numero": "1", "imagem": "caminho/a.png", "blocoId" : 1},
-        { "id": 2, "numero": "2", "imagem": "caminho/b.png", "blocoId" : 1},
-        { "id": 3, "numero": "3", "imagem": "caminho/c.png", "blocoId" : 1},
-        { "id": 4, "numero": "4", "imagem": "caminho/d.png", "blocoId" : 1}
-
-    ]
-}
 
 function TabelaCompletaTeste({dados, lista, itensMax = 5}){
     const [editarIndice, setEditarIndice] = useState(null);

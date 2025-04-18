@@ -4,7 +4,7 @@ import Label from './SubLabel';
 import Input from './SubInput';
 import Box from './SubBox';
 import { IoChatboxEllipsesOutline } from "react-icons/io5";
-
+import cores from "./Cores"
 
 const H2 = styled.h2`
   color: ${(props) => props.$color || '#e2e2e2'};
@@ -14,9 +14,9 @@ const Button = styled.button`
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
+  background-color: ${cores.cor3};
+  color: ${cores.corTexto};
+  border: 2px solid ${cores.cor2};
   border-radius: 50%;
   width: 60px;
   height: 60px;
@@ -27,7 +27,7 @@ const Button = styled.button`
 
   &:hover{
   transition: .7s;
-  background-color:${(props) => props.$hovercolor || '#0056b3'};
+  background-color:${(props) => props.$hovercolor || cores.cor1};
   }
 `;
 
@@ -60,7 +60,7 @@ const TextArea = styled.textarea`
 const CheckboxLabel = styled.label`
   font-style: italic;
   font-size:10pt;
-  color: ${(props) => props.$color || '#e2e2e2'};
+  color: ${(props) => props.color || cores.corTexto};
   display: flex;
   align-items: center;
   gap:8px;
@@ -76,8 +76,8 @@ const ButtonGroup = styled.div`
 `;
 
 const SubmitButton = styled.button`
-  background-color: #007bff;
-  color: white;
+  background-color: ${cores.cor3};
+  color: ${cores.corTexto};
   border: none;
   padding: 10px 16px;
   border-radius: 8px;
@@ -93,7 +93,7 @@ const CloseButton = styled.button`
 `;
 
 const Span = styled.span`
-color: white;
+color: ${cores.corTexto};
 display: inline-block;
 transition: transform 0.3s ease;
 transform: rotate(${props => (props.$ativo ? '90deg' : '0deg')});

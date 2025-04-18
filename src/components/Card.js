@@ -11,14 +11,15 @@ import terceiro_pavimento from "./Plantas/TERCEIRO_PAVIMENTO.png";
 import sala03 from "./Plantas/03.png";
 import sala12 from "./Plantas/12.png";
 import Slide from "./Slide";
+import cores from "./Cores"
 
 const Container = styled.div``;
 
 const Box = styled.div`
     height: 150px;
     padding: 20px;
-    background-color: rgba(0, 0, 0, 0.8);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: ${cores.backgroundBox};
+    box-shadow: 0 4px 8px ${cores.boxShadow};
     border-radius: 10px;
     text-align: center;
     display: grid;
@@ -41,7 +42,7 @@ const ImagemProfessor = styled.img`
 `;
 
 const Titulo3 = styled.h3`
-    color: white;
+    color: ${cores.corTexto};
     font-size: 20px;
     padding: 0;
     margin: 0 5px;
@@ -53,7 +54,7 @@ const MapaBG = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: ${cores.backgroundMapa};
     display: flex;
     justify-content: center;
     align-items: center;
@@ -64,8 +65,8 @@ const FecharBotao = styled.button`
     position: absolute;
     top: 20px;
     right: 20px;
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
+    background: ${cores.backgroundBox};
+    color: ${cores.corTexto};
     border: none;
     padding: 10px;
     cursor: pointer;

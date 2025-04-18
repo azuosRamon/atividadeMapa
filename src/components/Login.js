@@ -8,10 +8,11 @@ import Container from "./SubContainer";
 import ParagrafoInformacao from "./SubParagrafo";
 import SpamSublinhado from "./SubSpam";
 import { useNavigate } from 'react-router-dom';
+import cores from "./Cores"
 
 const Title = styled.h2`
 margin: 0 0 20px;
-color: white;
+color: ${cores.corTexto};
 `;
 
 const StyledLink = styled(Link)`
@@ -19,7 +20,7 @@ const StyledLink = styled(Link)`
     align-items: center;
     justify-content: center;
     padding: 10px 20px;
-    color: white;
+    color: ${cores.corTexto};
     text-decoration: underline;
     font-size: 12px;
     cursor: pointer;

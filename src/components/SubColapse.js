@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Title from "./SubTitleH2";
 import { FaChevronRight } from "react-icons/fa";
-
+import cores from "./Cores"
 
 const DivColapse = styled.div`
 display: flex;
 justify-content: flex-start;
 align-items: center;
-background-color: rgb(38, 38, 38);
+background-color: ${cores.backgroundColapse};
 border-radius: 5px;
 padding: 10px;
 margin-bottom: ${(props) => (props.$marginBottom? '20px' : '0px')};;
@@ -28,7 +28,7 @@ const DivColapseContent = styled.div`
     transform 0.5s ease;
 `;
 const Span = styled.span`
-color: white;
+color: ${cores.corTexto};
 display: inline-block;
 transition: transform 0.3s ease;
 transform: rotate(${props => (props.$ativo ? '90deg' : '0deg')});

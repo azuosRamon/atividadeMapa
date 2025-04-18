@@ -10,7 +10,7 @@ import GridArea from "./SubGridArea";
 import DivSeparador from "./SubDivSeparador";
 import TabelaCompleta from "./SubTabela";
 import Colapse from "./SubColapse"
-
+import cores from "./Cores"
 
 const FormGrid = styled.form`
 display: grid;
@@ -102,9 +102,10 @@ function ConfigurarHorarios({ tableHorarios }) {
                     <GridArea $area="operacao">
                         <Label htmlFor="operacao">Operacao:</Label>
                             <Select type="text" id="operacao" name="operacao" required onChange={(e) => setOperacao(e.target.value)}>
-                            <option value="1">Adicionar Horário</option>
-                            <option value="2">Alterar Horário</option>
-                            <option value="3">Deletar Horário</option>
+                            <option value="0">Selecione a operação desejada</option>
+                            <option value="1">Adicionar</option>
+                            <option value="2">Alterar</option>
+                            <option value="3">Deletar</option>
                             </Select>
                     </GridArea>
                     <GridArea $area="idHorario">
@@ -124,7 +125,7 @@ function ConfigurarHorarios({ tableHorarios }) {
                         <Input type="time" id="termino" name="termino" value={termino} readOnly/>
                     </GridArea>
                     <GridArea $area="reset">
-                        <Button $bgcolor="rgb(38, 38, 38)" type="reset">Limpar</Button>   
+                        <Button $bgcolor={cores.backgroundBotaoSemFoco} type="reset">Limpar</Button>   
                     </GridArea>
                     <GridArea $area="botoes">
                         <Button type="submit">Salvar</Button>   

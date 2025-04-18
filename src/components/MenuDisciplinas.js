@@ -10,7 +10,7 @@ import GridArea from "./SubGridArea";
 import DivSeparador from "./SubDivSeparador";
 import TabelaCompleta from "./SubTabela";
 import Colapse from "./SubColapse"
-
+import cores from "./Cores"
 
 const FormGrid = styled.form`
 display: grid;
@@ -77,9 +77,10 @@ function ConfigurarDisciplinas({ tableDisciplinas }) {
                     <GridArea $area="operacao">
                         <Label htmlFor="operacao">Operacao:</Label>
                             <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(e.target.value); setId("")}}>
-                            <option value="1">Adicionar Disciplina</option>
-                            <option value="2">Alterar Disciplina</option>
-                            <option value="3">Deletar Disciplina</option>
+                            <option value="0">Selecione a operação desejada</option>
+                            <option value="1">Adicionar</option>
+                            <option value="2">Alterar</option>
+                            <option value="3">Deletar</option>
                             </Select>
                     </GridArea>
                     <GridArea $area="idDisciplina">
@@ -91,7 +92,7 @@ function ConfigurarDisciplinas({ tableDisciplinas }) {
                         <Input type="text" id="nome" value={nome} name="nome" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setNome(e.target.value)} required/>
                     </GridArea>
                     <GridArea $area="reset" onClick={()=> setId("")}>
-                        <Button $bgcolor="rgb(38, 38, 38)" type="reset">Limpar</Button>   
+                        <Button $bgcolor={cores.backgroundBotaoSemFoco} type="reset">Limpar</Button>   
                     </GridArea>
                     <GridArea $area="botoes">
                         <Button type="submit">Salvar</Button>   

@@ -1,12 +1,13 @@
 import styled from "styled-components";
+import cores from "./Cores";
 
 const Box = styled.div`
     min-width: 350px;
     height: auto;
     padding: 40px;
-    background-color: rgba(0,0,0,0.85);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    border-radius: 10px;
+    background-color: ${cores.backgroundBox};
+    box-shadow: 0 4px 8px ${cores.boxShadow};
+    border-radius: 5px;
     text-align: center;
     display: grid;
     grid-template-columns: 1fr;

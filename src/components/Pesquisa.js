@@ -6,6 +6,8 @@ import Button from "./SubButton";
 import Input from "./SubInput";
 import Select from "./SubSelect";
 import Container from "./SubContainer";
+import logo_cliente from "../components/assets/UniVassouras-Vertical-Branca.png"
+import { MdHeight } from "react-icons/md";
 
 const Title = styled.h2`
 margin: 0 0 20px;
@@ -64,6 +66,10 @@ const CardsContainer = styled.div`
     justify-content: center;
 `;
 
+const Img = styled.img`
+height: 100px;
+margin: 15px auto;
+`;
 
 
 const data = [
@@ -114,7 +120,7 @@ function Pesquisa(){
     return(
         <Container>
             <Box>
-                <Title>Encontre:</Title>
+                <Img src={logo_cliente} alt="logo_universidade"/>
                 <Formulario onSubmit={buscarResultados}>
                     <Input 
                         type="text" 

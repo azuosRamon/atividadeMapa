@@ -2,6 +2,7 @@ import React, { useState, useEffect} from "react";
 import styled from "styled-components";
 import { CiSquareChevLeft } from "react-icons/ci";
 import { CiSquareChevRight } from "react-icons/ci";
+import cores from "./Cores"
 import sala001 from "./salasAtivadas/001.png";
 import sala002 from "./salasAtivadas/002.png";
 import sala003 from "./salasAtivadas/003.png";
@@ -81,8 +82,7 @@ const imagensSalas = {
 const DivContent = styled.div`
 background-color: #222;
 padding: 50px 0;
-//box-shadow: -5px -4px 8px rgba(0,0,0,0.8);
-box-shadow: rgba(0, 0, 0, 0.8) 5px -5px 8px;
+box-shadow: ${cores.boxShadow} 5px -5px 8px;
 `;
 const SlideContainer = styled.div`
     overflow: hidden;
@@ -95,7 +95,7 @@ const SliderMover = styled.div`
     height: 100%;
     top: 0;
     left: 0;
-    background-color: rgba(0, 0, 0, 0);
+    background-color: none;
     z-index: 1;
     cursor: grab;
 `;
@@ -113,7 +113,7 @@ const DivItem = styled.div`
     overflow: hidden;
     transition: .8s;
     font-size: 50px;
-    color: #fff;
+    color: ${cores.corTexto};
     font-weight: bold;
     width: ${(props) => (100 / props.$lista_imagens_informada.length)}%;
 
@@ -155,19 +155,19 @@ const LiNavegar = styled.li`
     justify-content: center;
     padding: 5px;
     border-radius: 50%;
-    color: #fff;
-    border-color: #fff;
+    color: ${cores.corTexto};
+    border-color: ${cores.corTexto};
     border-style: solid;
     border-width: 1px;
     font-size: .6em;
-    background-color: ${(props) => (props.$active ? "#003d82" : "")};
+    background-color: ${(props) => (props.$active ? cores.cor3 : "")};
     cursor: pointer;
 `;
 
 const Button = styled.button`
 padding: 3.5px 5px;
 background-color: #444;
-color: white;
+color: ${cores.corTexto};
 border: none;
 border-radius: 5px;
 position: absolute;
@@ -175,7 +175,7 @@ top: calc(50% - 25px);
 cursor: pointer;
 z-index: 99;
 &:hover{
-background-color: #0056b3;
+background-color: ${cores.cor3};
 transition: .5s;
 }
 @media (max-width: 480px) {
@@ -200,13 +200,13 @@ display: block;
 width: 40px;
 height: 7px;
 margin-bottom: ${(props) => (props.$ultima ? "2px" : "5px")};
-background-color: ${(props) => (props.$active ? "#fff" : "#777")};
+background-color: ${(props) => (props.$active ? "#fff" : cores.cor3)};
 `;
 const SpamChao = styled.span`
 display: block;
 width: 60px;
 height: 3px;
-background-color: #999;
+background-color: ${cores.cor3};
 margin: 0;
 `;
 
@@ -222,7 +222,7 @@ const DivSobreposta = styled.div`
   }
 `;
 
-function Slide({lista_imagens, pagina_inicio, listaSalasAtivas=[], pavimento = 0}){
+function Slide({lista_imagens, pagina_inicio, listaSalasAtivas=['001'], pavimento = 0}){
     /*listaSalasAtivas = ["001","002","003","004","005","006","007","008","110","111","112","114","115","116","117","201", "202","203","204","222","223","224","225","226","227","228","301","302","303", "304","334","335","336","337","338","339"]*/
     const [slide_atual, mudarSlide] = useState(0);
     const total_slides = lista_imagens.length;
@@ -307,7 +307,7 @@ function Slide({lista_imagens, pagina_inicio, listaSalasAtivas=[], pavimento = 0
                 {lista_imagens.map((imagemBase, indice) => (
                     <DivItem key={indice} $lista_imagens_informada={lista_imagens}>
                     <DivSobreposta>
-                        <Imagem src={imagemBase} alt={`Planta pavimento ${indice}`} />
+                        <Imagem src={imagemBase} alt={`Planta pavimento ${indice}`}/>
 
                         {indice === slide_atual && (
                         listaSalasAtivas

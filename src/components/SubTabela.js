@@ -7,6 +7,7 @@ import Button from "./SubButton";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
+import cores from "./Cores";
 
 const TabelaContainer = styled.div`
     width: 100%;
@@ -23,7 +24,7 @@ const Tabela = styled.table`
 `;
 
 const Th = styled.th`
-    background-color: #0066cc;
+    background-color: ${cores.cor3};
     color: #fff;
     font-weight: bold;
     padding: 12px;
@@ -51,7 +52,7 @@ const Tr = styled.tr`
         background-color: rgba(255, 255, 255, 0.2);
     }
     &:hover {
-        background-color: rgba(0, 102, 204, 0.2);
+        background-color: rgba(195, 195, 195, 0.2);
     }
 `;
 
@@ -95,7 +96,7 @@ const BotoesContainer = styled.div`
 
 const JustifiedButton = styled(Button)`
     width: 100%;
-    background-color: #383838;
+    background-color: ${cores.backgroundBotaoSemFoco};
     margin-bottom: 15px;
 `;
 

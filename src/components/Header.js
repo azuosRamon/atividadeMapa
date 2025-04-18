@@ -3,16 +3,14 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FaSearchLocation, FaBars, FaTimes } from "react-icons/fa";
 import Usuario_logado from './Usuario_logado';
-import Logo from './assets/Logo.png'
+import Logo from './assets/Logo_2.png'
 import DivSeparador from './SubDivSeparador';
+import cores from "./Cores"
 
-const cor_hover_menu = '#003d82';
-const cor_background_menu = 'rgba(0,0,0,1)';
-const cor_da_borda = 'rgba(0, 0, 0, .5)';
 
 const HeaderMenu = styled.header`
-    background-color: ${cor_background_menu};
-    border-bottom: 3px solid ${cor_da_borda};
+    background-color: ${cores.backgroundMenus};
+    border-bottom: 2px solid ${cores.corBorda};
 `;
 
 const Content = styled.div`
@@ -20,7 +18,7 @@ const Content = styled.div`
     margin: 0 auto;
     height: 60px;
     display: flex;
-    color: white;
+    color: ${cores.corTexto};
     text-align: center;
     justify-content: space-between;
     align-items: center;
@@ -45,7 +43,7 @@ const CelularMenu = styled.div`
         left: ${({ $abrir }) => ($abrir ? "0" : "-100%")};
         width: 100%;
         height: 100vh;
-        background-color: ${cor_background_menu};
+        background-color: ${cores.backgroundMenus};
         transition: left 0.3s ease-in-out;
         display: flex;
         flex-direction: column;
@@ -73,11 +71,11 @@ const LiMenu = styled.li`
     align-items: center;
     text-align: center;
     list-style: none;
-    padding: 10px;
+    padding: 15px;
     width: 100%;
    &:hover{
         transition: .7s;
-        background-color: ${cor_hover_menu};
+        background-color: ${cores.cor1};
     }
 `;
 
@@ -85,7 +83,7 @@ const StyledLink = styled(Link)`
     display: flex;
     align-items: center;
     padding: 0 20px;
-    color: white;
+    color: ${cores.corTexto};
     text-decoration: none;
     cursor: pointer;
 
@@ -98,7 +96,7 @@ const StyledLink = styled(Link)`
 
 const HamburgerIcon = styled.div`
     display: none;
-    color: white;
+    color: ${cores.corTexto};
     font-size: 2rem;
     cursor: pointer;
     margin-right: 30px;

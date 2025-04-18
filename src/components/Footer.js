@@ -1,13 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import Logo from './assets/Logo.png'
+import Logo from './assets/Logo_2.png'
+import cores from "./Cores"
 
-const cor_background_menu = 'rgba(0,0,0,0.8)';
-const cor_da_borda = 'rgba(0, 0, 0, .5)';
 
 const FooterMenu = styled.footer`
-    background-color: ${cor_background_menu};
-    border-bottom: 3px solid ${cor_da_borda};
+    background-color: ${cores.backgroundMenus};
+    border-bottom: 3px solid ${cores.cor1};
     `;
 
 const Content = styled.div`
@@ -15,7 +14,7 @@ const Content = styled.div`
     margin:  0 auto;
     height: 100%;
     display: flex;
-    color: white;
+    color: ${cores.corTexto};
     text-align: center;
     justify-content: space-between;
     align-items: center;

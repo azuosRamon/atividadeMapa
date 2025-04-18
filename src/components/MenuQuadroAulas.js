@@ -11,7 +11,7 @@ import DivSeparador from "./SubDivSeparador";
 import TabelaCompleta from "./SubTabela";
 import Colapse from "./SubColapse"
 import Slide from "./Slide"
-
+import cores from "./Cores"
 
 const FormGrid = styled.form`
 display: grid;
@@ -252,6 +252,7 @@ function ConfigurarQuadroAulas({ table, imagens }) {
                     <GridArea $area="operacao">
                         <Label htmlFor="operacao">Operacao:</Label>
                             <Select id="operacao" name="operacao" required onChange={(e) => setOperacao(e.target.value)}>
+                            <option value="0">Selecione a operação desejada</option>
                             <option value="1">Adicionar</option>
                             <option value="2">Alterar</option>
                             <option value="3">Deletar</option>
@@ -384,7 +385,7 @@ function ConfigurarQuadroAulas({ table, imagens }) {
                             </Select>
                     </GridArea>
                     <GridArea $area="reset">
-                        <Button $bgcolor="rgb(38, 38, 38)" type="reset" onClick={limparFormulario}>Limpar</Button>   
+                        <Button $bgcolor={cores.backgroundBotaoSemFoco} type="reset" onClick={limparFormulario}>Limpar</Button>   
                     </GridArea>
                     <GridArea $area="botoes">
                         <Button type="submit">Salvar</Button>   

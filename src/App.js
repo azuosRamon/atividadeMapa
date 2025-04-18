@@ -30,6 +30,9 @@ const data = [
 ]; 
 
 const dadosJson = {
+  "cliente": [
+    {"nome": "Universidade de Vassouras", "logo": "img", "cor1": "#6d1d20", "cor2":""}
+  ],
   "horarios":[
         { "id": 1, "ano": 2024, "semestre": 2, "inicio": "18:50", "termino": "19:40" },
         { "id": 2, "ano": 2024, "semestre": 2, "inicio": "19:40", "termino": "20:30" },

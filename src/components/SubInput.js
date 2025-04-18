@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import cores from "./Cores";
 
 const Input = styled.input`
 width: 100%;
@@ -9,15 +10,15 @@ border: 1px solid #000;
 border-radius: 5px;
 font-size: 16px;
 box-sizing: border-box;
-color: ${(props) => props.$color || '#e2e2e2'};
-background-color: #333;
+color: ${(props) => props.$color || cores.corTextoClaro};
+background-color: ${cores.backgroundInput};
 
 &:hover{
     background-color: #222;
     transition: .5s;
 }
 &::placeholder{
-    color: white;
+    color: ${cores.corTexto};
 }
 
 `;

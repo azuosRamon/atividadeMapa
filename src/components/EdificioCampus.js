@@ -5,7 +5,7 @@ import Input from "./SubInput";
 import Label from "./SubLabel";
 import Button from "./SubButton";
 import GridArea from "./SubGridArea";
-
+import cores from "./Cores"
 
 
 const FormGrid = styled.form`
@@ -70,9 +70,10 @@ function CampusOpcoes({ dados }) {
                     <GridArea $area="operacao">
                         <Label htmlFor="operacao">Operacao:</Label>
                             <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(e.target.value); setId("")}}>
-                            <option value="1">Adicionar Campus</option>
-                            <option value="2">Alterar Campus</option>
-                            <option value="3">Deletar Campus</option>
+                            <option value="0">Selecione a operação</option>
+                            <option value="1">Adicionar</option>
+                            <option value="2">Alterar</option>
+                            <option value="3">Deletar</option>
                             </Select>
                     </GridArea>
                     <GridArea $area="idCampus">
@@ -104,7 +105,7 @@ function CampusOpcoes({ dados }) {
                         <Input type="text" id="complemento" value={complemento} name="complemento" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setComplemento(e.target.value)} required/>
                     </GridArea>
                     <GridArea $area="reset" onClick={()=> setId("")}>
-                        <Button $bgcolor="rgb(38, 38, 38)" type="reset">Limpar</Button>   
+                        <Button $bgcolor={cores.backgroundBotaoSemFoco} type="reset">Limpar</Button>   
                     </GridArea>
                     <GridArea $area="botoes">
                         <Button type="submit">Salvar</Button>   

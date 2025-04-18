@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import cores from "./Cores";
 
 const Label = styled.label`
     display: block;
@@ -6,7 +7,7 @@ const Label = styled.label`
     font-size: 12px;
     margin-bottom: 5px;
     font-weight: bold;
-    color: #cccccc;
+    color: ${cores.corTextoClaro};
     text-align: left;
 `;
 export default Label;

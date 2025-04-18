@@ -3,21 +3,14 @@ import styled from "styled-components";
 import { CgProfile } from "react-icons/cg";
 import Button from "./SubButton";
 import { useNavigate } from 'react-router-dom';
+import Box from "./SubBox";
+import cores from "./Cores"
 
 
-const Container = styled.div`
-    `;
 
-const Box = styled.div`
-    height: auto;
+const BoxEditada = styled(Box)`
+min-width: 100px;
     padding: 20px;
-    background-color: rgba(0, 0, 0, 0.8);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    text-align: center;
-    display: grid;
-    grid-template-columns: 1fr;
-    align-items: center;
 `;
 
 const DivContentInformacoes = styled.div`
@@ -35,14 +28,14 @@ const Imagem = styled.img`
 `;
 
 const Titulo3 = styled.h3`
-    color: white;
+    color: ${cores.corTexto};
     font-size: 20px;
     padding: 0;
     margin: 0 auto;
 `;
 
 const ParagrafoInformacao = styled.p`
-color: #f1f1f1;
+color: ${cores.corTexto};
 font-size: 12px;
 margin: 5px auto;
 `;
@@ -54,7 +47,7 @@ const DivContent = styled.div`
 
 
 
-function Usuario({ dados, usuarioId, fecharMenu, mobile=false }) {
+function Usuario({ dados, usuarioId, fecharMenu, mobile=false, logo=false }) {
     const usuarioDados = dados?.[usuarioId] || {};
     const telaAtual = useNavigate();
 
@@ -69,7 +62,7 @@ function Usuario({ dados, usuarioId, fecharMenu, mobile=false }) {
         if (mobile) fecharMenu();
       }
     return (
-            <Box>
+            <BoxEditada>
                 <DivContent>
                     {usuario.foto ? (
                         <Imagem src={usuario.foto} alt={`${usuario.nome} - foto`} />
@@ -97,7 +90,7 @@ function Usuario({ dados, usuarioId, fecharMenu, mobile=false }) {
                 </DivContent>
 
 
-            </Box>
+            </BoxEditada>
     )
 }
 export default Usuario;

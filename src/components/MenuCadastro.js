@@ -5,10 +5,11 @@ import Input from "./SubInput";
 import Select from "./SubSelect";
 import Button from "./SubButton";
 import DivSeparador from "./SubDivSeparador";
+import cores from "./Cores"
 
 const Title = styled.h2`
 margin: 0 0 20px;
-color: white;
+color: ${cores.corTexto};
 `;
 
 const Container = styled.div`

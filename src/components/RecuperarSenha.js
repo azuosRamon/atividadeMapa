@@ -6,11 +6,11 @@ import Input from "./SubInput";
 import Button from "./SubButton";
 import ParagrafoInformacao from "./SubParagrafo";
 import SpamSublinhado from "./SubSpam"
-
+import cores from "./Cores"
 
 const Title = styled.h2`
 margin: 0 0 20px;
-color: white;
+color: ${cores.corTexto};
 `;
 
 function Recuperar_senha(){
