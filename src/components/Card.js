@@ -80,11 +80,11 @@ const imagensPorSalaEAndar = {
     "3-03": [terreo, primeiro_pavimento, sala03, terceiro_pavimento],
 };
 
-function CriarCard({ nome, disciplina, dia, horario, bloco, andar, sala, fotoProfessor }) {
+function CriarCard({ nome, disciplina, dia, horarioInicial, horarioFinal, bloco, pavimento, sala, fotoProfessor }) {
     const [mostrarMapa, setMostrarMapa] = useState(false)
 
-    const chaveSalaAndar = `${andar}-${sala}`;
-    const imagens = imagensPorSalaEAndar[chaveSalaAndar] || [terreo]
+    const chaveSalaAndar = `${Number(pavimento)}-${Number(sala)}`;
+    const imagens = imagensPorSalaEAndar[chaveSalaAndar] || [terreo, primeiro_pavimento, segundo_pavimento, terceiro_pavimento]
 
     const abrirImagem = () => {
         setMostrarMapa(true)
@@ -115,12 +115,14 @@ function CriarCard({ nome, disciplina, dia, horario, bloco, andar, sala, fotoPro
                     <DivContentInformacoes>
                         <ParagrafoInformacao>{dia}</ParagrafoInformacao>
                         <ParagrafoInformacao>|</ParagrafoInformacao>
-                        <ParagrafoInformacao>{horario}</ParagrafoInformacao>
+                        <ParagrafoInformacao>{horarioInicial}</ParagrafoInformacao>
+                        <ParagrafoInformacao> - </ParagrafoInformacao>
+                        <ParagrafoInformacao>{horarioFinal}</ParagrafoInformacao>
                     </DivContentInformacoes>
                     <DivContentInformacoes>
                         <ParagrafoInformacao>Bloco: {bloco}</ParagrafoInformacao>
                         <ParagrafoInformacao>|</ParagrafoInformacao>
-                        <ParagrafoInformacao>Andar: {andar}</ParagrafoInformacao>
+                        <ParagrafoInformacao>Pavimento: {pavimento}</ParagrafoInformacao>
                         <ParagrafoInformacao>|</ParagrafoInformacao>
                         <ParagrafoInformacao>Sala: {sala}</ParagrafoInformacao>
                     </DivContentInformacoes>
@@ -135,7 +137,7 @@ function CriarCard({ nome, disciplina, dia, horario, bloco, andar, sala, fotoPro
                     <FecharBotao onClick={fecharImagem}>X</FecharBotao>
                     <Slide
                         lista_imagens={imagens}
-                        pagina_inicio={andar-1}
+                        pagina_inicio={Number(pavimento)-1}
                     />
                 </MapaBG>
             )}

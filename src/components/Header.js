@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FaSearchLocation, FaBars, FaTimes } from "react-icons/fa";
+import { BsPersonFillGear } from "react-icons/bs";
 import Usuario_logado from './Usuario_logado';
 import Logo from './assets/Logo_2.png'
 import DivSeparador from './SubDivSeparador';
@@ -10,7 +11,7 @@ import cores from "./Cores"
 
 const HeaderMenu = styled.header`
     background-color: ${cores.backgroundMenus};
-    border-bottom: 2px solid ${cores.corBorda};
+    /*border-bottom: 2px solid ${cores.corBorda};*/
 `;
 
 const Content = styled.div`
@@ -107,11 +108,15 @@ const HamburgerIcon = styled.div`
     
 `;
 
+const PessoaIcon = styled(BsPersonFillGear)`
+font-size: 30px;
+color
+`;
 
 
 
 function Header({dados, userId, status}) {
-    const LogInOut = status ? "Logout" : "Login";
+    const LogInOut = status ? "Logout" : <PessoaIcon />;
     const [abrirMenu, setAbrirMenu] = useState(false);
 
     const abrindoMenu = () => {
@@ -126,7 +131,6 @@ function Header({dados, userId, status}) {
                 </StyledLink>
                 
                 <UlMenu>
-                    <LiMenu><StyledLink to="/"><FaSearchLocation /></StyledLink></LiMenu>
                     <LiMenu><StyledLink to="/login">{LogInOut}</StyledLink></LiMenu>
                 </UlMenu>
 

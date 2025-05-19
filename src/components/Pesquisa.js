@@ -8,6 +8,8 @@ import Select from "./SubSelect";
 import Container from "./SubContainer";
 import logo_cliente from "../components/assets/UniVassouras-Vertical-Branca.png"
 import { MdHeight } from "react-icons/md";
+import InputAutocomplete from "./SubInputAutocomplete";
+import cores from "./Cores";
 
 const Title = styled.h2`
 margin: 0 0 20px;
@@ -71,7 +73,23 @@ height: 100px;
 margin: 15px auto;
 `;
 
+const Ul = styled.ul`
+position: absolute;
+top: 100%;
+left: 0;
+right: 0;
+zIndex: 1000;
+background: white;
+color: black;
+listStyle: none;
+padding: 0;
+margin: 0;
+border: 1px solid #ccc;
+maxHeight: 150px;
+overflowY: auto
+`;
 
+/*
 const data = [
     { professor: "Carlos Silva", bloco: "1", andar: "2", sala: "12", materia: "Física para Engenharia", dia: "Segunda-feira", horario: "18:50 - 22:10", foto: "" },
     { professor: "Ana Souza", bloco: "1", andar: "3", sala: "03", materia: "Front End", dia: "Terça-feira", horario: "18:50 - 22:10", foto: "" },
@@ -80,29 +98,78 @@ const data = [
     { professor: "Pedro Santos", bloco: "1", andar: "3", sala: "03", materia: "Estrutura de Dados", dia: "Sexta-feira", horario: "18:50 - 22:10", foto: "" },
     { professor: "Lucia Costa", bloco: "1", andar: "2", sala: "12", materia: "Engenharia Econômica", dia: "Sabado", horario: "18:50 - 22:10", foto: "" }
 ]; 
+*/
 
-function Pesquisa(){
+function converterDados(dados){
+    const dadosCovertidos =  dados.quadroDeAulas.map((item) => (
+        {
+          "id": item.id, 
+          "disciplina": dados.disciplinas.filter(informacoes => informacoes.id === item.disciplinaId)[0].nome, 
+          "curso": dados.cursos.filter(informacoes => informacoes.id === item.cursoId)[0].nome, 
+          "usuario": dados.usuarios.filter(informacoes => informacoes.id === item.pessoasId)[0].funcao + " - " +  dados.usuarios.filter(informacoes => informacoes.id === item.pessoasId)[0].nome + " " + dados.usuarios.filter(informacoes => informacoes.id === item.pessoasId)[0].sobrenome, 
+          "diaSemana": item.diaSemana, 
+          "inicio": dados.horarios.filter(informacoes => informacoes.id === item.inicioId)[0].inicio,
+          "termino": dados.horarios.filter(informacoes => informacoes.id === item.terminoId)[0].termino, 
+          "campus":dados.campus.filter(informacoes => informacoes.id === item.campusId)[0].nome, 
+            "bloco":dados.blocos.filter(informacoes => informacoes.id === item.blocoId)[0].nome, 
+          "pavimento":dados.pavimentos.filter(informacoes => informacoes.id === item.pavimentoId)[0].numero,
+          "sala": dados.salas.filter(informacoes => informacoes.id === item.salaId)[0].numero.toString() + " - " + dados.salas.filter(informacoes => informacoes.id === item.salaId)[0].apelido,
+          "salaApelido": dados.salas.filter(informacoes => informacoes.id === item.salaId)[0].apelido,
+          "ano": dados.horarios.filter(informacoes => informacoes.id === item.inicioId)[0].ano,
+          "foto": dados.usuarios.filter(informacoes => informacoes.id === item.pessoasId)[0].foto
+        }
+    ));
+    return dadosCovertidos;
+}
+
+
+function Pesquisa({dados}){
+    const data = dados || {};
+    const quadroDeAulasConvertido = converterDados(data);
+    
+    const ano_atual = new Date().getFullYear();
+    const quadroAulasAnoAtual = quadroDeAulasConvertido.filter((item) => item.ano === ano_atual);
+    
+    const horariosAula = Array.from(new Set(quadroAulasAnoAtual.map((item)=>item.inicio)));
+    
+    
+    const professoresAula = Array.from(new Set(data.usuarios.map((item)=> item.funcao + " - " + item.nome + " " + item.sobrenome)));
     const [resultadoPesquisa, confResultadoPesquisa] = useState([]);
     const [procurarProfessor, confProcurarProfessor] = useState("");
+    
+    const [procurarSala, confProcurarSala] = useState("");
     const [sala, confSala] = useState("");
+    const salas = data.salas.map((item) => ((item.apelido.length>0) ? item.numero.toString() + " - " + item.apelido : item.numero.toString())) || [];
+    
+    const [procurarCurso, confProcurarCurso] = useState("");
+    const cursos = Array.from(new Set(quadroAulasAnoAtual.map((item)=>item.curso))) || [];
+    
+    const [procurarDisciplina, confProcurarDisciplina] = useState("");
     const [materia, confMateria] = useState("");
-    const [dia, confDia] = useState("");
+    const disciplinas = Array.from(new Set(quadroAulasAnoAtual.map((dados)=>dados.disciplina))) || [];
+    
+    const [dia, confDia] = useState("0");
     const [horario, confHorario] = useState("");
     
+    
     const [estadoModal, mudarEstadoModal] = useState(false);
+    
+   
 
-    const materiasUnicas = Array.from(new Set(data.map((dados)=>(dados.materia))));
-    const horariosUnicos = Array.from(new Set(data.map((dados)=>(dados.horario))));
-    const diasUnicos = Array.from(new Set(data.map((dados)=>(dados.dia))));
+    const cursosEDisciplinas = cursos.concat(disciplinas);
+
+
     const buscarResultados = (event) => {
         event.preventDefault();
+        console.log(horario);
         
-        confResultadoPesquisa(data.filter(d =>
-            (!procurarProfessor || d.professor.toLowerCase().includes(procurarProfessor.toLowerCase())) &&
-            (!sala || d.sala.toLowerCase() === (sala)) &&
-            (!materia || d.materia === materia) && 
-            (!dia || d.dia === dia) &&
-            (!horario || d.horario === horario)
+        confResultadoPesquisa(quadroAulasAnoAtual.filter(d =>
+
+            (!procurarProfessor || d.usuario.toLowerCase().includes(procurarProfessor.toLowerCase())) &&
+            (!procurarSala || d.sala.toString().toLowerCase().includes(procurarSala.toLocaleLowerCase())) &&
+            (!procurarCurso || d.curso.toString().toLowerCase().includes(procurarCurso.toLocaleLowerCase()) || d.disciplina.toString().toLowerCase().includes(procurarCurso.toLocaleLowerCase()) ) && 
+            (!dia || (Number(dia) > 0) ? (d.diaSemana === Number(dia)): d.diaSemana)  &&
+            (!horario || d.inicio === horario)
         )
     )
         mudarEstadoModal(true);
@@ -122,52 +189,50 @@ function Pesquisa(){
             <Box>
                 <Img src={logo_cliente} alt="logo_universidade"/>
                 <Formulario onSubmit={buscarResultados}>
-                    <Input 
-                        type="text" 
-                        placeholder="Professor" 
-                        value={procurarProfessor} 
-                        onChange={(e) => confProcurarProfessor(e.target.value)}
+                    <InputAutocomplete
+                        sugestoes={professoresAula}
+                        valor={procurarProfessor}
+                        onChange={(val) => confProcurarProfessor(val)}       // Atualiza o valor enquanto digita
+                        onSelecionar={(val) => confProcurarProfessor(val)}    // Atualiza ao selecionar
+                        placeholder="Professor"
                         />
-                    <Input 
-                        type="text" 
-                        placeholder="Sala" 
-                        value={sala} 
-                        onChange={(e) => confSala(e.target.value)}
+                        <InputAutocomplete
+                        sugestoes={salas}
+                        valor={procurarSala}
+                        onChange={(val) => confProcurarSala(val)}       // Atualiza o valor enquanto digita
+                        onSelecionar={(val) => confProcurarSala(val)}    // Atualiza ao selecionar
+                        placeholder="Sala"
                         />
-                    <Select
-                        value={materia}
-                        onChange={(e) => confMateria(e.target.value)}
-                        >
-                        <option value={""}>Todas as matérias</option>
-                        {
-                            materiasUnicas.map((item, indice)=>(
-                                <option value={item}>{item}</option>
-                            ))
-                        }
-                    </Select>
-                    <Select 
-                        value={dia}
-                        onChange={(e) => confDia(e.target.value)}
-                        >
-                        <option value={""}>Todas os dias</option>
-                        {
-                            diasUnicos.map((item, indice)=>(
-                                <option value={item}>{item}</option>
-                            ))
-                        }
-                    </Select>
+                        <InputAutocomplete
+                        sugestoes={cursosEDisciplinas}
+                        valor={procurarCurso}
+                        onChange={(val) => confProcurarCurso(val)}       // Atualiza o valor enquanto digita
+                        onSelecionar={(val) => confProcurarCurso(val)}    // Atualiza ao selecionar
+                        placeholder="Curso ou disciplina"
+                        />
+                    
+                    <Select id="dia" value={dia} name="dia" onChange={(e) => confDia(e.target.value)}>
+                        <option key={0} value="0">Todos os dias</option>
+                        <option key={1} value="1">Domingo</option>
+                        <option key={2} value="2">Segunda Feira</option>
+                        <option key={3} value="3">Terça Feira</option>
+                        <option key={4} value="4">Quarta Feira</option>
+                        <option key={5} value="5">Quinta Feira</option>
+                        <option key={6} value="6">Sexta Feira</option>
+                        <option key={7} value="7">Sábado</option>
+                        </Select>
                     <Select 
                         value={horario}
                         onChange={(e) => confHorario(e.target.value)}
                     >
                         <option value={""}>Todas os horários</option>
                         {
-                            horariosUnicos.map((item, indice)=>(
+                            horariosAula.map((item, indice)=>(
                                 <option value={item}>{item}</option>
                             ))
                         }
                     </Select>
-                    <Button type="submit">Buscar</Button>
+                    <Button $hovercolor={cores.cor3} $bgcolor={cores.corWhite} $fontColor={cores.corTextoEscuro} type="submit">Buscar</Button>
                 </Formulario>
             </Box>
             <ContainerModal $aberto={estadoModal} >
@@ -181,18 +246,19 @@ function Pesquisa(){
                         resultadoPesquisa.map((item, indice)=>(
                             <CriarCard
                             key = {indice}
-                            imagem = {item.foto}
-                            nome = {item.professor}
-                            disciplina = {item.materia}
-                            dia = {item.dia}
-                            horario = {item.horario}
+                            fotoProfessor = {item.foto}
+                            nome = {item.usuario}
+                            disciplina = {item.disciplina}
+                            dia = {item.diaSemana}
+                            horarioInicial = {item.inicio}
+                            horarioFinal = {item.termino}
                             bloco = {item.bloco}
-                            andar = {item.andar}
+                            pavimento = {item.pavimento}
                             sala = {item.sala}
                             />
                         ))
                     }
-                    <Button onClick={()=>mudarEstadoModal(false)}>Voltar</Button>
+                    <Button $bgcolor="rgb(38, 38, 38)" onClick={()=>mudarEstadoModal(false)}>Voltar</Button>
                     </CardsContainer>
                 </Modal>
                 </ContainerModal>
@@ -200,3 +266,71 @@ function Pesquisa(){
     )
 }
 export default Pesquisa;
+
+/* ANTES DE MODIFICAR
+ 
+  const data = dados || {};
+    const quadroDeAulasConvertido = converterDados(data);
+
+    const ano_atual = new Date().getFullYear();
+    const idsHorariosAnoAtual = data.horarios.filter(item => item.ano === ano_atual).map(item => item.id);
+    const quadroAulasAnoAtual = data.quadroDeAulas.filter((item) => (idsHorariosAnoAtual.includes(item.inicioId)));
+
+    const horariosAula = Array.from(new Set(quadroAulasAnoAtual.map((dados)=>dados.inicioId)));
+    
+    
+    const professoresAula = Array.from(new Set(quadroAulasAnoAtual.map((dados)=>dados.pessoasId)));
+    const [resultadoPesquisa, confResultadoPesquisa] = useState([]);
+    const [procurarProfessor, confProcurarProfessor] = useState("");
+    
+    const [procurarSala, confProcurarSala] = useState("");
+    const [sala, confSala] = useState("");
+    const salas = data.salas.map((item) => ((item.apelido.length>0) ? item.numero.toString() + " - " + item.apelido : item.numero.toString())) || [];
+    
+    const [procurarCurso, confProcurarCurso] = useState("");
+    const cursosAula = Array.from(new Set(quadroAulasAnoAtual.map((dados)=>dados.cursoId)));
+    const cursos = data.cursos.filter((item) => (cursosAula.includes(item.id))).map(item => "Curso de " + item.nome) || [];
+    
+    const [procurarDisciplina, confProcurarDisciplina] = useState("");
+    const [materia, confMateria] = useState("");
+    const disciplinasAula = Array.from(new Set(quadroAulasAnoAtual.map((dados)=>dados.disciplinaId)));
+    const disciplinas = data.disciplinas.filter((item) => (disciplinasAula.includes(item.id))).map(item => "Disciplina de " + item.nome) || [];
+    
+    const [dia, confDia] = useState(0);
+    const [horario, confHorario] = useState("");
+
+
+    const [estadoModal, mudarEstadoModal] = useState(false);
+    
+    const materiasUnicas = data.disciplinas
+    .filter((item) => (disciplinasAula.includes(item.id)))
+    .map(item=>item.nome);
+    
+    const horariosUnicos = data.horarios
+    .filter((item) => (horariosAula.includes(item.id) && item.ano === ano_atual))
+    .map((item)=>item.inicio);
+    
+    const professoresUnicos = data.pessoas
+    .filter(pessoa => professoresAula.includes(pessoa.id))
+    .map(pessoa => pessoa.nome);
+    
+    
+    
+    const cursosEDisciplinas = cursos.concat(disciplinas);
+    console.log("aqui");
+    console.log(idsHorariosAnoAtual)
+    console.log(quadroAulasAnoAtual)
+    console.log(data.horarios.filter((item) => (horariosAula.includes(item.id))).map((item)=>item.inicio));
+
+
+    const buscarResultados = (event) => {
+        event.preventDefault();
+        
+        confResultadoPesquisa(quadroAulasAnoAtual.filter(d =>
+            (!procurarProfessor || d.professor.toLowerCase().includes(procurarProfessor.toLowerCase())) &&
+            (!procurarSala || d.sala.toLowerCase() === (sala)) &&
+            (!materia || d.materia === materia) && 
+            (!dia || d.dia === dia) &&
+            (!horario || d.horario === horario)
+        )
+    )*/

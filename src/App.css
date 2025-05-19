@@ -2,6 +2,20 @@
   background-image: url('./components/assets/background.jpg');
   overflow-x: hidden;
 }
+::-webkit-scrollbar {
+    width: 10px;
+    background-color: rgb(38,38,38);               /* width of the entire scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0);        /* color of the tracking area */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #000;    /* color of the scroll thumb */
+  border-radius: 5px;       /* roundness of the scroll thumb */
+  border: 5px solid rgb(55,55,55);  /* creates padding around scroll thumb */
+}
 
 
 @media (prefers-reduced-motion: no-preference) {

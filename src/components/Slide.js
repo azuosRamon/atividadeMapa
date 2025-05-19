@@ -1,8 +1,11 @@
 import React, { useState, useEffect} from "react";
+import imageMapResize from 'image-map-resizer';
 import styled from "styled-components";
 import { CiSquareChevLeft } from "react-icons/ci";
 import { CiSquareChevRight } from "react-icons/ci";
 import cores from "./Cores"
+import LupaCircular from "./Lupa";
+import Button from "./SubButton";
 import sala001 from "./salasAtivadas/001.png";
 import sala002 from "./salasAtivadas/002.png";
 import sala003 from "./salasAtivadas/003.png";
@@ -39,6 +42,9 @@ import sala336 from "./salasAtivadas/336.png";
 import sala337 from "./salasAtivadas/337.png";
 import sala338 from "./salasAtivadas/338.png";
 import sala339 from "./salasAtivadas/339.png";
+import { click } from "@testing-library/user-event/dist/click";
+import { BsDisplay } from "react-icons/bs";
+import dadosJson from "../App.js"
 
 const imagensSalas = {
     "001": sala001,
@@ -79,6 +85,33 @@ const imagensSalas = {
     "339": sala339,
   };
 
+  const areas = [
+    {
+      id: "area1",
+      coords: [
+        [1927,1097],
+        [2523,1094],
+        [2571,1816],
+        [2423,1816],
+        [2423,1679],
+        [1925,1683]
+      ]
+    },
+    {
+        id: "area2",
+        coords: [
+          [1927,1700],
+          [2403,1700],
+          [2402,1832],
+          [2569,1833],
+          [2593,2192],
+          [1930,2193]
+        ]
+      },
+    // outras áreas aqui
+  ];
+  
+
 const DivContent = styled.div`
 background-color: #222;
 padding: 50px 0;
@@ -90,20 +123,21 @@ const SlideContainer = styled.div`
     position: relative;
 `;
 const SliderMover = styled.div`
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    background-color: none;
-    z-index: 1;
-    cursor: grab;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: none;
+  z-index: 1;
+  cursor: grab;
+  pointer-events: none;
 `;
 const DivSlide = styled.div`
     width: ${(props) => (100 * props.$lista_imagens_informada.length)}%;
     display: flex;
     position: relative;
-    transition: .5s;
+    transition: .8s ease-in-out;
     transform: translateX(${(props) => props.translate}%);
 `;
 const DivItem = styled.div`
@@ -111,7 +145,7 @@ const DivItem = styled.div`
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    transition: .8s;
+    transition: .8s ease-in-out;
     font-size: 50px;
     color: ${cores.corTexto};
     font-weight: bold;
@@ -119,26 +153,7 @@ const DivItem = styled.div`
 
     position: relative;
 `;
-const Imagem = styled.img`
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  position: ${(props) => (props.$sobrepor ? "absolute" : "relative")};
-  top: 0;
-  left: 0;
-`;
-/*
-const Imagem = styled.img`
-    padding: 0;
-    margin: 0;
-    width: 40%;
-    @media (max-width: 480px) {
-    width: 90%;
-    }
-    @media (min-width: 481px) and (max-width: 780px) {
-    width: 70%;
-    }
-`;*/
+
 const UlNavegar = styled.ul`
     display: flex;
     justify-content: space-evenly;
@@ -164,7 +179,7 @@ const LiNavegar = styled.li`
     cursor: pointer;
 `;
 
-const Button = styled.button`
+const Setas = styled.button`
 padding: 3.5px 5px;
 background-color: #444;
 color: ${cores.corTexto};
@@ -222,17 +237,57 @@ const DivSobreposta = styled.div`
   }
 `;
 
-function Slide({lista_imagens, pagina_inicio, listaSalasAtivas=['001'], pavimento = 0}){
+
+const Imagem = styled.img`
+  width: 100%;
+  display: block;
+`;
+
+const SVGOverlay = styled.svg`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: all;  // para deixar o clique só nas áreas ativas
+`;
+
+const AreaPoligonal = styled.polygon`
+  fill: ${(props) => (props.$procurado ? cores.cor3 : cores.cor4)};
+  stroke: ${(props) => props.$procurado || cores.cor4};
+  stroke-width: 10;
+  cursor: pointer;
+  pointer-events: all;
+  &:hover {
+    fill: ${(props) => props.$procurado || cores.cor3};
+    stroke: ${(props) => props.$procurado || cores.cor1};
+  }
+`;
+
+const DivBotoesCoordenadas = styled.div`
+display: flex;
+gap: 10px;
+`;
+
+
+function Slide({ lista_imagens, pagina_inicio, listaSalasAtivas=[], pavimento = 0,dados=dadosJson, capturarCoordenadas = false}){
+    const data = dados || {};
     /*listaSalasAtivas = ["001","002","003","004","005","006","007","008","110","111","112","114","115","116","117","201", "202","203","204","222","223","224","225","226","227","228","301","302","303", "304","334","335","336","337","338","339"]*/
+    const [pontosClicados, setPontosClicados] = useState([]);
     const [slide_atual, mudarSlide] = useState(0);
     const total_slides = lista_imagens.length;
+    const indiceAtivo = total_slides - (slide_atual + 1);
+    let [arrastando, setArrastando] = useState(false);
     let [startX, mudarStartX] = useState(null);
     let [endX, mudarEndX] = useState(null);
     const [aberturaInicial, mudarEstadoAbertura] = useState(false);
-    if (!aberturaInicial){
+    const normalizarCoords = (coords) =>
+        coords.map(([x, y]) => `${(x / 2900) * 100},${(y / 2500) * 100}`).join(" ");
+      
+    useEffect(() => {
         mudarSlide(pagina_inicio);
         mudarEstadoAbertura(true);
-    }
+      }, []);
     const mudarPaginaSlide = (direcao) =>{
         if (direcao === "proximo"){
             mudarSlide((slide) => ((slide) + 1) % total_slides);
@@ -251,33 +306,74 @@ function Slide({lista_imagens, pagina_inicio, listaSalasAtivas=['001'], paviment
         return () => document.removeEventListener("keydown", apertouTecla); 
     });
     
-    let handleStart = (event) =>{
+    const handleStart = (event) => {
         if (event.type === 'mousedown') {
-            mudarStartX(event.clientX);
-        } else if (event.type === "touchstart") {
-            mudarStartX(event.touches[0].clientX);
-        };
-        console.log(`Posição inicial: (${startX})`);
-    };
-
-    const handleEnd = (event) =>{
+          mudarStartX(event.clientX);
+        } else if (event.type === 'touchstart') {
+          mudarStartX(event.touches[0].clientX);
+        }
+      };
+      
+      const handleEnd = (event) => {
         if (startX === null) return;
+      
+        const endXPos = event.type === "mouseup"
+          ? event.clientX
+          : event.changedTouches[0].clientX;
+      
+        if (startX > endXPos + 50) {
+          mudarPaginaSlide("proximo");
+        } else if (startX < endXPos - 50) {
+          mudarPaginaSlide("anterior");
+        }
+      
+        mudarStartX(null);
+      };
+      const [arrastandoPonto, setArrastandoPonto] = useState(null);
 
-        if (event.type === "mouseup") {
-            mudarEndX(event.clientX);
-        } else if (event.type === "touchend") {
-            mudarEndX(event.changedTouches[0].clientX);
-        };
-        console.log(`Posição final: (${endX})`);
-        if (startX > endX) {
-            mudarPaginaSlide("proximo")
-        } else if((startX === endX) & (event.type === "mouseup")) {
-            mudarPaginaSlide("proximo")
-        }   else {
-            mudarPaginaSlide("anterior")
-        };
-    };
-    
+const iniciarArrastePonto = (e, index) => {
+  e.stopPropagation();
+  setArrastandoPonto(index);
+};
+
+useEffect(() => {
+  const mover = (e) => {
+    if (arrastandoPonto === null) return;
+
+    const svg = document.querySelector("svg");
+    const rect = svg.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const offsetY = e.clientY - rect.top;
+    const width = rect.width;
+    const height = rect.height;
+
+    const x = (offsetX / width) * 2900;
+    const y = (offsetY / height) * 2500;
+
+    setPontosClicados((prev) => {
+      const atualizados = [...prev];
+      atualizados[arrastandoPonto] = [Math.round(x), Math.round(y)];
+      return atualizados;
+    });
+  };
+
+  const pararArraste = () => setArrastandoPonto(null);
+
+  window.addEventListener("mousemove", mover);
+  window.addEventListener("mouseup", pararArraste);
+
+  return () => {
+    window.removeEventListener("mousemove", mover);
+    window.removeEventListener("mouseup", pararArraste);
+  };
+}, [arrastandoPonto]);
+
+
+const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+const [mostrarLupa, setMostrarLupa] = useState(false);
+
+
+
     return(
         <DivContent>
                 <DivAndares>
@@ -285,58 +381,143 @@ function Slide({lista_imagens, pagina_inicio, listaSalasAtivas=['001'], paviment
                         lista_imagens.map((item, indice) => (
                             <SpamAndares
                                 key={indice}
-                                $active = {indice === total_slides - (slide_atual + 1)  ? true : false}
+                                $active = {indice === indiceAtivo  ? true : false}
                                 $ultima = {indice === total_slides -1}
                             ></SpamAndares>
                         ))
                     }
                     <SpamChao></SpamChao>
                 </DivAndares>
-            <SlideContainer>
-                <Button style={{left: "50px"}} onClick={()=> mudarPaginaSlide("anterior")}><CiSquareChevLeft size={40}/></Button>
-                <SliderMover
+                <SlideContainer
                     onMouseDown={handleStart}
                     onMouseUp={handleEnd}
                     onTouchStart={handleStart}
                     onTouchEnd={handleEnd}
-                    ></SliderMover>
+                    >
+                <Setas style={{left: "50px"}} onClick={()=> mudarPaginaSlide("anterior")}><CiSquareChevLeft size={40}/></Setas>
                 <DivSlide 
-                translate={-slide_atual * 25}
+                translate={-(slide_atual * (100 / total_slides))}
                 $lista_imagens_informada={lista_imagens}
                 >
                 {lista_imagens.map((imagemBase, indice) => (
-                    <DivItem key={indice} $lista_imagens_informada={lista_imagens}>
-                    <DivSobreposta>
-                        <Imagem src={imagemBase} alt={`Planta pavimento ${indice}`}/>
 
-                        {indice === slide_atual && (
-                        listaSalasAtivas
-                            .filter((item) => Math.floor(parseInt(item, 10) / 100) === indice)
-                            .map((item) => (
-                            imagensSalas[item] ? (
-                                <Imagem key={item} src={imagensSalas[item]} $sobrepor />
-                            ) : null
-                            ))
-                        )}
+                    <DivItem key={indice} $lista_imagens_informada={lista_imagens}>
+                    <DivSobreposta
+  onMouseMove={(e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  }}
+  onMouseEnter={() => setMostrarLupa(true)}
+  onMouseLeave={() => setMostrarLupa(false)}
+>
+                        <Imagem src={imagemBase} alt="Planta" />
+                      
+                        <SVGOverlay
+  viewBox="0 0 2900 2500"
+  preserveAspectRatio="xMidYMid meet"
+  onPointerDown={(event) => {
+    if (capturarCoordenadas){
+      // Adiciona novo ponto com clique esquerdo normal
+      if (event.button !== 0) return; // Apenas botão esquerdo
+      if (arrastandoPonto !== null) return;
+  
+      const svg = event.currentTarget;
+      const rect = svg.getBoundingClientRect();
+  
+      const offsetX = event.clientX - rect.left;
+      const offsetY = event.clientY - rect.top;
+  
+      const width = rect.width;
+      const height = rect.height;
+  
+      const svgX = (offsetX / width) * 2900;
+      const svgY = (offsetY / height) * 2500;
+  
+      const novoPonto = [Math.round(svgX), Math.round(svgY)];
+      setPontosClicados((prev) => [...prev, novoPonto]);
+      
+    }
+  }}
+  onContextMenu={(e) => {
+    e.preventDefault();
+    setPontosClicados((prev) => prev.slice(0, -1)); // remove último ponto
+  }}
+>
+  {/* Polígonos existentes */}
+  {areas.map((area) => (
+    <AreaPoligonal
+      key={area.id}
+      points={area.coords.map(([x, y]) => `${x},${y}`).join(" ")}
+      onClick={(e) => {
+        if (!capturarCoordenadas){
+          e.stopPropagation();
+          console.log(`Clicou na área ${area.id}`);
+        }
+      }}
+    />
+  ))}
+
+  {/* Polígono customizado pelos pontos clicados */}
+  {pontosClicados.length > 2 && (
+    <polygon
+      points={pontosClicados.map(([x, y]) => `${x},${y}`).join(" ")}
+      fill= {cores.cor3}
+      stroke={cores.cor1}
+      strokeWidth={10}
+    />
+  )}
+
+  {/* Pontos interativos */}
+  {pontosClicados.map(([x, y], i) => (
+    <circle
+      key={i}
+      cx={x}
+      cy={y}
+      r={20}
+      fill={cores.cor1}
+      cursor="grab"
+      onMouseDown={(e) => iniciarArrastePonto(e, i)}
+    />
+  ))}
+</SVGOverlay>
+{capturarCoordenadas && (
+  <LupaCircular
+    show={mostrarLupa}
+    x={mousePosition.x}
+    y={mousePosition.y}
+    imageSrc={imagemBase}
+    zoom={2.5}
+  />
+
+)}
+
 
                     </DivSobreposta>
+
                     </DivItem>
                 ))}
                 </DivSlide>
                 <UlNavegar>
                     {
-                        lista_imagens.map((item, indice) => (
-                            <LiNavegar
-                                key={indice}
-                                $active = {indice === slide_atual ? true : false}
-                                onClick={() => mudarSlide(indice)}>{indice+1}º</LiNavegar>
-                        ))
+                      lista_imagens.map((item, indice) => (
+                        <LiNavegar
+                        key={indice}
+                        $active = {indice === slide_atual ? true : false}
+                        onClick={() => mudarSlide(indice)}>{indice+1}º</LiNavegar>
+                      ))
                     }
                 </UlNavegar>
-                <Button style={{right: "50px"}} onClick={() => {
-                    mudarSlide((slide_atual + 1) % total_slides);
-                }}><CiSquareChevRight size={40}/></Button>
+                <Setas style={{right: "50px"}} onClick={() => mudarPaginaSlide("proximo")}><CiSquareChevRight size={40}/></Setas>
             </SlideContainer>
+            {capturarCoordenadas && (
+              <DivBotoesCoordenadas>
+                <Button $bgcolor={cores.backgroundBotaoSemFoco2} onClick={() => setPontosClicados([])}>Limpar croqui</Button>
+                <Button $bgcolor={cores.backgroundBotaoSemFoco2} onClick={() => setPontosClicados((prev) => prev.slice(0, -1))}>Deletar ultimo ponto</Button>
+                <Button onClick={() => setPontosClicados((prev) => prev.slice(0, -1))}>Salvar croqui</Button>
+
+              </DivBotoesCoordenadas>
+
+            )}
         </DivContent>
     )
 }

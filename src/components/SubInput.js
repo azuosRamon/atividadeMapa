@@ -7,7 +7,7 @@ height: 40px;
 padding: 10px;
 margin: 10px 0;
 border: 1px solid #000;
-border-radius: 5px;
+border-radius: 3px;
 font-size: 16px;
 box-sizing: border-box;
 color: ${(props) => props.$color || cores.corTextoClaro};

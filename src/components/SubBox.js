@@ -7,7 +7,7 @@ const Box = styled.div`
     padding: 40px;
     background-color: ${cores.backgroundBox};
     box-shadow: 0 4px 8px ${cores.boxShadow};
-    border-radius: 5px;
+    border-radius: 3px;
     text-align: center;
     display: grid;
     grid-template-columns: 1fr;

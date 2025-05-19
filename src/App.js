@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import Login from "./components/Login";
+import Login from "./components/PaginaLogin";
 import MenuCadastro from "./components/MenuCadastro";
 import MenuHorarios from "./components/MenuHorarios";
 import Perfil from "./components/MenuPerfil";
@@ -13,7 +13,7 @@ import Footer from "./components/Footer";
 import Pesquisa from "./components/Pesquisa";
 import LayoutLogado from "./LayoutLogado";
 import './App.css'
-import RecuperarSenha from "./components/RecuperarSenha";
+import RecuperarSenha from "./components/PaginaRecuperarSenha";
 import Slide from "./components/Slide";
 import terreo from "./components/Plantas/TERREO_PAVIMENTO.png";
 import primeiro_pavimento from "./components/Plantas/PRIMEIRO_PAVIMENTO.png";
@@ -44,6 +44,18 @@ const dadosJson = {
         { "id": 9, "ano": 2025, "semestre": 1, "inicio": "20:30", "termino": "21:20" },
         { "id": 10, "ano": 2025, "semestre": 1, "inicio": "21:20", "termino": "22:10" },
     ],
+  "usuarios": [
+    {"id":0, "nome": "Carlos", "sobrenome": "Silva", "telefone": "21912341234","nascimento":"2025-03-24", "email":"carlossilva@mail.com", "cpf": "111.222.333-44", "matricula":"202411122", "funcao": "Administrador", "foto": "", "senha": "admin"},
+    {"id":1, "nome": "Tereza", "sobrenome": "Souza", "telefone": "21943214321","nascimento":"2025-04-14", "email":"terezinha@mail.com", "cpf": "111.222.333-44", "matricula":"202411123", "funcao": "Professor", "foto": "", "senha": "professor"},
+    {"id":2, "nome": "Maria", "sobrenome": "Antunes", "telefone": "21943214321","nascimento":"2025-04-14", "email":"terezinha@mail.com", "cpf": "111.222.333-44", "matricula":"202411123", "funcao": "Professor", "foto": "", "senha": "professor"},
+    {"id":3, "nome": "Renato", "sobrenome": "Sodre", "telefone": "21943214321","nascimento":"2025-04-14", "email":"terezinha@mail.com", "cpf": "111.222.333-44", "matricula":"202411123", "funcao": "Professor", "foto": "", "senha": "professor"},
+    {"id":4, "nome": "Mauricio", "sobrenome": "Antonio", "telefone": "21943214321","nascimento":"2025-04-14", "email":"terezinha@mail.com", "cpf": "111.222.333-44", "matricula":"202411123", "funcao": "Professor", "foto": "", "senha": "professor"},
+    {"id":5, "nome": "Vanderlei", "sobrenome": "Souza", "telefone": "21943214321","nascimento":"2025-04-14", "email":"terezinha@mail.com", "cpf": "111.222.333-44", "matricula":"202411123", "funcao": "Professor", "foto": "", "senha": "professor"},
+    {"id":6, "nome": "Vanderleia", "sobrenome": "Souza", "telefone": "21943214321","nascimento":"2025-04-14", "email":"terezinha@mail.com", "cpf": "111.222.333-44", "matricula":"202411123", "funcao": "Professor", "foto": "", "senha": "professor"},
+    {"id":7, "nome": "Suelen", "sobrenome": "Souza", "telefone": "21943214321","nascimento":"2025-04-14", "email":"terezinha@mail.com", "cpf": "111.222.333-44", "matricula":"202411123", "funcao": "Professor", "foto": "", "senha": "professor"},
+    {"id":8, "nome": "Andre", "sobrenome": "Souza", "telefone": "21943214321","nascimento":"2025-04-14", "email":"terezinha@mail.com", "cpf": "111.222.333-44", "matricula":"202411123", "funcao": "Professor", "foto": "", "senha": "professor"},
+    {"id":9, "nome": "Mario", "sobrenome": "Souza", "telefone": "21943214321","nascimento":"2025-04-14", "email":"terezinha@mail.com", "cpf": "111.222.333-44", "matricula":"202411123", "funcao": "Professor", "foto": "", "senha": "professor"},
+  ],
   "pessoas": [
     {"id":0, "nome": "Carlos", "sobrenome": "Silva", "telefone": "21912341234","nascimento":"2025-03-24", "email":"carlossilva@mail.com", "cpf": "111.222.333-44", "matricula":"202411122", "funcao": "Administrador", "foto": "", "senha": "admin"},
     {"id":1, "nome": "Tereza", "sobrenome": "Souza", "telefone": "21943214321","nascimento":"2025-04-14", "email":"terezinha@mail.com", "cpf": "111.222.333-44", "matricula":"202411123", "funcao": "Professor", "foto": "", "senha": "professor"},
@@ -68,10 +80,11 @@ const dadosJson = {
       { "id": 4, "nome": "C", "imagem": "caminho/a.png", "campusId" : 2}
   ],
   "pavimentos":[
-      { "id": 1, "numero": "0", "imagem": "caminho/a.png", "blocoId" : 1},
-      { "id": 2, "numero": "1", "imagem": "caminho/b.png", "blocoId" : 1},
-      { "id": 3, "numero": "2", "imagem": "caminho/c.png", "blocoId" : 1},
-      { "id": 4, "numero": "3", "imagem": "caminho/d.png", "blocoId" : 1}
+      { "id": 0, "numero": "1", "imagem": "caminho/a.png", "blocoId" : 1},
+      { "id": 1, "numero": "1", "imagem": "caminho/a.png", "blocoId" : 1},
+      { "id": 2, "numero": "2", "imagem": "caminho/b.png", "blocoId" : 1},
+      { "id": 3, "numero": "3", "imagem": "caminho/c.png", "blocoId" : 1},
+      { "id": 4, "numero": "4", "imagem": "caminho/d.png", "blocoId" : 1}
 
   ],
   "salas":[
@@ -117,6 +130,7 @@ const dadosJson = {
         { "id": 1, "nome": "Engenharia Civil"},
         { "id": 2, "nome": "Engenharia de Software"},
         { "id": 3, "nome": "Engenharia Ambiental"},
+        { "id": 4, "nome": "Arquitetura"},
         { "id": 5, "nome": "Engenharia de Petróleo e Gás"},
         { "id": 6, "nome": "Engenharia Elétrica"},
         { "id": 7, "nome": "Engenharia de Telecomunicações"},
@@ -132,15 +146,24 @@ const dadosJson = {
         { "id": 7, "nome": "Práticas Extensionistas Integradoras IV"},
         { "id": 8, "nome": "Processo de Desenvolvimento de Software"},
     ],
+    "dias":[
+        { "id": 1, "nome": "Domingo"},
+        { "id": 2, "nome": "Segunda Feira"},
+        { "id": 3, "nome": "Terça Feira"},
+        { "id": 4, "nome": "Quarta Feira"},
+        { "id": 5, "nome": "Quinta Feira"},
+        { "id": 6, "nome": "Sexta Feira"},
+        { "id": 7, "nome": "Sábado"}
+    ],
     "quadroDeAulas":[
       { "id": 1, "disciplinaId": 1, "cursoId":1, "pessoasId":1, "diaSemana":7, "inicioId":1,"terminoId": 1, "campusId":1, "blocoId":1, "pavimentoId":0,"salaId": 1},
       { "id": 2, "disciplinaId": 2, "cursoId":2, "pessoasId":2, "diaSemana":2, "inicioId":2,"terminoId": 2, "campusId":1, "blocoId":1, "pavimentoId":1,"salaId": 2},
       { "id": 3, "disciplinaId": 3, "cursoId":1, "pessoasId":3, "diaSemana":3, "inicioId":3,"terminoId": 3, "campusId":1, "blocoId":1, "pavimentoId":2,"salaId": 10},
-      { "id": 4, "disciplinaId": 4, "cursoId":4, "pessoasId":4, "diaSemana":4, "inicioId":4,"terminoId": 4, "campusId":1, "blocoId":1, "pavimentoId":3,"salaId": 18},
-      { "id": 5, "disciplinaId": 5, "cursoId":3, "pessoasId":5, "diaSemana":5, "inicioId":1,"terminoId": 3, "campusId":1, "blocoId":1, "pavimentoId":0,"salaId": 3},
-      { "id": 6, "disciplinaId": 1, "cursoId":2, "pessoasId":6, "diaSemana":7, "inicioId":2,"terminoId": 2, "campusId":1, "blocoId":1, "pavimentoId":1,"salaId": 13},
-      { "id": 7, "disciplinaId": 2, "cursoId":1, "pessoasId":7, "diaSemana":2, "inicioId":3,"terminoId": 3, "campusId":1, "blocoId":1, "pavimentoId":2,"salaId": 20},
-      { "id": 8, "disciplinaId": 3, "cursoId":2, "pessoasId":8, "diaSemana":3, "inicioId":4,"terminoId": 3, "campusId":1, "blocoId":1, "pavimentoId":3,"salaId": 34},
+      { "id": 4, "disciplinaId": 4, "cursoId":4, "pessoasId":4, "diaSemana":4, "inicioId":5,"terminoId": 6, "campusId":1, "blocoId":1, "pavimentoId":3,"salaId": 18},
+      { "id": 5, "disciplinaId": 5, "cursoId":3, "pessoasId":5, "diaSemana":5, "inicioId":6,"terminoId": 8, "campusId":1, "blocoId":1, "pavimentoId":0,"salaId": 3},
+      { "id": 6, "disciplinaId": 1, "cursoId":2, "pessoasId":6, "diaSemana":7, "inicioId":6,"terminoId": 8, "campusId":1, "blocoId":1, "pavimentoId":1,"salaId": 13},
+      { "id": 7, "disciplinaId": 2, "cursoId":1, "pessoasId":7, "diaSemana":2, "inicioId":5,"terminoId": 8, "campusId":1, "blocoId":1, "pavimentoId":2,"salaId": 20},
+      { "id": 8, "disciplinaId": 3, "cursoId":2, "pessoasId":8, "diaSemana":3, "inicioId":6,"terminoId": 8, "campusId":1, "blocoId":1, "pavimentoId":3,"salaId": 34},
       { "id": 9, "disciplinaId": 1, "cursoId":2, "pessoasId":9, "diaSemana":4, "inicioId":1,"terminoId": 1, "campusId":1, "blocoId":1, "pavimentoId":1,"salaId": 6},
       { "id": 10, "disciplinaId": 1, "cursoId":2, "pessoasId":1, "diaSemana":5, "inicioId":1,"terminoId": 3, "campusId":1, "blocoId":1, "pavimentoId":1,"salaId": 6}
     ]
@@ -148,13 +171,14 @@ const dadosJson = {
 
 
 function App() {
+
   return(
     <Router>
       <Routes>
         <Route path="/" element={
           <div className="corpo">
             <Header/>
-            <Pesquisa key={1}/>
+            <Pesquisa dados={dadosJson} key={1}/>
             <Slide
               lista_imagens={imagens}
               pagina_inicio={0}

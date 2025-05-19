@@ -4,9 +4,9 @@ import Box from "./SubBox";
 import Select from "./SubSelect";
 import Label from "./SubLabel";
 import TabelaCompleta from "./SubTabela";
-import CampusOpcoes from "./EdificioCampus";
-import BlocosOpcoes from "./EdificioBlocos";
-import PavimentosOpcoes from "./EdificioPavimentos";
+import CampusOpcoes from "./MenuEdificioCampus";
+import BlocosOpcoes from "./MenuEdificioBlocos";
+import PavimentosOpcoes from "./MenuEdificioPavimentos";
 import Colapse from "./SubColapse";
 import TabelaCompletaTeste from "./SubTabelaEditavel";
 
@@ -44,7 +44,7 @@ function ConfigurarEdificio({ dados }) {
                     <PavimentosOpcoes dados={data}></PavimentosOpcoes>
                 </Colapse>
                <Colapse nome = "Salas">
-                    <TabelaCompletaTeste dados={data.salas} lista={["id", "numero", "apelido", "pavimentoId", "imagem"]}></TabelaCompletaTeste>
+                    <TabelaCompletaTeste dados={data.salas} lista={["id", "numero", "apelido", "pavimentoId", "coordenadas"]}></TabelaCompletaTeste>
                 </Colapse>
             </Box>
     )

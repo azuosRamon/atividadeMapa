@@ -137,10 +137,51 @@ function TabelaCompletaTeste({dados, lista, itensMax = 5}){
         setdadosTemporarios(atualizada);
     };
 
+    const abrirImagem = () => {
+        setMostrarMapa(true)
+    }
 
+    const fecharImagem = () => {
+        setMostrarMapa(false)
+    }
+
+        const MapaBG = styled.div`
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: ${cores.backgroundMapa};
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    `;
+
+    const FecharBotao = styled.button`
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: ${cores.backgroundBox};
+        color: ${cores.corTexto};
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        font-size: 20px;
+        border-radius: 50%;
+    `;
+    const [mostrarMapa, setMostrarMapa] = useState(false)
     return (
         <Wrapper>
-            
+            {/*mostrarMapa && (
+                <MapaBG>
+                    <FecharBotao onClick={fecharImagem}>X</FecharBotao>
+                    <Slide
+                        lista_imagens={imagens}
+                        pagina_inicio={andar-1}
+                    />
+                </MapaBG>
+            )*/}
         <TabelaContainer>
 
             <Tabela>
@@ -163,7 +204,7 @@ function TabelaCompletaTeste({dados, lista, itensMax = 5}){
                     
                 <Td key={col}>
                     {editarIndice === indice ? ( col !== "id" ?(
-                        col === "imagem" ? (
+                        /*col === "imagem" ? (
                             <input
                             type="file"
                             onChange={(e) => {
@@ -172,7 +213,9 @@ function TabelaCompletaTeste({dados, lista, itensMax = 5}){
                                 observarModificacao({ target: { value: file.name } }, indice, col);
                                 }
                             }}
-                            />
+                            />*/
+                            col === "coordenadas" ? (
+                            <Button onClick={()=> {}}>selecionar</Button>
                         ) : (
                             <Input
                             type="text"
