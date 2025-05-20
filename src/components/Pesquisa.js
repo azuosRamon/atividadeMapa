@@ -245,6 +245,7 @@ function Pesquisa({dados}){
                     {
                         resultadoPesquisa.map((item, indice)=>(
                             <CriarCard
+                            dados = {data}
                             key = {indice}
                             fotoProfessor = {item.foto}
                             nome = {item.usuario}
@@ -266,71 +267,3 @@ function Pesquisa({dados}){
     )
 }
 export default Pesquisa;
-
-/* ANTES DE MODIFICAR
- 
-  const data = dados || {};
-    const quadroDeAulasConvertido = converterDados(data);
-
-    const ano_atual = new Date().getFullYear();
-    const idsHorariosAnoAtual = data.horarios.filter(item => item.ano === ano_atual).map(item => item.id);
-    const quadroAulasAnoAtual = data.quadroDeAulas.filter((item) => (idsHorariosAnoAtual.includes(item.inicioId)));
-
-    const horariosAula = Array.from(new Set(quadroAulasAnoAtual.map((dados)=>dados.inicioId)));
-    
-    
-    const professoresAula = Array.from(new Set(quadroAulasAnoAtual.map((dados)=>dados.pessoasId)));
-    const [resultadoPesquisa, confResultadoPesquisa] = useState([]);
-    const [procurarProfessor, confProcurarProfessor] = useState("");
-    
-    const [procurarSala, confProcurarSala] = useState("");
-    const [sala, confSala] = useState("");
-    const salas = data.salas.map((item) => ((item.apelido.length>0) ? item.numero.toString() + " - " + item.apelido : item.numero.toString())) || [];
-    
-    const [procurarCurso, confProcurarCurso] = useState("");
-    const cursosAula = Array.from(new Set(quadroAulasAnoAtual.map((dados)=>dados.cursoId)));
-    const cursos = data.cursos.filter((item) => (cursosAula.includes(item.id))).map(item => "Curso de " + item.nome) || [];
-    
-    const [procurarDisciplina, confProcurarDisciplina] = useState("");
-    const [materia, confMateria] = useState("");
-    const disciplinasAula = Array.from(new Set(quadroAulasAnoAtual.map((dados)=>dados.disciplinaId)));
-    const disciplinas = data.disciplinas.filter((item) => (disciplinasAula.includes(item.id))).map(item => "Disciplina de " + item.nome) || [];
-    
-    const [dia, confDia] = useState(0);
-    const [horario, confHorario] = useState("");
-
-
-    const [estadoModal, mudarEstadoModal] = useState(false);
-    
-    const materiasUnicas = data.disciplinas
-    .filter((item) => (disciplinasAula.includes(item.id)))
-    .map(item=>item.nome);
-    
-    const horariosUnicos = data.horarios
-    .filter((item) => (horariosAula.includes(item.id) && item.ano === ano_atual))
-    .map((item)=>item.inicio);
-    
-    const professoresUnicos = data.pessoas
-    .filter(pessoa => professoresAula.includes(pessoa.id))
-    .map(pessoa => pessoa.nome);
-    
-    
-    
-    const cursosEDisciplinas = cursos.concat(disciplinas);
-    console.log("aqui");
-    console.log(idsHorariosAnoAtual)
-    console.log(quadroAulasAnoAtual)
-    console.log(data.horarios.filter((item) => (horariosAula.includes(item.id))).map((item)=>item.inicio));
-
-
-    const buscarResultados = (event) => {
-        event.preventDefault();
-        
-        confResultadoPesquisa(quadroAulasAnoAtual.filter(d =>
-            (!procurarProfessor || d.professor.toLowerCase().includes(procurarProfessor.toLowerCase())) &&
-            (!procurarSala || d.sala.toLowerCase() === (sala)) &&
-            (!materia || d.materia === materia) && 
-            (!dia || d.dia === dia) &&
-            (!horario || d.horario === horario)
-        )
-    )*/

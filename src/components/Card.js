@@ -80,7 +80,8 @@ const imagensPorSalaEAndar = {
     "3-03": [terreo, primeiro_pavimento, sala03, terceiro_pavimento],
 };
 
-function CriarCard({ nome, disciplina, dia, horarioInicial, horarioFinal, bloco, pavimento, sala, fotoProfessor }) {
+function CriarCard({ dados, nome, disciplina, dia, horarioInicial, horarioFinal, bloco, pavimento, sala, fotoProfessor }) {
+    const data = dados || {};
     const [mostrarMapa, setMostrarMapa] = useState(false)
 
     const chaveSalaAndar = `${Number(pavimento)}-${Number(sala)}`;
@@ -138,6 +139,7 @@ function CriarCard({ nome, disciplina, dia, horarioInicial, horarioFinal, bloco,
                     <Slide
                         lista_imagens={imagens}
                         pagina_inicio={Number(pavimento)-1}
+                        dados={data}
                     />
                 </MapaBG>
             )}

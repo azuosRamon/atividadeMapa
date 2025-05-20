@@ -80,50 +80,49 @@ const dadosJson = {
       { "id": 4, "nome": "C", "imagem": "caminho/a.png", "campusId" : 2}
   ],
   "pavimentos":[
-      { "id": 0, "numero": "1", "imagem": "caminho/a.png", "blocoId" : 1},
-      { "id": 1, "numero": "1", "imagem": "caminho/a.png", "blocoId" : 1},
-      { "id": 2, "numero": "2", "imagem": "caminho/b.png", "blocoId" : 1},
-      { "id": 3, "numero": "3", "imagem": "caminho/c.png", "blocoId" : 1},
-      { "id": 4, "numero": "4", "imagem": "caminho/d.png", "blocoId" : 1}
+      { "id": 1, "numero": 1, "imagem": "caminho/a.png", "blocoId" : 1},
+      { "id": 2, "numero": 2, "imagem": "caminho/b.png", "blocoId" : 1},
+      { "id": 3, "numero": 3, "imagem": "caminho/c.png", "blocoId" : 1},
+      { "id": 4, "numero": 4, "imagem": "caminho/d.png", "blocoId" : 1}
 
   ],
   "salas":[
-      {"id": 1, "numero": 1, "apelido": "Lab. Anatômico Geral","imagem": "001", "pavimentoId": 1},
-      {"id": 2, "numero": 2, "apelido": "Lab. Anatômico Veterinário", "imagem": "002", "pavimentoId": 1},
-      {"id": 3, "numero": 3, "apelido": "Lab. Sala de Preparo", "imagem": "003", "pavimentoId": 1},
-      {"id": 4, "numero": 4, "apelido": "Lab. Microbiologia","imagem": "004", "pavimentoId": 1},
-      {"id": 5, "numero": 5, "apelido": "Lab. Biologia","imagem": "005", "pavimentoId": 1},
-      {"id": 6, "numero": 6, "apelido": "Lab. Mecânica dos solos","imagem": "006", "pavimentoId": 1},
-      {"id": 7, "numero": 7, "apelido": "Lab. Tecnicas construtivas","imagem": "007", "pavimentoId": 1},
-      {"id": 8, "numero": 8, "apelido": "Lab. Elétrica","imagem": "008", "pavimentoId": 1},
-      {"id": 9, "numero": 10, "apelido": "","imagem": "110", "pavimentoId": 2},
-      {"id": 10, "numero": 11, "apelido": "","imagem": "111", "pavimentoId": 2},
-      {"id": 11, "numero": 12, "apelido": "","imagem": "112", "pavimentoId": 2},
-      {"id": 12, "numero": 14, "apelido": "","imagem": "114", "pavimentoId": 2},
-      {"id": 13, "numero": 15, "apelido": "","imagem": "115", "pavimentoId": 2},
-      {"id": 14, "numero": 16, "apelido": "","imagem": "116", "pavimentoId": 2},
-      {"id": 15, "numero": 17, "apelido": "","imagem": "117", "pavimentoId": 2},
-      {"id": 16, "numero": 18, "apelido": "Lab. Informática 01","imagem": "201", "pavimentoId": 3},
-      {"id": 17, "numero": 19, "apelido": "Lab. Informática 02","imagem": "202", "pavimentoId": 3},
-      {"id": 18, "numero": 20, "apelido": "Lab. Informática 03","imagem": "203", "pavimentoId": 3},
-      {"id": 19, "numero": 21, "apelido": "Lab. Informática 04","imagem": "204", "pavimentoId": 3},
-      {"id": 20, "numero": 22, "apelido": "","imagem": "222", "pavimentoId": 3},
-      {"id": 21, "numero": 23, "apelido": "","imagem": "223", "pavimentoId": 3},
-      {"id": 22, "numero": 24, "apelido": "","imagem": "224", "pavimentoId": 3},
-      {"id": 23, "numero": 25, "apelido": "","imagem": "225", "pavimentoId": 3},
-      {"id": 24, "numero": 26, "apelido": "","imagem": "226", "pavimentoId": 3},
-      {"id": 25, "numero": 27, "apelido": "","imagem": "227", "pavimentoId": 3},
-      {"id": 26, "numero": 28, "apelido": "","imagem": "228", "pavimentoId": 3},
-      {"id": 27, "numero": 29, "apelido": "Lab. de Química","imagem": "329", "pavimentoId": 4},
-      {"id": 28, "numero": 30, "apelido": "Lab. Anatomia Palpatória","imagem": "330", "pavimentoId": 4},
-      {"id": 29, "numero": 31, "apelido": "Lab. de Antropometria","imagem": "331", "pavimentoId": 4},
-      {"id": 30, "numero": 32, "apelido": "Lab. Técnicas dietéticas","imagem": "332", "pavimentoId": 4},
-      {"id": 31, "numero": 34, "apelido": "","imagem": "334", "pavimentoId": 4},
-      {"id": 32, "numero": 35, "apelido": "","imagem": "335", "pavimentoId": 4},
-      {"id": 33, "numero": 36, "apelido": "","imagem": "336", "pavimentoId": 4},
-      {"id": 34, "numero": 37, "apelido": "","imagem": "337", "pavimentoId": 4},
-      {"id": 35, "numero": 38, "apelido": "","imagem": "338", "pavimentoId": 4},
-      {"id": 36, "numero": 39, "apelido": "","imagem": "339", "pavimentoId": 4},
+      {"id": 1, "numero": 1, "apelido": "Lab. Anatômico Geral","imagem": "001", "pavimentoId": 1, "area": "[]"},
+      {"id": 2, "numero": 2, "apelido": "Lab. Anatômico Veterinário", "imagem": "002", "pavimentoId": 1, "area": "[]"},
+      {"id": 3, "numero": 3, "apelido": "Lab. Sala de Preparo", "imagem": "003", "pavimentoId": 1, "area": "[]"},
+      {"id": 4, "numero": 4, "apelido": "Lab. Microbiologia","imagem": "004", "pavimentoId": 1, "area": "[]"},
+      {"id": 5, "numero": 5, "apelido": "Lab. Biologia","imagem": "005", "pavimentoId": 1, "area": "[]"},
+      {"id": 6, "numero": 6, "apelido": "Lab. Mecânica dos solos","imagem": "006", "pavimentoId": 1, "area": "[]"},
+      {"id": 7, "numero": 7, "apelido": "Lab. Tecnicas construtivas","imagem": "007", "pavimentoId": 1, "area": "[[1927,1097],[2523,1094],[2571,1816],[2423,1816],[2423,1679],[1925,1683]]"},
+      {"id": 8, "numero": 8, "apelido": "Lab. Elétrica","imagem": "008", "pavimentoId": 1, "area": "[[1927,1700],[2403,1700],[2402,1832],[2569,1833],[2593,2192],[1930,2193]]"},
+      {"id": 9, "numero": 10, "apelido": "","imagem": "110", "pavimentoId": 2, "area": "[]"},
+      {"id": 10, "numero": 11, "apelido": "","imagem": "111", "pavimentoId": 2, "area": "[]"},
+      {"id": 11, "numero": 12, "apelido": "","imagem": "112", "pavimentoId": 2, "area": "[]"},
+      {"id": 12, "numero": 14, "apelido": "","imagem": "114", "pavimentoId": 2, "area": "[]"},
+      {"id": 13, "numero": 15, "apelido": "","imagem": "115", "pavimentoId": 2, "area": "[]"},
+      {"id": 14, "numero": 16, "apelido": "","imagem": "116", "pavimentoId": 2, "area": "[]"},
+      {"id": 15, "numero": 17, "apelido": "","imagem": "117", "pavimentoId": 2, "area": "[]"},
+      {"id": 16, "numero": 18, "apelido": "Lab. Informática 01","imagem": "201", "pavimentoId": 3, "area": "[]"},
+      {"id": 17, "numero": 19, "apelido": "Lab. Informática 02","imagem": "202", "pavimentoId": 3, "area": "[]"},
+      {"id": 18, "numero": 20, "apelido": "Lab. Informática 03","imagem": "203", "pavimentoId": 3, "area": "[]"},
+      {"id": 19, "numero": 21, "apelido": "Lab. Informática 04","imagem": "204", "pavimentoId": 3, "area": "[]"},
+      {"id": 20, "numero": 22, "apelido": "","imagem": "222", "pavimentoId": 3, "area": "[]"},
+      {"id": 21, "numero": 23, "apelido": "","imagem": "223", "pavimentoId": 3, "area": "[]"},
+      {"id": 22, "numero": 24, "apelido": "","imagem": "224", "pavimentoId": 3, "area": "[]"},
+      {"id": 23, "numero": 25, "apelido": "","imagem": "225", "pavimentoId": 3, "area": "[]"},
+      {"id": 24, "numero": 26, "apelido": "","imagem": "226", "pavimentoId": 3, "area": "[]"},
+      {"id": 25, "numero": 27, "apelido": "","imagem": "227", "pavimentoId": 3, "area": "[]"},
+      {"id": 26, "numero": 28, "apelido": "","imagem": "228", "pavimentoId": 3, "area": "[]"},
+      {"id": 27, "numero": 29, "apelido": "Lab. de Química","imagem": "329", "pavimentoId": 4, "area": "[]"},
+      {"id": 28, "numero": 30, "apelido": "Lab. Anatomia Palpatória","imagem": "330", "pavimentoId": 4, "area": "[]"},
+      {"id": 29, "numero": 31, "apelido": "Lab. de Antropometria","imagem": "331", "pavimentoId": 4, "area": "[]"},
+      {"id": 30, "numero": 32, "apelido": "Lab. Técnicas dietéticas","imagem": "332", "pavimentoId": 4, "area": "[]"},
+      {"id": 31, "numero": 34, "apelido": "","imagem": "334", "pavimentoId": 4, "area": "[]"},
+      {"id": 32, "numero": 35, "apelido": "","imagem": "335", "pavimentoId": 4, "area": "[]"},
+      {"id": 33, "numero": 36, "apelido": "","imagem": "336", "pavimentoId": 4, "area": "[]"},
+      {"id": 34, "numero": 37, "apelido": "","imagem": "337", "pavimentoId": 4, "area": "[]"},
+      {"id": 35, "numero": 38, "apelido": "","imagem": "338", "pavimentoId": 4, "area": "[]"},
+      {"id": 36, "numero": 39, "apelido": "","imagem": "339", "pavimentoId": 4, "area": "[]"},
 
   ],
   "cursos":[
@@ -156,11 +155,11 @@ const dadosJson = {
         { "id": 7, "nome": "Sábado"}
     ],
     "quadroDeAulas":[
-      { "id": 1, "disciplinaId": 1, "cursoId":1, "pessoasId":1, "diaSemana":7, "inicioId":1,"terminoId": 1, "campusId":1, "blocoId":1, "pavimentoId":0,"salaId": 1},
+      { "id": 1, "disciplinaId": 1, "cursoId":1, "pessoasId":1, "diaSemana":7, "inicioId":1,"terminoId": 1, "campusId":1, "blocoId":1, "pavimentoId":1,"salaId": 1},
       { "id": 2, "disciplinaId": 2, "cursoId":2, "pessoasId":2, "diaSemana":2, "inicioId":2,"terminoId": 2, "campusId":1, "blocoId":1, "pavimentoId":1,"salaId": 2},
       { "id": 3, "disciplinaId": 3, "cursoId":1, "pessoasId":3, "diaSemana":3, "inicioId":3,"terminoId": 3, "campusId":1, "blocoId":1, "pavimentoId":2,"salaId": 10},
       { "id": 4, "disciplinaId": 4, "cursoId":4, "pessoasId":4, "diaSemana":4, "inicioId":5,"terminoId": 6, "campusId":1, "blocoId":1, "pavimentoId":3,"salaId": 18},
-      { "id": 5, "disciplinaId": 5, "cursoId":3, "pessoasId":5, "diaSemana":5, "inicioId":6,"terminoId": 8, "campusId":1, "blocoId":1, "pavimentoId":0,"salaId": 3},
+      { "id": 5, "disciplinaId": 5, "cursoId":3, "pessoasId":5, "diaSemana":5, "inicioId":6,"terminoId": 8, "campusId":1, "blocoId":1, "pavimentoId":1,"salaId": 3},
       { "id": 6, "disciplinaId": 1, "cursoId":2, "pessoasId":6, "diaSemana":7, "inicioId":6,"terminoId": 8, "campusId":1, "blocoId":1, "pavimentoId":1,"salaId": 13},
       { "id": 7, "disciplinaId": 2, "cursoId":1, "pessoasId":7, "diaSemana":2, "inicioId":5,"terminoId": 8, "campusId":1, "blocoId":1, "pavimentoId":2,"salaId": 20},
       { "id": 8, "disciplinaId": 3, "cursoId":2, "pessoasId":8, "diaSemana":3, "inicioId":6,"terminoId": 8, "campusId":1, "blocoId":1, "pavimentoId":3,"salaId": 34},
@@ -182,6 +181,7 @@ function App() {
             <Slide
               lista_imagens={imagens}
               pagina_inicio={0}
+              dados={dadosJson}
             />
             <Footer/>
           </div>
@@ -231,6 +231,8 @@ function App() {
           <Slide
           lista_imagens={imagens}
           pagina_inicio={0}
+          dados={dadosJson}
+          capturarCoordenadas = {true}
         />
           }/>
 

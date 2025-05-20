@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect, useRef} from "react";
 import imageMapResize from 'image-map-resizer';
 import styled from "styled-components";
 import { CiSquareChevLeft } from "react-icons/ci";
@@ -84,33 +84,6 @@ const imagensSalas = {
     "338": sala338,
     "339": sala339,
   };
-
-  const areas = [
-    {
-      id: "area1",
-      coords: [
-        [1927,1097],
-        [2523,1094],
-        [2571,1816],
-        [2423,1816],
-        [2423,1679],
-        [1925,1683]
-      ]
-    },
-    {
-        id: "area2",
-        coords: [
-          [1927,1700],
-          [2403,1700],
-          [2402,1832],
-          [2569,1833],
-          [2593,2192],
-          [1930,2193]
-        ]
-      },
-    // outras áreas aqui
-  ];
-  
 
 const DivContent = styled.div`
 background-color: #222;
@@ -277,8 +250,10 @@ function Slide({ lista_imagens, pagina_inicio, listaSalasAtivas=[], pavimento = 
     const [slide_atual, mudarSlide] = useState(0);
     const total_slides = lista_imagens.length;
     const indiceAtivo = total_slides - (slide_atual + 1);
+
     let [arrastando, setArrastando] = useState(false);
     let [startX, mudarStartX] = useState(null);
+
     let [endX, mudarEndX] = useState(null);
     const [aberturaInicial, mudarEstadoAbertura] = useState(false);
     const normalizarCoords = (coords) =>
@@ -329,49 +304,27 @@ function Slide({ lista_imagens, pagina_inicio, listaSalasAtivas=[], pavimento = 
       
         mudarStartX(null);
       };
-      const [arrastandoPonto, setArrastandoPonto] = useState(null);
 
-const iniciarArrastePonto = (e, index) => {
-  e.stopPropagation();
-  setArrastandoPonto(index);
-};
+    const handlePointerDown = (event) => {
+      if (capturarCoordenadas) {
+        if (event.button !== 0) return;
 
-useEffect(() => {
-  const mover = (e) => {
-    if (arrastandoPonto === null) return;
+        const svg = event.currentTarget;
+        const rect = svg.getBoundingClientRect();
 
-    const svg = document.querySelector("svg");
-    const rect = svg.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
-    const offsetY = e.clientY - rect.top;
-    const width = rect.width;
-    const height = rect.height;
+        const offsetX = event.clientX - rect.left;
+        const offsetY = event.clientY - rect.top;
 
-    const x = (offsetX / width) * 2900;
-    const y = (offsetY / height) * 2500;
+        const width = rect.width;
+        const height = rect.height;
 
-    setPontosClicados((prev) => {
-      const atualizados = [...prev];
-      atualizados[arrastandoPonto] = [Math.round(x), Math.round(y)];
-      return atualizados;
-    });
-  };
+        const svgX = (offsetX / width) * 2900;
+        const svgY = (offsetY / height) * 2500;
 
-  const pararArraste = () => setArrastandoPonto(null);
-
-  window.addEventListener("mousemove", mover);
-  window.addEventListener("mouseup", pararArraste);
-
-  return () => {
-    window.removeEventListener("mousemove", mover);
-    window.removeEventListener("mouseup", pararArraste);
-  };
-}, [arrastandoPonto]);
-
-
-const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-const [mostrarLupa, setMostrarLupa] = useState(false);
-
+        const novoPonto = [Math.round(svgX), Math.round(svgY)];
+        setPontosClicados((prev) => [...prev, novoPonto]);
+      }
+    };
 
 
     return(
@@ -403,93 +356,56 @@ const [mostrarLupa, setMostrarLupa] = useState(false);
 
                     <DivItem key={indice} $lista_imagens_informada={lista_imagens}>
                     <DivSobreposta
-  onMouseMove={(e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
-  }}
-  onMouseEnter={() => setMostrarLupa(true)}
-  onMouseLeave={() => setMostrarLupa(false)}
 >
                         <Imagem src={imagemBase} alt="Planta" />
-                      
-                        <SVGOverlay
-  viewBox="0 0 2900 2500"
-  preserveAspectRatio="xMidYMid meet"
-  onPointerDown={(event) => {
-    if (capturarCoordenadas){
-      // Adiciona novo ponto com clique esquerdo normal
-      if (event.button !== 0) return; // Apenas botão esquerdo
-      if (arrastandoPonto !== null) return;
-  
-      const svg = event.currentTarget;
-      const rect = svg.getBoundingClientRect();
-  
-      const offsetX = event.clientX - rect.left;
-      const offsetY = event.clientY - rect.top;
-  
-      const width = rect.width;
-      const height = rect.height;
-  
-      const svgX = (offsetX / width) * 2900;
-      const svgY = (offsetY / height) * 2500;
-  
-      const novoPonto = [Math.round(svgX), Math.round(svgY)];
-      setPontosClicados((prev) => [...prev, novoPonto]);
-      
-    }
-  }}
-  onContextMenu={(e) => {
-    e.preventDefault();
-    setPontosClicados((prev) => prev.slice(0, -1)); // remove último ponto
-  }}
->
-  {/* Polígonos existentes */}
-  {areas.map((area) => (
-    <AreaPoligonal
-      key={area.id}
-      points={area.coords.map(([x, y]) => `${x},${y}`).join(" ")}
-      onClick={(e) => {
-        if (!capturarCoordenadas){
-          e.stopPropagation();
-          console.log(`Clicou na área ${area.id}`);
-        }
-      }}
-    />
-  ))}
 
-  {/* Polígono customizado pelos pontos clicados */}
-  {pontosClicados.length > 2 && (
-    <polygon
-      points={pontosClicados.map(([x, y]) => `${x},${y}`).join(" ")}
-      fill= {cores.cor3}
-      stroke={cores.cor1}
-      strokeWidth={10}
-    />
-  )}
 
-  {/* Pontos interativos */}
-  {pontosClicados.map(([x, y], i) => (
-    <circle
-      key={i}
-      cx={x}
-      cy={y}
-      r={20}
-      fill={cores.cor1}
-      cursor="grab"
-      onMouseDown={(e) => iniciarArrastePonto(e, i)}
-    />
-  ))}
-</SVGOverlay>
-{capturarCoordenadas && (
-  <LupaCircular
-    show={mostrarLupa}
-    x={mousePosition.x}
-    y={mousePosition.y}
-    imageSrc={imagemBase}
-    zoom={2.5}
-  />
+                       <SVGOverlay
+                          viewBox="0 0 2900 2500"
+                          preserveAspectRatio="xMidYMid meet"
+                          onPointerDown={handlePointerDown}
+                          onContextMenu={(e) => {
+                            e.preventDefault();
+                            setPontosClicados((prev) => prev.slice(0, -1));
+                          }}
+                        >
 
-)}
+                          {/* Polígonos existentes */}
+                          {data.salas.map((item) => (
+                            <AreaPoligonal
+                              key={item.id}
+                              points={data.pavimentos.filter(pavimento => pavimento.id === item.pavimentoId)[0].numero === (slide_atual + 1) && JSON.parse(item.area).map(([x, y]) => `${x},${y}`).join(" ")}
+                              onClick={(e) => {
+                                if (!capturarCoordenadas){
+                                  alert(`Clicou na sala ${item.numero} - ${item.apelido}`);
+                                }
+                              }}
+                            />
+                          ))}
+
+                          {/* Polígono customizado pelos pontos clicados */}
+                          {pontosClicados.length > 2 && (
+                            <polygon
+                              points={pontosClicados.map(([x, y]) => `${x},${y}`).join(" ")}
+                              fill= {cores.cor3}
+                              stroke={cores.cor1}
+                              strokeWidth={10}
+                            />
+                          )}
+
+                          {/* Pontos interativos */}
+                          {pontosClicados.map(([x, y], i) => (
+                            <circle
+                          key={i}
+                          cx={x}
+                          cy={y}
+                          r={20}
+                          fill={cores.cor1}
+                        />
+
+                          ))}
+                      </SVGOverlay>
+
 
 
                     </DivSobreposta>
@@ -513,7 +429,7 @@ const [mostrarLupa, setMostrarLupa] = useState(false);
               <DivBotoesCoordenadas>
                 <Button $bgcolor={cores.backgroundBotaoSemFoco2} onClick={() => setPontosClicados([])}>Limpar croqui</Button>
                 <Button $bgcolor={cores.backgroundBotaoSemFoco2} onClick={() => setPontosClicados((prev) => prev.slice(0, -1))}>Deletar ultimo ponto</Button>
-                <Button onClick={() => setPontosClicados((prev) => prev.slice(0, -1))}>Salvar croqui</Button>
+                <Button onClick={() => (console.log(pontosClicados.map((item) => "[" + item + "]").toString()))}>Salvar croqui</Button>
 
               </DivBotoesCoordenadas>
 
