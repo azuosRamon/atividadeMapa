@@ -201,7 +201,7 @@ function App() {
           </div>
         }/>
         <Route path="/logado" element={
-          <LayoutLogado usuarioDados={data} usuarioId={0}><Slide lista_imagens={imagens} pagina_inicio={0}/></LayoutLogado>
+          <LayoutLogado usuarioDados={data} usuarioId={0}><Slide dados={dadosJson} lista_imagens={imagens} pagina_inicio={0}/></LayoutLogado>
       }/>
         <Route path="/editarPerfil" element={
           <LayoutLogado usuarioDados={data} usuarioId={0}><Perfil dados={data} usuarioId={0}/></LayoutLogado>
