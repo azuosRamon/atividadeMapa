@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef} from "react";
-import imageMapResize from 'image-map-resizer';
 import styled from "styled-components";
 import { CiSquareChevLeft } from "react-icons/ci";
 import { CiSquareChevRight } from "react-icons/ci";
 import cores from "./Cores"
-import LupaCircular from "./Lupa";
+
 import Button from "./SubButton";
 import sala001 from "./salasAtivadas/001.png";
 import sala002 from "./salasAtivadas/002.png";
@@ -42,9 +41,7 @@ import sala336 from "./salasAtivadas/336.png";
 import sala337 from "./salasAtivadas/337.png";
 import sala338 from "./salasAtivadas/338.png";
 import sala339 from "./salasAtivadas/339.png";
-import { click } from "@testing-library/user-event/dist/click";
-import { BsDisplay } from "react-icons/bs";
-import dadosJson from "../App.js"
+
 
 const imagensSalas = {
     "001": sala001,
@@ -243,7 +240,7 @@ gap: 10px;
 `;
 
 
-function Slide({ lista_imagens, pagina_inicio, listaSalasAtivas=[], pavimento = 0,dados=dadosJson, capturarCoordenadas = false}){
+function Slide({ lista_imagens, pagina_inicio, listaSalasAtivas=[], pavimento = 0,dados, capturarCoordenadas = false}){
     const data = dados || {};
     /*listaSalasAtivas = ["001","002","003","004","005","006","007","008","110","111","112","114","115","116","117","201", "202","203","204","222","223","224","225","226","227","228","301","302","303", "304","334","335","336","337","338","339"]*/
     const [pontosClicados, setPontosClicados] = useState([]);
