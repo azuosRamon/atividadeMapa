@@ -61,6 +61,7 @@ const Tbody = styled.tbody`
 `;
 
 const FormGrid = styled.form`
+    gap: 10px;
     display: grid;
     box-sizing: border-box;
     grid-template-columns: 1fr 1fr 1fr;
@@ -73,8 +74,8 @@ const FormGrid = styled.form`
         grid-template-columns: 1fr;
         grid-template-areas: 
             "tabela"
-            "idItem"
             "botoes"
+            "idItem"
             "nome";
     }
 `;
@@ -90,14 +91,17 @@ const BotoesContainer = styled.div`
     grid-area: botoes;
     display: grid;
     width: 100%;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 15px;
 `;
 
 const JustifiedButton = styled(Button)`
     width: 100%;
-    background-color: ${cores.backgroundBotaoSemFoco};
+    background-color: ${cores.backgroundBotaoSemFoco2};
+    font-size: .8em;
+    padding: 5px;
     margin-bottom: 15px;
+    margin-top: 0;
 `;
 
 function TabelaCompleta({ dados, lista = [] }) {
@@ -216,10 +220,10 @@ function TabelaCompleta({ dados, lista = [] }) {
             <GridArea $area="botoes">
                 <BotoesContainer>
                     <JustifiedButton type="button" onClick={gerarPDF}>
-                        Exportar para PDF
+                        Exportar PDF
                     </JustifiedButton>
                     <JustifiedButton type="button" onClick={gerarExcel}>
-                        Exportar para Excel
+                        Exportar Excel
                     </JustifiedButton>
                 </BotoesContainer>
             </GridArea>

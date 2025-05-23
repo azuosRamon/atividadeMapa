@@ -10,7 +10,7 @@ const cores = {
     "corTexto" : "#fff",
     "corTextoClaro" : "#cccccc",
     "corTextoEscuro" : "rgb(38,38,38)",
-    "backgroundBox": "rgba(15,15,15,1)",
+    "backgroundBox": "rgba(70,70,70,1)",
     "boxShadow": "rgba(0, 0, 0, 0.1)",
     "backgroundMenus": "rgba(0, 0, 0, .2)",
     "backgroundMapa" : "rgba(0, 0, 0, 0.9)",

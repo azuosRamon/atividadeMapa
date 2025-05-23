@@ -9,9 +9,9 @@ display: flex;
 justify-content: flex-start;
 align-items: center;
 background-color: ${cores.backgroundColapse};
-border-radius: 5px;
+border-radius: 2px;
 padding: 10px;
-margin-bottom: ${(props) => (props.$marginBottom? '20px' : '0px')};;
+margin-bottom: ${(props) => (props.$marginBottom? '5px' : '0px')};;
 margin-top: 20px;
 
 `;
@@ -21,6 +21,10 @@ const DivColapseContent = styled.div`
   opacity: ${(props) => (props.$mostrar ? 1 : 0)};
   transform: ${(props) => (props.$mostrar ? 'scale(1)' : 'scale(0.98)')};
   pointer-events: ${(props) => (props.$mostrar ? 'auto' : 'none')};
+  background-color: rgb(58, 58, 58);
+    padding: 15px;
+    border-radius: 2px;
+    border: 1px solid rgb(15, 15, 15);
   overflow: hidden;
   transition: 
     opacity 0.2s ease, 

@@ -9,6 +9,7 @@ import cores from "./Cores"
 
 
 const FormGrid = styled.form`
+gap: 10px;
 display: grid;
 box-sizing: border-box;
 grid-template-columns: 1fr 1fr 1fr;

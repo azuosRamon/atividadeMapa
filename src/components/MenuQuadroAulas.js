@@ -14,6 +14,7 @@ import Slide from "./Slide"
 import cores from "./Cores"
 
 const FormGrid = styled.form`
+gap: 10px;
 display: grid;
 grid-template-columns: 1fr 1fr 1fr;
 grid-template-areas: 
