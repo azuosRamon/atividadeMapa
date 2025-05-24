@@ -18,7 +18,9 @@ const cores = {
     "backgroundBotaoSemFoco": "rgb(38,38,38)",
     "backgroundBotaoSemFoco2": "rgb(55,55,55)",
     "backgroundColapse": "rgb(38,38,38)",
-    "backgroundInput": "#333"
+    "backgroundColapseInformacoes": "rgb(80,80,80)",
+    "backgroundInput": "#333",
+    "corTabelaTitulos": "rgb(38,38,38)"
 }
 export default cores
 /* CORES ANTIGAS

@@ -14,7 +14,6 @@ const TabelaContainer = styled.div`
     height: auto;
     max-height: 250px;
     overflow-x: auto;
-    margin-bottom: 15px;
 `;
 
 const Tabela = styled.table`
@@ -24,7 +23,7 @@ const Tabela = styled.table`
 `;
 
 const Th = styled.th`
-    background-color: ${cores.cor3};
+    background-color: ${cores.corTabelaTitulos};
     color: #fff;
     font-weight: bold;
     padding: 12px;
@@ -97,14 +96,14 @@ const BotoesContainer = styled.div`
 
 const JustifiedButton = styled(Button)`
     width: 100%;
-    background-color: ${cores.backgroundBotaoSemFoco2};
+    background-color: ${cores.backgroundBotaoSemFoco};
     font-size: .8em;
     padding: 5px;
     margin-bottom: 15px;
     margin-top: 0;
 `;
 
-function TabelaCompleta({ dados, lista = [] }) {
+function TabelaCompleta({ dados, lista = [], exportar = false }) {
     const data = dados || {};
     const [pesquisa, setPesquisa] = useState([]);
     const [idItem, setId] = useState("");
@@ -216,7 +215,7 @@ function TabelaCompleta({ dados, lista = [] }) {
                     />
                 </CampoContainer>
             </GridArea>
-
+            {exportar && (
             <GridArea $area="botoes">
                 <BotoesContainer>
                     <JustifiedButton type="button" onClick={gerarPDF}>
@@ -227,6 +226,7 @@ function TabelaCompleta({ dados, lista = [] }) {
                     </JustifiedButton>
                 </BotoesContainer>
             </GridArea>
+            )}                
         </FormGrid>
     );
 }

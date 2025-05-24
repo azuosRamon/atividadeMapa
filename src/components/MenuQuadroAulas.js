@@ -8,25 +8,48 @@ import Button from "./SubButton";
 import Title from "./SubTitleH2";
 import GridArea from "./SubGridArea";
 import DivSeparador from "./SubDivSeparador";
+import InputAutocomplete from "./SubInputAutocomplete";
 import TabelaCompleta from "./SubTabela";
 import Colapse from "./SubColapse"
 import Slide from "./Slide"
 import cores from "./Cores"
 
 const FormGrid = styled.form`
-gap: 10px;
-display: grid;
-grid-template-columns: 1fr 1fr 1fr;
-grid-template-areas: 
-"operacao id ."
-"tabela tabela tabela"
-"ano semestre dia"
-    "inicio termino campus"
-    "blocos pavimentos salas"
-    "separar separar separar"
-    "cursos professores professores"
-    "disciplinas disciplinas disciplinas"
-    "reset . botoes";
+  gap: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas:  ${
+        ({ operacao }) => {
+        if (operacao === "1" || operacao === "2") {
+          return `
+            "tabela tabela tabela"
+            "operacao operacao id"
+            "separar1 separar1 separar1"
+            "cursos professores professores"
+            "disciplinas disciplinas disciplinas"
+            "separar separar separar"
+            "ano semestre dia"
+            "inicio termino ."
+            "separar2 separar2 separar2"
+            "campus campus blocos"
+            "pavimentos salas salas"
+            "separar3 separar3 separar3"
+            ". reset botoes"`
+          ;
+        } else {
+          return `
+            "tabela tabela tabela"
+            "operacao operacao id"
+            "separar3 separar3 separar3"
+            ". reset botoes"`
+          ;
+        }
+      }
+
+    }
+};
+    
+    
 
 @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -56,7 +79,7 @@ grid-template-areas:
 function ConfigurarQuadroAulas({ table, imagens }) {
     const data = table || {};
     const [pesquisa, setPesquisa] = useState([]);
-    const [operacao, setOperacao] = useState(1);
+    const [operacao, setOperacao] = useState(0);
     const [id, setId] = useState("");
     const [idInicio, setIdIncio] = useState(1);
     const [idtermino, setIdtermino] = useState(1);
@@ -222,12 +245,89 @@ function ConfigurarQuadroAulas({ table, imagens }) {
         const horarioSelecionado = data.horarios.find(item => item.termino === hora);
         setIdtermino(horarioSelecionado ? horarioSelecionado.id : "");
       };
-    
+    const professoresAula = Array.from(new Set(data.usuarios.map((item)=> item.funcao + " - " + item.nome + " " + item.sobrenome)));
+    const [procurarProfessor, confProcurarProfessor] = useState("");
+
+    const [procurarDisciplina, confProcurarDisciplina] = useState("");
+    const disciplinas = Array.from(new Set(data.disciplinas.map((dados)=>dados.nome))) || [];
     return(
             <Box>
-                <Title>Quadro de Aulas</Title>
-                <DivSeparador></DivSeparador>
-                <FormGrid onSubmit={fazerEnvio}>
+                <Title>QUADRO DE HORÁRIOS</Title>
+                <FormGrid operacao={String(operacao)} onSubmit={fazerEnvio}>
+                    <GridArea $area="tabela">
+                        <DivSeparador></DivSeparador>
+                            <Colapse marginBottom={'0px'} nome = "Visualizar salas" estadoInicial={false}>
+                                <Slide
+                                    lista_imagens={imagens}
+                                    pagina_inicio={idPavimento}
+                                    listaSalasAtivas={salasAtivas}
+                                    dados={data}                                />
+                            </Colapse>
+                        <DivSeparador></DivSeparador>
+                    </GridArea>
+                    <GridArea $area="operacao">
+                        <Label htmlFor="operacao">Operacao:</Label>
+                            <Select id="operacao" name="operacao" required onChange={(e) => setOperacao(e.target.value)}>
+                            <option value="0">Selecione a operação desejada</option>
+                            <option value="1">Adicionar</option>
+                            <option value="2">Alterar</option>
+                            <option value="3">Deletar</option>
+                            </Select>
+                    </GridArea>
+
+                    {operacao > 1 && (
+                        <>
+                    <GridArea $area="id">
+                        <Label htmlFor="id">ID:</Label>
+                        <Input 
+                            type="number" 
+                            id="id" 
+                            name="id" 
+                            placeholder="Informe o id do alvo"
+                            disabled={Number(operacao) === 1} 
+                            value={id}
+                            onChange={(e) => setId(Number(e.target.value))}
+                            />
+                    </GridArea>
+                        </>
+                    )}
+                    {(Number(operacao) === 1 || Number(operacao) === 2) && (
+                        <React.Fragment>
+
+                    <GridArea $area="separar1">
+                        <DivSeparador></DivSeparador>
+                    </GridArea>
+                    <GridArea $area="cursos">
+                            <Select id="cursos" value={idCurso} name="cursos" onChange={(e) => setIdCurso(e.target.value)} required>
+                                <option>Selecione o curso</option>
+                                {
+                                data.cursos.map(item => (
+                                        <option key={item.id} value={item.id}>{item.nome}</option>
+                                    ))}
+                                
+                            </Select>
+                    </GridArea>
+                    <GridArea $area="professores">
+                            <InputAutocomplete
+                                                    sugestoes={professoresAula}
+                                                    valor={procurarProfessor}
+                                                    onChange={(val) => confProcurarProfessor(val)}       // Atualiza o valor enquanto digita
+                                                    onSelecionar={(val) => confProcurarProfessor(val)}    // Atualiza ao selecionar
+                                                    placeholder="Professor"
+                                                    />
+                    </GridArea>
+                    <GridArea $area="disciplinas">
+                            <InputAutocomplete
+                                sugestoes={disciplinas}
+                                valor={procurarDisciplina}
+                                onChange={(val) => confProcurarDisciplina(val)}       // Atualiza o valor enquanto digita
+                                onSelecionar={(val) => confProcurarDisciplina(val)}    // Atualiza ao selecionar
+                                placeholder="Disciplina"
+                                />
+                    </GridArea>
+                    <GridArea $area="separar">
+                        <DivSeparador></DivSeparador>
+                    </GridArea>
                     <GridArea $area="ano">
                         <Label htmlFor="ano">Ano:</Label>
                         <Input type="number" id="ano" name="ano" value={ano} required onChange={(e) => setAno(Number(e.target.value))}/>
@@ -238,26 +338,6 @@ function ConfigurarQuadroAulas({ table, imagens }) {
                         <option value="1">1</option>
                         <option value="2">2</option>
                         </Select>
-                    </GridArea>
-                    <GridArea $area="tabela">
-                        <DivSeparador></DivSeparador>
-                            <Colapse marginBottom={'0px'} nome = "Visualizar salas" estadoInicial={true}>
-                                <Slide
-                                    lista_imagens={imagens}
-                                    pagina_inicio={idPavimento}
-                                    listaSalasAtivas={salasAtivas}                                />
-                            </Colapse>
-                        <DivSeparador></DivSeparador>
-                    </GridArea>
-
-                    <GridArea $area="operacao">
-                        <Label htmlFor="operacao">Operacao:</Label>
-                            <Select id="operacao" name="operacao" required onChange={(e) => setOperacao(e.target.value)}>
-                            <option value="0">Selecione a operação desejada</option>
-                            <option value="1">Adicionar</option>
-                            <option value="2">Alterar</option>
-                            <option value="3">Deletar</option>
-                            </Select>
                     </GridArea>
                     <GridArea $area="dia">
                         <Label htmlFor="dia">Dia da Semana:</Label>
@@ -271,17 +351,6 @@ function ConfigurarQuadroAulas({ table, imagens }) {
                             <option value="7">Sábado</option>
                             </Select>
                     </GridArea>
-                    <GridArea $area="id">
-                        <Label htmlFor="id">ID:</Label>
-                        <Input 
-                            type="number" 
-                            id="id" 
-                            name="id" 
-                            disabled={Number(operacao) === 1} 
-                            value={id}
-                            onChange={(e) => setId(Number(e.target.value))}
-                            />
-                    </GridArea>
                     <GridArea $area="inicio">
                         <Label htmlFor="horaInicio">Inicio:</Label>
                         <Select id="horaInicio" name="horaInicio" onChange={(e) => handleInicioChange(e.target.value)} required>
@@ -292,7 +361,6 @@ function ConfigurarQuadroAulas({ table, imagens }) {
                                 
                             </Select>
                     </GridArea>
-
                     <GridArea $area="termino">
                         <Label htmlFor="termino">Termino:</Label>
                         <Select id="termino" name="termino" onChange={(e) => handleTerminoChange(e.target.value)} required>
@@ -302,11 +370,14 @@ function ConfigurarQuadroAulas({ table, imagens }) {
                                 
                             </Select>
                     </GridArea>
+                    <GridArea $area="separar2">
+                        <DivSeparador></DivSeparador>
+                    </GridArea>
                     <GridArea $area="campus">
                         <Label htmlFor="campus">Campus:</Label>
                             <Select id="campus" name="campus" onChange={(e) => setIdCampus(e.target.value)} required>
                                 {data.campus.map(item => (
-                                    <option key={item.id} value={item.id}>{item.nome}</option>
+                                    <option key={item.id} value={item.id}>{item.cidade + ' - ' + item.nome}</option>
                                     ))}
                                 
                             </Select>
@@ -350,40 +421,10 @@ function ConfigurarQuadroAulas({ table, imagens }) {
                                 
                             </Select>
                     </GridArea>
-                    <GridArea $area="separar">
+                    </React.Fragment>
+                    )}
+                    <GridArea $area="separar3">
                         <DivSeparador></DivSeparador>
-                    </GridArea>
-                    <GridArea $area="cursos">
-                        <Label htmlFor="cursos">Curso:</Label>
-                            <Select id="cursos" value={idCurso} name="cursos" onChange={(e) => setIdCurso(e.target.value)} required>
-                                {
-                                data.cursos.map(item => (
-                                        <option key={item.id} value={item.id}>{item.nome}</option>
-                                    ))}
-                                
-                            </Select>
-                    </GridArea>
-                    <GridArea $area="professores">
-                        <Label htmlFor="professores">Professor:</Label>
-                            <Select id="professores" value={idProfessor} name="professores" onChange={(e) => setIdProfessor(e.target.value)} required>
-                                {
-                                data.pessoas.map(item => (
-                                    item.funcao.toLowerCase() === 'professor' ? (
-                                        <option key={item.id} value={item.id}>{item.nome}</option>
-                                    ) : null
-                                    ))}
-                                
-                            </Select>
-                    </GridArea>
-                    <GridArea $area="disciplinas">
-                        <Label htmlFor="disciplinas">Disciplina:</Label>
-                            <Select id="disciplinas" value={idDisciplina} name="disciplinas" onChange={(e) => setIdDisciplina(e.target.value)} required>
-                                {
-                                data.disciplinas.map(item => (
-                                        <option key={item.id} value={item.id}>{item.nome}</option>
-                                    ))}
-                                
-                            </Select>
                     </GridArea>
                     <GridArea $area="reset">
                         <Button $bgcolor={cores.backgroundBotaoSemFoco} type="reset" onClick={limparFormulario}>Limpar</Button>   

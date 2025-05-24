@@ -5,6 +5,7 @@
   background-color: rgb(80,80,80);
   background-blend-mode: soft-light;
   background-repeat: no-repeat;
+  height: 100vh;
 }
 ::-webkit-scrollbar {
     width: 10px;

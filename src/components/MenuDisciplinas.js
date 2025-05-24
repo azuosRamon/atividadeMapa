@@ -20,7 +20,7 @@ grid-template-areas:
     "tabela tabela tabela"
     "operacao operacao idDisciplina"
     "nome nome nome"
-    "reset . botoes";
+    ". reset botoes";
 
 @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -69,7 +69,7 @@ function ConfigurarDisciplinas({ tableDisciplinas }) {
                 <FormGrid onSubmit={fazerEnvio}>
                     <GridArea $area="tabela">
                         <DivSeparador></DivSeparador>
-                        <Colapse marginBottom={'0px'} nome = "Consultar dados" estadoInicial={true}>
+                        <Colapse marginBottom={'0px'} nome = "Consultar dados" estadoInicial={false}>
                             <TabelaCompleta dados={pesquisa} lista={['id', 'nome']} camposPesquisa={false}></TabelaCompleta>
                         </Colapse>
                         <DivSeparador></DivSeparador>

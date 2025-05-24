@@ -133,8 +133,8 @@ function Pesquisa({dados}){
     const horariosAula = Array.from(new Set(quadroAulasAnoAtual.map((item)=>item.inicio)));
     
     
-    const professoresAula = Array.from(new Set(data.usuarios.map((item)=> item.funcao + " - " + item.nome + " " + item.sobrenome)));
     const [resultadoPesquisa, confResultadoPesquisa] = useState([]);
+    const professoresAula = Array.from(new Set(data.usuarios.map((item)=> item.funcao + " - " + item.nome + " " + item.sobrenome)));
     const [procurarProfessor, confProcurarProfessor] = useState("");
     
     const [procurarSala, confProcurarSala] = useState("");

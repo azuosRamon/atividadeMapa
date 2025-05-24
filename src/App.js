@@ -20,7 +20,7 @@ import primeiro_pavimento from "./components/Plantas/PRIMEIRO_PAVIMENTO.png";
 import segundo_pavimento from "./components/Plantas/SEGUNDO_PAVIMENTO.png";
 import terceiro_pavimento from "./components/Plantas/TERCEIRO_PAVIMENTO.png";
 import BotaoFlutuante from "./components/SubButtonFlutuante";
-import Tabelas from "./components/Tabelas";
+import Tabelas from "./components/MenuTabelas";
 
 const imagens = [terreo, primeiro_pavimento, segundo_pavimento, terceiro_pavimento];
 const data = [

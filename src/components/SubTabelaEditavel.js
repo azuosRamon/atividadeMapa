@@ -214,7 +214,7 @@ function TabelaCompletaTeste({dados, lista, itensMax = 5}){
                                 }
                             }}
                             />*/
-                            col === "coordenadas" ? (
+                            col === "areas" ? (
                             <Button onClick={()=> {}}>selecionar</Button>
                         ) : (
                             <Input

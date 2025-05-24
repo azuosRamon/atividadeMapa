@@ -21,7 +21,7 @@ function ConfigurarEdificio({ dados }) {
     ]
     return(
             <Box>
-                <Colapse nome = "Consultar dados" estadoInicial={true}>
+                <Colapse nome = "Consultar dados" estadoInicial={false}>
                     <Label htmlFor="operacao">Selecione a tabela a visualizar:</Label>
                         <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(Number(e.target.value))}}>
                             {selecionarDados.map((_, idx) => (
@@ -44,7 +44,7 @@ function ConfigurarEdificio({ dados }) {
                     <PavimentosOpcoes dados={data}></PavimentosOpcoes>
                 </Colapse>
                <Colapse nome = "Salas">
-                    <TabelaCompletaTeste dados={data.salas} lista={["id", "numero", "apelido", "pavimentoId", "coordenadas"]}></TabelaCompletaTeste>
+                    <TabelaCompletaTeste dados={data.salas} lista={["id", "numero", "apelido", "pavimentoId", "area"]}></TabelaCompletaTeste>
                 </Colapse>
             </Box>
     )

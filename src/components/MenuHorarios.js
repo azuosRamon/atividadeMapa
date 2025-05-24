@@ -17,11 +17,12 @@ gap: 10px;
 display: grid;
 grid-template-columns: 1fr 1fr 1fr;
 grid-template-areas: 
-    "ano . semestre"
     "tabela tabela tabela"
+    "ano semestre semestre"
+    "separador separador separador"
     "operacao operacao idHorario"
     "inicio duracao termino"
-    "reset . botoes";
+    ". reset botoes";
 
 @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -78,7 +79,6 @@ function ConfigurarHorarios({ tableHorarios }) {
     return(
             <Box>
                 <Title>Horários</Title>
-                <DivSeparador></DivSeparador>
                 <FormGrid onSubmit={fazerEnvio}>
                     <GridArea $area="ano">
                         <Label htmlFor="ano">Ano:</Label>
@@ -91,9 +91,12 @@ function ConfigurarHorarios({ tableHorarios }) {
                         <option value="2">2</option>
                         </Select>
                     </GridArea>
+                    <GridArea $area="separador">
+                    <DivSeparador></DivSeparador>
+                    </GridArea>
                     <GridArea $area="tabela">
                         <DivSeparador></DivSeparador>
-                            <Colapse marginBottom={'0px'} nome = "Consultar dados" estadoInicial={true}>
+                            <Colapse marginBottom={'0px'} nome = "Consultar dados" estadoInicial={false}>
                                 <TabelaCompleta dados={pesquisa} lista={['id', 'inicio', 'termino']} camposPesquisa={false}></TabelaCompleta>
                             </Colapse>
                         

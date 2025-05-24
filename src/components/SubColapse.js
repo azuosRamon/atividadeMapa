@@ -21,8 +21,8 @@ const DivColapseContent = styled.div`
   opacity: ${(props) => (props.$mostrar ? 1 : 0)};
   transform: ${(props) => (props.$mostrar ? 'scale(1)' : 'scale(0.98)')};
   pointer-events: ${(props) => (props.$mostrar ? 'auto' : 'none')};
-  background-color: rgb(58, 58, 58);
-    padding: 15px;
+  background-color: ${cores.backgroundColapseInformacoes};
+    padding: ${(props) => (props.$mostrar ? "15px" : "0")};;
     border-radius: 2px;
     border: 1px solid rgb(15, 15, 15);
   overflow: hidden;
