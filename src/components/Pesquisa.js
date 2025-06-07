@@ -33,7 +33,7 @@ const Modal = styled.div`
     z-index: 999;
     overflow: auto;
     background-color: #222;
-    border-radius: 20px;
+    border-radius: 5px;
     padding: 40px 20px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.8);
     max-height: 80%;
@@ -60,12 +60,21 @@ const BackgroundModal = styled.div`
 
 const CardsContainer = styled.div`
     display: grid;
-    grid-template-columns: ${(props)=>((props.$quantidade > 1 ) ? "repeat(1, 1fr)" : "1fr")};
+    grid-template-columns: ${(props)=>((props.$quantidade > 1 ) ? "repeat(3, 1fr)" : "1fr")};
     max-width: 90%;
     gap: 10px;
     align-items: center;
     align-content: center;
     justify-content: center;
+    
+    @media (max-width: 768px) {
+        grid-template-columns: ${(props)=>((props.$quantidade > 1 ) ? "repeat(2, 1fr)" : "1fr")};
+
+    }
+    @media (min-width: 481px) and (max-width: 767px) {
+        grid-template-columns: ${(props)=>((props.$quantidade > 1 ) ? "repeat(1, 1fr)" : "1fr")};
+
+    }
 `;
 
 const Img = styled.img`
@@ -89,6 +98,11 @@ maxHeight: 150px;
 overflowY: auto
 `;
 
+const ButtonVoltar = styled(Button)`
+height: 100%;
+margin-top: 0;
+`;
+
 /*
 const data = [
     { professor: "Carlos Silva", bloco: "1", andar: "2", sala: "12", materia: "Física para Engenharia", dia: "Segunda-feira", horario: "18:50 - 22:10", foto: "" },
@@ -107,7 +121,7 @@ function converterDados(dados){
           "disciplina": dados.disciplinas.filter(informacoes => informacoes.id === item.disciplinaId)[0].nome, 
           "curso": dados.cursos.filter(informacoes => informacoes.id === item.cursoId)[0].nome, 
           "usuario": dados.usuarios.filter(informacoes => informacoes.id === item.pessoasId)[0].funcao + " - " +  dados.usuarios.filter(informacoes => informacoes.id === item.pessoasId)[0].nome + " " + dados.usuarios.filter(informacoes => informacoes.id === item.pessoasId)[0].sobrenome, 
-          "diaSemana": item.diaSemana, 
+          "diaSemana": dados.dias.filter(informacoes => informacoes.id === item.diaSemana)[0].nome, 
           "inicio": dados.horarios.filter(informacoes => informacoes.id === item.inicioId)[0].inicio,
           "termino": dados.horarios.filter(informacoes => informacoes.id === item.terminoId)[0].termino, 
           "campus":dados.campus.filter(informacoes => informacoes.id === item.campusId)[0].nome, 
@@ -253,13 +267,14 @@ function Pesquisa({dados}){
                             dia = {item.diaSemana}
                             horarioInicial = {item.inicio}
                             horarioFinal = {item.termino}
+                            campus = {item.campus}
                             bloco = {item.bloco}
                             pavimento = {item.pavimento}
                             sala = {item.sala}
                             />
                         ))
                     }
-                    <Button $bgcolor="rgb(38, 38, 38)" onClick={()=>mudarEstadoModal(false)}>Voltar</Button>
+                    <ButtonVoltar $bgcolor="rgb(38, 38, 38)" onClick={()=>mudarEstadoModal(false)}>Voltar</ButtonVoltar>
                     </CardsContainer>
                 </Modal>
                 </ContainerModal>

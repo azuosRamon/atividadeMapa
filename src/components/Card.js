@@ -12,19 +12,26 @@ import sala03 from "./Plantas/03.png";
 import sala12 from "./Plantas/12.png";
 import Slide from "./Slide";
 import cores from "./Cores"
+import GridArea from "./SubGridArea"
 
 const Container = styled.div``;
 
 const Box = styled.div`
-    height: 150px;
+    min-height: 300px;
     padding: 20px;
     background-color: ${cores.backgroundBox};
     box-shadow: 0 4px 8px ${cores.boxShadow};
-    border-radius: 10px;
+    border-radius: 2px;
     text-align: center;
     display: grid;
-    grid-template-columns: 1fr 3fr 1fr;
-    align-items: center;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+        "foto foto" 
+        "nome nome"
+        "disciplina disciplina"
+        "horario horario"
+        "local local"
+        "sala sala"
 `;
 
 const DivContentInformacoes = styled.div`
@@ -41,6 +48,12 @@ const ImagemProfessor = styled.img`
     margin-right: 10px;
 `;
 
+const Titulo4 = styled.h4`
+    color: ${cores.corTexto};
+    font-size: 15px;
+    padding: 0;
+    margin: 10px 5px;
+`;
 const Titulo3 = styled.h3`
     color: ${cores.corTexto};
     font-size: 20px;
@@ -74,13 +87,19 @@ const FecharBotao = styled.button`
     border-radius: 50%;
 `;
 
+const GridAreaFlex = styled(GridArea)`
+display: flex;
+justify-content: center;
+
+`
 
 const imagensPorSalaEAndar = {
     "2-12": [terreo, sala12, segundo_pavimento, terceiro_pavimento],
     "3-03": [terreo, primeiro_pavimento, sala03, terceiro_pavimento],
 };
 
-function CriarCard({ dados, nome, disciplina, dia, horarioInicial, horarioFinal, bloco, pavimento, sala, fotoProfessor }) {
+
+function CriarCard({ dados, nome, disciplina, dia, horarioInicial, horarioFinal, campus, bloco, pavimento, sala, fotoProfessor }) {
     const data = dados || {};
     const [mostrarMapa, setMostrarMapa] = useState(false)
 
@@ -98,39 +117,39 @@ function CriarCard({ dados, nome, disciplina, dia, horarioInicial, horarioFinal,
 
     return (
         <Container>
-            <Box>
-                <div>
+            <Box onClick={abrirImagem}>
+                <GridAreaFlex $area='foto'>
                     {fotoProfessor ? (
                         <ImagemProfessor src={fotoProfessor} alt={`${nome} - foto`} />
                     ) : (
                         <CgProfile size={80} color="#999" />
                     )}
-                </div>
-                <div>
-                    <DivContentInformacoes>
+                </GridAreaFlex>
+                    <GridArea $area='nome'>
                         <Titulo3>{nome}</Titulo3>
-                    </DivContentInformacoes>
-                    <DivContentInformacoes>
+                    </GridArea>
+                    <GridAreaFlex $area='disciplina'>
                         <ParagrafoInformacao>{disciplina}</ParagrafoInformacao>
-                    </DivContentInformacoes>
-                    <DivContentInformacoes>
+                    </GridAreaFlex>
+                    <GridAreaFlex $area='horario'>
                         <ParagrafoInformacao>{dia}</ParagrafoInformacao>
                         <ParagrafoInformacao>|</ParagrafoInformacao>
                         <ParagrafoInformacao>{horarioInicial}</ParagrafoInformacao>
                         <ParagrafoInformacao> - </ParagrafoInformacao>
                         <ParagrafoInformacao>{horarioFinal}</ParagrafoInformacao>
-                    </DivContentInformacoes>
-                    <DivContentInformacoes>
+                    </GridAreaFlex>
+                    <GridAreaFlex $area='local'>
+                        <ParagrafoInformacao>{campus}</ParagrafoInformacao>
+                        <ParagrafoInformacao>|</ParagrafoInformacao>
                         <ParagrafoInformacao>Bloco: {bloco}</ParagrafoInformacao>
                         <ParagrafoInformacao>|</ParagrafoInformacao>
                         <ParagrafoInformacao>Pavimento: {pavimento}</ParagrafoInformacao>
                         <ParagrafoInformacao>|</ParagrafoInformacao>
-                        <ParagrafoInformacao>Sala: {sala}</ParagrafoInformacao>
-                    </DivContentInformacoes>
-                </div>
-                <Button onClick={abrirImagem}>
-                    <GiPositionMarker size={70} />
-                </Button>
+                    </GridAreaFlex>
+                    <GridAreaFlex $area='sala'>
+                        <Titulo4>Sala: {sala}</Titulo4>
+
+                    </GridAreaFlex>
             </Box>
 
             {mostrarMapa && (
