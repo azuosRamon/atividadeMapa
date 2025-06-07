@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState, useEffect, useMemo} from "react";
 import styled from "styled-components";
 import Box from "./SubBox";
@@ -34,36 +35,77 @@ grid-template-areas:
 }
 `;
 
-
-
-
 function ConfigurarCursos({ tableCursos }) {
-    const data = tableCursos || {};
+    const [data, setData] = useState([]);
     const [pesquisa, setPesquisa] = useState([]);
-    const [operacao, setOperacao] = useState(1);
+    const [operacao, setOperacao] = useState("1");
     const [idCursos, setId] = useState("");
     const [nome, setNome] = useState("");
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+    axios.get("https://backend-mapa.onrender.com/cursos/")
+        .then(resp => setData(resp.data))
+        .catch(e => alert("Erro ao carregar cursos"))
+        .finally(() => setLoading(false));
+    }, []);
+
+    const criarCurso = async (nome) => {
+      await axios.post("https://backend-mapa.onrender.com/cursos/", { nome });
+      atualizarLista();
+    };
+
+    const alterarCurso = async (id, nome) => {
+      await axios.put(`https://backend-mapa.onrender.com/cursos/${id}`, { nome });
+      atualizarLista();
+    };
+
+    const deletarCurso = async (id) => {
+      await axios.delete(`https://backend-mapa.onrender.com/cursos/${id}`);
+      atualizarLista();
+    };
+
+    const atualizarLista = () => {
+      setLoading(true);
+      axios.get("https://backend-mapa.onrender.com/cursos/")
+        .then(resp => setData(resp.data))
+        .finally(() => setLoading(false));
+    };
 
     const pesquisa2 = useMemo(() => {
         return data.filter(curso => 
-            (idCursos ? curso.id === idCursos : curso.nome.toLowerCase().includes(nome.toLowerCase()))
+            (idCursos ? curso.curso_id === Number(idCursos) : curso.nome.toLowerCase().includes(nome.toLowerCase()))
         );
-    }, [nome, idCursos]);
+    }, [data,nome, idCursos]);
     
     useEffect(() => {
         setPesquisa(pesquisa2);
     }, [pesquisa2]);
 
     useEffect(() => {
-        const cursoSelecionado = data.find(curso => curso.id === Number(idCursos));
+        const cursoSelecionado = data.find(curso => curso.curso_id === Number(idCursos));
         setNome(cursoSelecionado ? cursoSelecionado.nome : "");
-    }, [idCursos]);
+    }, [idCursos,data]);
 
+    const fazerEnvio = async (event) => {
+    event.preventDefault();
+      try {
+        if (operacao === "1") {
+          await criarCurso(nome);
+          alert("Curso adicionado!");
+        } else if (operacao === "2") {
+          await alterarCurso(idCursos, nome);
+          alert("Curso alterado!");
+        } else if (operacao === "3") {
+          await deletarCurso(idCursos);
+          alert("Curso deletado!");
+        }
+      } catch (error) {
+        alert("Erro ao salvar curso.");
+        console.error(error);
+      }
+    };
 
-    const fazerEnvio = (event) =>{
-        event.preventDefault();
-        console.log("enviado!");
-    }
     return(
             <Box>
                 <Title>Cursos</Title>
@@ -71,10 +113,11 @@ function ConfigurarCursos({ tableCursos }) {
                     <GridArea $area="tabela">
                         <DivSeparador></DivSeparador>
                         <Colapse marginBottom={'0px'} nome = "Consultar dados" estadoInicial={false}>
-                            <TabelaCompleta dados={pesquisa} lista={['id', 'nome']} camposPesquisa={false}></TabelaCompleta>
+                            {loading
+                                ? <div style={{padding: "16px"}}>Carregando...</div>
+                                : <TabelaCompleta dados={pesquisa} lista={['curso_id', 'nome']} camposPesquisa={false} />
+                            }
                         </Colapse>
-
-                        
                         <DivSeparador></DivSeparador>
                     </GridArea>
 
