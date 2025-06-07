@@ -25,6 +25,7 @@ const Box = styled.div`
     text-align: center;
     display: grid;
     grid-template-columns: 1fr 1fr;
+    cursor: pointer;
     grid-template-areas:
         "foto foto" 
         "nome nome"
@@ -32,6 +33,10 @@ const Box = styled.div`
         "horario horario"
         "local local"
         "sala sala"
+    ;
+    &:hover{
+        background-color: ${cores.backgroundBotaoSemFoco2};
+    }
 `;
 
 const DivContentInformacoes = styled.div`

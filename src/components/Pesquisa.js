@@ -67,11 +67,11 @@ const CardsContainer = styled.div`
     align-content: center;
     justify-content: center;
     
-    @media (max-width: 768px) {
+    @media (max-width: 960px) {
         grid-template-columns: ${(props)=>((props.$quantidade > 1 ) ? "repeat(2, 1fr)" : "1fr")};
 
     }
-    @media (min-width: 481px) and (max-width: 767px) {
+    @media (max-width: 767px) {
         grid-template-columns: ${(props)=>((props.$quantidade > 1 ) ? "repeat(1, 1fr)" : "1fr")};
 
     }
