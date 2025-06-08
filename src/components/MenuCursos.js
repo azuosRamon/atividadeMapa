@@ -35,7 +35,7 @@ grid-template-areas:
 }
 `;
 
-function ConfigurarCursos({ tableCursos }) {
+function ConfigurarCursos() {
     const [data, setData] = useState([]);
     const [pesquisa, setPesquisa] = useState([]);
     const [operacao, setOperacao] = useState("1");
