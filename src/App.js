@@ -216,7 +216,7 @@ function App() {
           <LayoutLogado usuarioDados={data} usuarioId={0}><ConfigurarCursos/></LayoutLogado>
         }/>
         <Route path="/disciplinas" element={
-          <LayoutLogado usuarioDados={data} usuarioId={0}><MenuDisciplinas tableDisciplinas={dadosJson.disciplinas}/></LayoutLogado>
+          <LayoutLogado usuarioDados={data} usuarioId={0}><MenuDisciplinas/></LayoutLogado>
         }/>
         <Route path="/tabelas" element={
           <LayoutLogado usuarioDados={data} usuarioId={0}><Tabelas dados={dadosJson}></Tabelas></LayoutLogado>
