@@ -213,7 +213,7 @@ function App() {
           <LayoutLogado usuarioDados={data} usuarioId={0}><MenuEdificios dados={dadosJson}/></LayoutLogado>
         }/>
         <Route path="/cursos" element={
-          <LayoutLogado usuarioDados={data} usuarioId={0}><MenuCursos tableCursos={dadosJson.cursos}/></LayoutLogado>
+          <LayoutLogado usuarioDados={data} usuarioId={0}><MenuCursos/></LayoutLogado>
         }/>
         <Route path="/disciplinas" element={
           <LayoutLogado usuarioDados={data} usuarioId={0}><MenuDisciplinas tableDisciplinas={dadosJson.disciplinas}/></LayoutLogado>
