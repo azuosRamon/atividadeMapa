@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo} from "react";
+import axios from "axios";
 import styled from "styled-components";
 import Box from "./SubBox";
 import Input from "./SubInput";
@@ -34,35 +35,77 @@ grid-template-areas:
 }
 `;
 
-
-
-function ConfigurarDisciplinas({ tableDisciplinas }) {
-    const data = tableDisciplinas || {};
+function MenuDisciplinas() {
+    const [data, setData] = useState([]);
     const [pesquisa, setPesquisa] = useState([]);
-    const [operacao, setOperacao] = useState(1);
+    const [operacao, setOperacao] = useState("1");
     const [idDisciplinas, setId] = useState("");
     const [nome, setNome] = useState("");
+    const [loading, setLoading] = useState(true)
+
+    const atualizarLista = () => {
+        setLoading(true)
+        axios.get("https://backend-mapa.onrender.com/disciplinas/")
+            .then(resp => setData(resp.data))
+            .catch(e => alert("Erro ao carregar disciplinas"))
+            .finally((() => setLoading(false)));
+    };
+
+    useEffect(() => {
+        atualizarLista();
+    }, []);
+
+    const criarDisciplina = async (nome) => {
+        await axios.post("https://backend-mapa.onrender.com/disciplinas/", { nome });
+        atualizarLista();
+    };
+
+    const alterarDisciplina = async (id, nome) => {
+        await axios.put(`https://backend-mapa.onrender.com/disciplinas/${id}`, { nome });
+        atualizarLista();
+    };
+
+    const deletarDisciplina = async (id) => {
+        await axios.delete(`https://backend-mapa.onrender.com/disciplinas/${id}`);
+        atualizarLista();
+    };
 
     const pesquisa2 = useMemo(() => {
         return data.filter(disciplina => 
-            (idDisciplinas ? disciplina.id === idDisciplinas : disciplina.nome.toLowerCase().includes(nome.toLowerCase()))
+            (idDisciplinas ? disciplina.disciplina_id === Number(idDisciplinas) : disciplina.nome.toLowerCase().includes(nome.toLowerCase()))
         );
-    }, [nome, idDisciplinas]);
+    }, [data,nome, idDisciplinas]);
     
     useEffect(() => {
         setPesquisa(pesquisa2);
     }, [pesquisa2]);
 
     useEffect(() => {
-        const disciplinaSelecionada = data.find(disciplina => disciplina.id === Number(idDisciplinas));
+        const disciplinaSelecionada = data.find(disciplina => disciplina.disciplina_id === Number(idDisciplinas));
         setNome(disciplinaSelecionada ? disciplinaSelecionada.nome : "");
-    }, [idDisciplinas]);
+    }, [idDisciplinas,data]);
 
-
-    const fazerEnvio = (event) =>{
+   const fazerEnvio = async (event) => {
         event.preventDefault();
-        console.log("enviado!");
-    }
+        try {
+            if (operacao === "1") {
+                await criarDisciplina(nome);
+                alert("Disciplina adicionada!");
+            } else if (operacao === "2") {
+                await alterarDisciplina(idDisciplinas, nome);
+                alert("Disciplina alterada!");
+            } else if (operacao === "3") {
+                await deletarDisciplina(idDisciplinas);
+                alert("Disciplina deletada!");
+            }
+            setId("");
+            setNome("");
+        } catch (error) {
+            alert("Erro ao salvar disciplina.");
+            console.error(error);
+        }
+    };
+    
     return(
             <Box>
                 <Title>Disciplinas</Title>
@@ -70,7 +113,10 @@ function ConfigurarDisciplinas({ tableDisciplinas }) {
                     <GridArea $area="tabela">
                         <DivSeparador></DivSeparador>
                         <Colapse marginBottom={'0px'} nome = "Consultar dados" estadoInicial={false}>
-                            <TabelaCompleta dados={pesquisa} lista={['id', 'nome']} camposPesquisa={false}></TabelaCompleta>
+                            {loading
+                                ? <div style={{padding:"16px",color:"white"}}>Carregando...</div>
+                                : <TabelaCompleta dados={pesquisa} lista={['disciplina_id','nome']} camposPesquisa={false}/>
+                            }
                         </Colapse>
                         <DivSeparador></DivSeparador>
                     </GridArea>
@@ -104,4 +150,4 @@ function ConfigurarDisciplinas({ tableDisciplinas }) {
     )
 }
 
-export default ConfigurarDisciplinas;
+export default MenuDisciplinas;
