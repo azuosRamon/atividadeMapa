@@ -86,6 +86,9 @@ function Usuario({ dados, usuarioId, fecharMenu, mobile=false, logo=false }) {
                     <Button onClick={()=>{navegar('/disciplinas')}} $bgcolor="rgb(38, 38, 38)">Disciplinas</Button>
                     <Button onClick={()=>{navegar('/tabelas')}} $bgcolor="rgb(38, 38, 38)">Tabelas</Button>
                     <Button onClick={()=>{navegar('/quadroAulas')}} $bgcolor="rgb(38, 38, 38)">Quadro de aulas</Button>
+                    <Button onClick={()=>{navegar('/empresa')}} $bgcolor="rgb(38, 38, 38)">Adicionar Empresa</Button>
+                    <Button onClick={()=>{navegar('/funcoes')}} $bgcolor="rgb(38, 38, 38)">Adicionar Funcoes</Button>
+                    <Button onClick={()=>{navegar('/cargos')}} $bgcolor="rgb(38, 38, 38)">Adicionar Cargos</Button>
                     <Button onClick={()=>{navegar('/cadastro')}} $bgcolor="rgb(38, 38, 38)">Adicionar usuário</Button>
                 </DivContent>
 

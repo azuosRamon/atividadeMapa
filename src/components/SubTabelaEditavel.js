@@ -4,6 +4,8 @@ import GridArea from "./SubGridArea";
 import Input from "./SubInput";
 import Button from "./SubButton";
 import cores from "./Cores";
+import Slide from "./Slide";
+
 const TabelaContainer = styled.div`
     width: 100%;
     overflow-x: auto;
@@ -102,6 +104,7 @@ const Wrapper = styled.div`
 
 
 function TabelaCompletaTeste({dados, lista, itensMax = 5}){
+    const data = dados || {};
     const [editarIndice, setEditarIndice] = useState(null);
     const [dadosTemporarios, setdadosTemporarios] = useState([...dados]);
     const [paginaAtual, setPaginaAtual] = useState(1);
@@ -214,8 +217,8 @@ function TabelaCompletaTeste({dados, lista, itensMax = 5}){
                                 }
                             }}
                             />*/
-                            col === "areas" ? (
-                            <Button onClick={()=> {}}>selecionar</Button>
+                            col === "area" ? (
+                            <Button onClick={()=> {}}>Alterar</Button>
                         ) : (
                             <Input
                             type="text"
@@ -235,12 +238,12 @@ function TabelaCompletaTeste({dados, lista, itensMax = 5}){
                 <Td>
                 {editarIndice === indice ? (
                     <>
-                    <Button $bgcolor="#52ece6" $hovercolor="#fff" onClick={() => salvarEdicao(indice)}>💾</Button>
-                    <Button $bgcolor="rgb(38,38,38)" $hovercolor="#fff" onClick={cancelarEdicao}>❌</Button>
+                    <Button $bgcolor="#52ece6" $hovercolor="#fff" onClick={() => salvarEdicao(indice)}>Salvar</Button>
+                    <Button $bgcolor="rgb(38,38,38)" $hovercolor="#fff" onClick={cancelarEdicao}>Cancelar</Button>
                     </>
                 ) : (<>
                 
-                <Button $bgcolor="rgb(38,38,38)" onClick={() => setEditarIndice(indice)}>✏️</Button>
+                <Button $bgcolor="rgb(38,38,38)" onClick={() => setEditarIndice(indice)}>Editar</Button>
                 <Button $bgcolor="darkred" onClick={() => {
                     removerLinha(indice);
                     
@@ -252,7 +255,7 @@ function TabelaCompletaTeste({dados, lista, itensMax = 5}){
                     }
                     
                     
-                }}>🗑️</Button>
+                }}>Deletar</Button>
                 </>
                 )}
                 </Td>
@@ -278,7 +281,7 @@ function TabelaCompletaTeste({dados, lista, itensMax = 5}){
         adicionarLinha();
         setPaginaAtual(Math.ceil((dadosTemporarios.length + 1) / itensPorPagina))
         setEditarIndice(dadosTemporarios.length);
-    }}>➕ Adicionar item</Button>
+    }}>Adicionar novo</Button>
         </Wrapper>
     )
 

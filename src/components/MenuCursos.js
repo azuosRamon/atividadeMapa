@@ -12,6 +12,7 @@ import DivSeparador from "./SubDivSeparador";
 import TabelaCompleta from "./SubTabela";
 import Colapse from "./SubColapse"
 import cores from "./Cores"
+import useBancoDeDados from "./UseBancoDados";
 
 const FormGrid = styled.form`
 gap: 10px;
@@ -36,75 +37,27 @@ grid-template-areas:
 `;
 
 function ConfigurarCursos() {
-    const [data, setData] = useState([]);
-    const [pesquisa, setPesquisa] = useState([]);
-    const [operacao, setOperacao] = useState("1");
-    const [idCursos, setId] = useState("");
-    const [nome, setNome] = useState("");
-    const [loading, setLoading] = useState(true);
+  const [id, setId] = useState("");
+  const [objeto, setObjeto] = useState({
+    id: "",
+    nome: "",
+  });
+  const [operacao, setOperacao] = useState("1");
 
-    useEffect(() => {
-    axios.get("https://backend-mapa.onrender.com/cursos/")
-        .then(resp => setData(resp.data))
-        .catch(e => alert("Erro ao carregar cursos"))
-        .finally(() => setLoading(false));
-    }, []);
+  const {
+    data,
+    pesquisa,
+    loading,
+    fazerEnvio,
+    alterarObjeto
+  } = useBancoDeDados({
+    nomeTabela: "cursos",
+    objeto,
+    setObjeto,
+    operacao,
+    campoId: "curso_id"
+  });
 
-    const criarCurso = async (nome) => {
-      await axios.post("https://backend-mapa.onrender.com/cursos/", { nome });
-      atualizarLista();
-    };
-
-    const alterarCurso = async (id, nome) => {
-      await axios.put(`https://backend-mapa.onrender.com/cursos/${id}`, { nome });
-      atualizarLista();
-    };
-
-    const deletarCurso = async (id) => {
-      await axios.delete(`https://backend-mapa.onrender.com/cursos/${id}`);
-      atualizarLista();
-    };
-
-    const atualizarLista = () => {
-      setLoading(true);
-      axios.get("https://backend-mapa.onrender.com/cursos/")
-        .then(resp => setData(resp.data))
-        .finally(() => setLoading(false));
-    };
-
-    const pesquisa2 = useMemo(() => {
-        return data.filter(curso => 
-            (idCursos ? curso.curso_id === Number(idCursos) : curso.nome.toLowerCase().includes(nome.toLowerCase()))
-        );
-    }, [data,nome, idCursos]);
-    
-    useEffect(() => {
-        setPesquisa(pesquisa2);
-    }, [pesquisa2]);
-
-    useEffect(() => {
-        const cursoSelecionado = data.find(curso => curso.curso_id === Number(idCursos));
-        setNome(cursoSelecionado ? cursoSelecionado.nome : "");
-    }, [idCursos,data]);
-
-    const fazerEnvio = async (event) => {
-    event.preventDefault();
-      try {
-        if (operacao === "1") {
-          await criarCurso(nome);
-          alert("Curso adicionado!");
-        } else if (operacao === "2") {
-          await alterarCurso(idCursos, nome);
-          alert("Curso alterado!");
-        } else if (operacao === "3") {
-          await deletarCurso(idCursos);
-          alert("Curso deletado!");
-        }
-      } catch (error) {
-        alert("Erro ao salvar curso.");
-        console.error(error);
-      }
-    };
 
     return(
             <Box>
@@ -123,7 +76,7 @@ function ConfigurarCursos() {
 
                     <GridArea $area="operacao">
                         <Label htmlFor="operacao">Operacao:</Label>
-                            <Select id="operacao" autoFocus name="operacao" required onChange={(e) => {setOperacao(e.target.value); setId("")}}>
+                            <Select id="operacao" autoFocus name="operacao" required onChange={(e) => {setOperacao(e.target.value); alterarObjeto(e, 'id')}}>
                             <option value="0">Selecione a operação desejada</option>
                             <option value="1">Adicionar</option>
                             <option value="2">Alterar</option>
@@ -136,7 +89,7 @@ function ConfigurarCursos() {
                     </GridArea>
                     <GridArea $area="nome">
                         <Label htmlFor="nome">Nome do Curso:</Label>
-                        <Input type="text" id="nome" value={nome} name="nome" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setNome(e.target.value)} required/>
+                        <Input type="text" id="nome" value={objeto.nome} name="nome" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'nome')} required/>
                     </GridArea>
                     <GridArea $area="reset" onClick={()=> setId("")}>
                         <Button $bgcolor={cores.backgroundBotaoSemFoco} type="reset">Limpar</Button>   

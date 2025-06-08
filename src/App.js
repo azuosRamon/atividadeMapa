@@ -21,6 +21,9 @@ import segundo_pavimento from "./components/Plantas/SEGUNDO_PAVIMENTO.png";
 import terceiro_pavimento from "./components/Plantas/TERCEIRO_PAVIMENTO.png";
 import BotaoFlutuante from "./components/SubButtonFlutuante";
 import Tabelas from "./components/MenuTabelas";
+import CadastrarEmpresa from "./components/MenuEmpresas";
+import CadastrarFuncao from "./components/MenuFuncoes";
+import CadastrarCargos from "./components/MenuCargos";
 
 const imagens = [terreo, primeiro_pavimento, segundo_pavimento, terceiro_pavimento];
 const data = [
@@ -226,6 +229,15 @@ function App() {
         }/>
         <Route path="/cadastro" element={
           <LayoutLogado usuarioDados={data} usuarioId={0}><MenuCadastro/></LayoutLogado>
+        }/>
+        <Route path="/empresa" element={
+          <LayoutLogado usuarioDados={data} usuarioId={0}><CadastrarEmpresa/></LayoutLogado>
+        }/>
+        <Route path="/funcoes" element={
+          <LayoutLogado usuarioDados={data} usuarioId={0}><CadastrarFuncao/></LayoutLogado>
+        }/>
+        <Route path="/cargos" element={
+          <LayoutLogado usuarioDados={data} usuarioId={0}><CadastrarCargos/></LayoutLogado>
         }/>
         <Route path="/slide" element={
           <Slide
