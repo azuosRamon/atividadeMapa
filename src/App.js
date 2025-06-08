@@ -4,7 +4,7 @@ import Login from "./components/PaginaLogin";
 import MenuCadastro from "./components/MenuCadastro";
 import MenuHorarios from "./components/MenuHorarios";
 import Perfil from "./components/MenuPerfil";
-import MenuCursos from "./components/MenuCursos";
+import ConfigurarCursos from "./components/MenuCursos";
 import MenuDisciplinas from "./components/MenuDisciplinas";
 import MenuEdificios from "./components/MenuEdificio";
 import MenuQuadroAulas from "./components/MenuQuadroAulas";
