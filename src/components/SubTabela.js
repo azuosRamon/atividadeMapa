@@ -111,7 +111,7 @@ function TabelaCompleta({ dados, lista = [], exportar = false }) {
 
     const pesquisa2 = useMemo(() => {
         return data.filter(item =>
-            (idItem ? item.id === idItem : Object.values(item).some(
+            (idItem ? item[lista[0]] === idItem : Object.values(item).some(
                 valor =>
                     valor &&
                     valor.toString().toLowerCase().includes(nome.toLowerCase())

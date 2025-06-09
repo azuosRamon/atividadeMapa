@@ -6,7 +6,7 @@ import Label from "./SubLabel";
 import Button from "./SubButton";
 import GridArea from "./SubGridArea";
 import cores from "./Cores"
-
+import useBancoDeDados from "./UseBancoDados";
 
 const FormGrid = styled.form`
 gap: 10px;
@@ -17,8 +17,8 @@ grid-template-areas:
     "operacao operacao idCampus"
     "nome nome nome"
     "cep cidade estado"
-    "logradouro logradouro logradouro"
-    "complemento complemento complemento"
+    "logradouro logradouro latitude"
+    "complemento complemento longitude"
     "reset . botoes";
 
 @media (max-width: 768px) {
@@ -32,6 +32,8 @@ grid-template-areas:
             "estado"
             "logradouro"
             "complemento"
+            "latitude"
+            "longitude"
             "reset"
             "botoes";
 }
@@ -39,17 +41,35 @@ grid-template-areas:
 
 
 function CampusOpcoes({ dados }) {
-    const data = dados || {};
-    const [operacao, setOperacao] = useState(1);
-    const [idItem, setId] = useState("");
-    const [nome, setNome] = useState("");
-    const [cep, setCep] = useState();
-    const [cidade, setCidade] = useState("");
-    const [estado, setEstado] = useState("");
-    const [logradouro, setLogradouro] = useState("");
-    const [complemento, setComplemento] = useState("");
+    const [objeto, setObjeto] = useState({
+        campus_id: "",
+        nome: "",
+        logradouro: "",
+        complemento: "",
+        cep: "",
+        cidade: "",
+        estado: "",
+        latitude: "",
+        longitude: ""
+    });
+    const [operacao, setOperacao] = useState("1");
 
-    useEffect(() => {
+    const {
+        data,
+        pesquisa,
+        loading,
+        fazerEnvio,
+        alterarObjeto
+    } = useBancoDeDados({
+        nomeTabela: "campi",
+        objeto,
+        setObjeto,
+        operacao,
+        campoId: "campus_id",
+        campoNome: "nome"
+    });
+   
+   /* useEffect(() => {
         const itemSelecionado = data.find(item => item.id === Number(idItem));
         setNome(itemSelecionado ? itemSelecionado.nome : "");
         setCidade(itemSelecionado ? itemSelecionado.cidade : "");
@@ -58,19 +78,14 @@ function CampusOpcoes({ dados }) {
         setLogradouro(itemSelecionado ? itemSelecionado.logradouro : "");
         setComplemento(itemSelecionado ? itemSelecionado.complemento : "");
     }, [idItem]);
-
-
-    const fazerEnvio = (event) =>{
-        event.preventDefault();
-        console.log("enviado!");
-    }
+*/
 
     return(
             <div>
                 <FormGrid onSubmit={fazerEnvio}>
                     <GridArea $area="operacao">
                         <Label htmlFor="operacao">Operacao:</Label>
-                            <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(e.target.value); setId("")}}>
+                            <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(e.target.value); alterarObjeto(e, 'campus_id')}}>
                             <option value="0">Selecione a operação</option>
                             <option value="1">Adicionar</option>
                             <option value="2">Alterar</option>
@@ -79,33 +94,41 @@ function CampusOpcoes({ dados }) {
                     </GridArea>
                     <GridArea $area="idCampus">
                         <Label htmlFor="idCampus">ID:</Label>
-                        <Input type="number" id="idCampus" name="idCampus" disabled={!operacao || Number(operacao)<=1} onChange={(e) => setId(e.target.value ? Number(e.target.value) : "")}/>
+                        <Input type="number" id="idCampus" name="idCampus" disabled={!operacao || Number(operacao)<=1} onChange={(e) => alterarObjeto(e, 'campus_id')}/>
                     </GridArea>
                     <GridArea $area="nome">
                         <Label htmlFor="nome">Nome do Campus:</Label>
-                        <Input type="text" id="nome" value={nome} name="nome" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setNome(e.target.value)} required/>
+                        <Input type="text" id="nome" value={objeto.nome} name="nome" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'nome')} required/>
                     </GridArea>
                     <GridArea $area="cep">
                         <Label htmlFor="cep">Cep:</Label>
-                        <Input type="number" id="cep" value={cep} name="cep" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setCep(e.target.value)} required/>
+                        <Input type="number" id="cep" value={objeto.cep} name="cep" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'cep')} required/>
                     </GridArea>
                     <GridArea $area="cidade">
                         <Label htmlFor="cidade">Cidade:</Label>
-                        <Input type="text" id="cidade" value={cidade} name="cidade" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setCidade(e.target.value)} required/>
+                        <Input type="text" id="cidade" value={objeto.cidade} name="cidade" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'cidade')} required/>
                     </GridArea>
                     <GridArea $area="estado">
                         <Label htmlFor="estado">Estado:</Label>
-                        <Input type="text" id="estado" value={estado} name="estado" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setEstado(e.target.value)} required/>
+                        <Input type="text" id="estado" value={objeto.estado} name="estado" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'estado')} required/>
                     </GridArea>
                     <GridArea $area="logradouro">
-                        <Label htmlFor="logradouro">Rua:</Label>
-                        <Input type="text" id="logradouro" value={logradouro} name="logradouro" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setLogradouro(e.target.value)} required/>
+                        <Label htmlFor="logradouro">logradouro:</Label>
+                        <Input type="text" id="logradouro" value={objeto.logradouro} name="logradouro" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'logradouro')} required/>
                     </GridArea>
                     <GridArea $area="complemento">
                         <Label htmlFor="complemento">Complemento:</Label>
-                        <Input type="text" id="complemento" value={complemento} name="complemento" disabled={!operacao || Number(operacao)===3}  onChange={(e) => setComplemento(e.target.value)} required/>
+                        <Input type="text" id="complemento" value={objeto.complemento} name="complemento" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'complemento')} required/>
                     </GridArea>
-                    <GridArea $area="reset" onClick={()=> setId("")}>
+                    <GridArea $area="latidude">
+                        <Label htmlFor="latidude">latidude:</Label>
+                        <Input type="text" id="latidude" value={objeto.latidude} name="latidude" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'latitude')} required/>
+                    </GridArea>
+                    <GridArea $area="longitude">
+                        <Label htmlFor="longitude">Longitude:</Label>
+                        <Input type="text" id="longitude" value={objeto.longitude} name="longitude" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'longitude')} required/>
+                    </GridArea>
+                    <GridArea $area="reset">
                         <Button $bgcolor={cores.backgroundBotaoSemFoco} type="reset">Limpar</Button>   
                     </GridArea>
                     <GridArea $area="botoes">

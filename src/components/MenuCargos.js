@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useState, useEffect, useMemo} from "react";
 import styled from "styled-components";
 import Box from "./SubBox";
@@ -12,6 +11,7 @@ import DivSeparador from "./SubDivSeparador";
 import TabelaCompleta from "./SubTabela";
 import Colapse from "./SubColapse"
 import cores from "./Cores"
+import useBancoDeDados from "./UseBancoDados";
 
 const FormGrid = styled.form`
 gap: 10px;
@@ -36,86 +36,27 @@ grid-template-areas:
 `;
 
 function CadastrarCargos() {
-    const [data, setData] = useState([]);
-    const [pesquisa, setPesquisa] = useState([]);
-    const [operacao, setOperacao] = useState("1");
-    const [id, setId] = useState("");
     const [objeto, setObjeto] = useState({
+        cargos_id: "",
         nome: "",
-        funcaoId: "",
-        usuarioId: "",
-    })
-    const [loading, setLoading] = useState(true);
-    const nomeTabela = 'funcoes'
-    useEffect(() => {
-    axios.get(`https://backend-mapa.onrender.com/${nomeTabela}/`)
-        .then(resp => setData(resp.data))
-        .catch(e => alert("Erro ao carregar dados!"))
-        .finally(() => setLoading(false));
-    }, []);
-    console.log(objeto);
-    const criar = async (objeto) => {
-      await axios.post(`https://backend-mapa.onrender.com/${nomeTabela}/`, objeto);
-      atualizarLista();
-    };
-
-    const alterar = async (id, objeto) => {
-      await axios.put(`https://backend-mapa.onrender.com/${nomeTabela}/${id}`, objeto);
-      atualizarLista();
-    };
-
-    const deletar = async (id) => {
-      await axios.delete(`https://backend-mapa.onrender.com/${nomeTabela}/${id}`);
-      atualizarLista();
-    };
-
-    const atualizarLista = () => {
-      setLoading(true);
-      axios.get(`https://backend-mapa.onrender.com/${nomeTabela}/`)
-        .then(resp => setData(resp.data))
-        .finally(() => setLoading(false));
-    };
-
-    const pesquisa2 = useMemo(() => {
-        return data.filter(item => 
-            (objeto.id ? item.empresa_id === Number(objeto.id) : item.nome.toLowerCase().includes(objeto.nome.toLowerCase()))
-        );
-    }, [data,objeto.nome, objeto.id]);
+        empresa_id: ""
+      });
+      const [operacao, setOperacao] = useState("1");
     
-    useEffect(() => {
-        setPesquisa(pesquisa2);
-    }, [pesquisa2]);
-
-    useEffect(() => {
-        const objetoSelecionado = data.find(objeto => objeto.empresa_id === Number(objeto.id));
-        setObjeto(objetoSelecionado ? objetoSelecionado.nome : "");
-    }, [objeto.id,data]);
-
-    const fazerEnvio = async (event) => {
-    event.preventDefault();
-      try {
-        if (operacao === "1") {
-          await criar(objeto);
-          alert(`Adicionado com sucesso!`);
-        } else if (operacao === "2") {
-          await alterar(id, objeto);
-          alert("Alterado com sucesso!");
-        } else if (operacao === "3") {
-          await deletar(id);
-          alert("Deletado com sucesso!");
-        }
-      } catch (error) {
-        alert("Erro ao salvar. Tente novamente.");
-        console.error(error);
-      }
-    };
-    const alterarObjeto = (event, itemAlteracao) =>{
-        event.preventDefault();
-        setObjeto({
-            ...objeto,
-            [itemAlteracao] : event.target.value
-        })
-    }
+      const {
+        data,
+        pesquisa,
+        loading,
+        fazerEnvio,
+        alterarObjeto
+      } = useBancoDeDados({
+        nomeTabela: "cargos",
+        objeto,
+        setObjeto,
+        operacao,
+        campoId: "cargos_id",
+        campoNome: "nome"
+      });
 
     return(
             <Box>
@@ -126,7 +67,7 @@ function CadastrarCargos() {
                         <Colapse marginBottom={'0px'} nome = "Consultar dados" estadoInicial={false}>
                             {loading
                                 ? <div style={{padding: "16px"}}>Carregando...</div>
-                                : <TabelaCompleta dados={pesquisa} lista={['cargo_id', 'nome_cargo', 'funcao_id']} camposPesquisa={false} />
+                                : <TabelaCompleta dados={pesquisa} lista={['cargo_id', 'nome_cargo']} camposPesquisa={false} />
                             }
                         </Colapse>
                         <DivSeparador></DivSeparador>
@@ -134,7 +75,7 @@ function CadastrarCargos() {
 
                     <GridArea $area="operacao">
                         <Label htmlFor="operacao">Operacao:</Label>
-                            <Select id="operacao" autoFocus name="operacao" required onChange={(e) => {setOperacao(e.target.value); alterarObjeto(e, 'id')}}>
+                            <Select id="operacao" autoFocus name="operacao" required onChange={(e) => {setOperacao(e.target.value); alterarObjeto(e, 'cargo_id')}}>
                             <option value="0">Selecione a operação desejada</option>
                             <option value="1">Adicionar</option>
                             <option value="2">Alterar</option>
@@ -143,7 +84,7 @@ function CadastrarCargos() {
                     </GridArea>
                     <GridArea $area="id">
                         <Label htmlFor="id">ID:</Label>
-                        <Input type="number" id="id" name="id" disabled={!operacao || Number(operacao)<=1} onChange={(e) => setId(e.target.value ? Number(e.target.value) : "")}/>
+                        <Input type="number" id="id" name="id" disabled={!operacao || Number(operacao)<=1} onChange={(e) => alterarObjeto(e, 'cargo_id')}/>
                     </GridArea>
                     <GridArea $area="nome">
                         <Label htmlFor="nome">Nome:</Label>

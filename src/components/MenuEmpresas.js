@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useState, useEffect, useMemo} from "react";
 import styled from "styled-components";
 import Box from "./SubBox";
@@ -12,6 +11,7 @@ import DivSeparador from "./SubDivSeparador";
 import TabelaCompleta from "./SubTabela";
 import Colapse from "./SubColapse"
 import cores from "./Cores"
+import useBancoDeDados from "./UseBancoDados";
 
 const FormGrid = styled.form`
 gap: 10px;
@@ -42,112 +42,37 @@ grid-template-areas:
 `;
 
 function CadastrarEmpresa() {
-    const [data, setData] = useState([]);
-    const [pesquisa, setPesquisa] = useState([]);
-    const [operacao, setOperacao] = useState("1");
     const [objeto, setObjeto] = useState({
-        id: '',
+        empresa_id: '',
         nome: "",
         cnpj: "",
         telefone: "",
         email: "",
         senha: "",
-        inicioContrato: "2025-06-08",
+        inicioContrato: "",
         dataRenovacao: "",
         valorContrato: "",
         tempoContrato: '',
         redeSocial1: "",
         redeSocial2: "",
     })
-    useEffect(() => {
-        if (!objeto.inicioContrato || !objeto.tempoContrato) return;
-
-        const inicio = new Date(objeto.inicioContrato);
-        inicio.setMonth(inicio.getMonth() + Number(objeto.tempoContrato));
-
-        const ano = inicio.getFullYear();
-        const mes = String(inicio.getMonth() + 1).padStart(2, '0'); // Corrige o mês
-        const dia = String(inicio.getDate()+1).padStart(2, '0');
-
-        const novaData = `${ano}-${mes}-${dia}`;
-
-        setObjeto(prev => ({
-            ...prev,
-            dataRenovacao: novaData
-        }));
-    }, [objeto.inicioContrato, objeto.tempoContrato]);
-
-    const [loading, setLoading] = useState(true);
-    const nomeTabela = 'empresa'
-    useEffect(() => {
-    axios.get(`https://backend-mapa.onrender.com/${nomeTabela}/`)
-        .then(resp => setData(resp.data))
-        .catch(e => alert("Erro ao carregar dados!"))
-        .finally(() => setLoading(false));
-    }, []);
-    console.log(objeto);
-    const criar = async (nome, cnpj, telefone, email, senha, inicio_contrato, data_renovacao, tempo_contrato_meses, valor_contrato, rede_social_1, rede_social_2) => {
-      await axios.post(`https://backend-mapa.onrender.com/${nomeTabela}/`, { nome, cnpj, telefone, email, senha, inicio_contrato, data_renovacao, tempo_contrato_meses, valor_contrato, rede_social_1, rede_social_2 });
-      atualizarLista();
-    };
-
-    const alterar = async (id, nome, cnpj, telefone, email, senha, inicio_contrato, data_renovacao, tempo_contrato_meses, valor_contrato, rede_social_1, rede_social_2) => {
-      await axios.put(`https://backend-mapa.onrender.com/${nomeTabela}/${id}`, { nome, cnpj, telefone, email, senha, inicio_contrato, data_renovacao, tempo_contrato_meses, valor_contrato, rede_social_1, rede_social_2});
-      atualizarLista();
-    };
-
-    const deletar = async (id) => {
-      await axios.delete(`https://backend-mapa.onrender.com/${nomeTabela}/${id}`);
-      atualizarLista();
-    };
-
-    const atualizarLista = () => {
-      setLoading(true);
-      axios.get(`https://backend-mapa.onrender.com/${nomeTabela}/`)
-        .then(resp => setData(resp.data))
-        .finally(() => setLoading(false));
-    };
-
-    const pesquisa2 = useMemo(() => {
-        return data.filter(item => 
-            (objeto.id ? item.empresa_id === Number(objeto.id) : item.nome.toLowerCase().includes(objeto.nome.toLowerCase()))
-        );
-    }, [data,objeto.nome, objeto.id]);
+      const [operacao, setOperacao] = useState("1");
     
-    useEffect(() => {
-        setPesquisa(pesquisa2);
-    }, [pesquisa2]);
-
-    useEffect(() => {
-        const objetoSelecionado = data.find(objeto => objeto.empresa_id === Number(objeto.id));
-        setObjeto(objetoSelecionado ? objetoSelecionado.nome : "");
-    }, [objeto.id,data]);
-
-    const fazerEnvio = async (event) => {
-    event.preventDefault();
-      try {
-        if (operacao === "1") {
-          await criar(objeto.nome, objeto.cnpj, objeto.telefone, objeto.email, objeto.senha, objeto.inicioContrato, objeto.dataRenovacao, objeto.tempoContrato, objeto.valorContrato, objeto.redeSocial1, objeto.redeSocial2 );
-          alert(`Adicionado com sucesso!`);
-        } else if (operacao === "2") {
-          await alterar(objeto.id, objeto.nome, objeto.cnpj, objeto.telefone, objeto.email, objeto.senha, objeto.inicioContrato, objeto.dataRenovacao, objeto.tempoContrato, objeto.valorContrato, objeto.redeSocial1, objeto.redeSocial2);
-          alert("Alterado com sucesso!");
-        } else if (operacao === "3") {
-          await deletar(objeto.id);
-          alert("Deletado com sucesso!");
-        }
-      } catch (error) {
-        alert("Erro ao salvar. Tente novamente.");
-        console.error(error);
-      }
-    };
-    const alterarObjeto = (event, itemAlteracao) =>{
-        event.preventDefault();
-        setObjeto({
-            ...objeto,
-            [itemAlteracao] : event.target.value
-        })
-    }
+      const {
+        data,
+        pesquisa,
+        loading,
+        fazerEnvio,
+        alterarObjeto
+      } = useBancoDeDados({
+        nomeTabela: "empresas",
+        objeto,
+        setObjeto,
+        operacao,
+        campoId: "empresa_id",
+        campoNome: "nome"
+      });
+    
 
     return(
             <Box>
@@ -166,7 +91,7 @@ function CadastrarEmpresa() {
 
                     <GridArea $area="operacao">
                         <Label htmlFor="operacao">Operacao:</Label>
-                            <Select id="operacao" autoFocus name="operacao" required onChange={(e) => {setOperacao(e.target.value); alterarObjeto(e, 'id')}}>
+                            <Select id="operacao" autoFocus name="operacao" required onChange={(e) => {setOperacao(e.target.value); alterarObjeto(e, 'empresa_id')}}>
                             <option value="0">Selecione a operação desejada</option>
                             <option value="1">Adicionar</option>
                             <option value="2">Alterar</option>
@@ -175,7 +100,7 @@ function CadastrarEmpresa() {
                     </GridArea>
                     <GridArea $area="id">
                         <Label htmlFor="id">ID:</Label>
-                        <Input type="number" id="id" name="id" disabled={!operacao || Number(operacao)<=1} onChange={(e) => alterarObjeto(e, 'id')}/>
+                        <Input type="number" id="id" name="id" disabled={!operacao || Number(operacao)<=1} onChange={(e) => alterarObjeto(e, 'empresa_id')}/>
                     </GridArea>
                     <GridArea $area="nome">
                         <Label htmlFor="nome">Nome:</Label>

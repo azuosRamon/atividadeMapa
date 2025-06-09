@@ -37,9 +37,8 @@ grid-template-areas:
 `;
 
 function ConfigurarCursos() {
-  const [id, setId] = useState("");
   const [objeto, setObjeto] = useState({
-    id: "",
+    curso_id: "",
     nome: "",
   });
   const [operacao, setOperacao] = useState("1");
@@ -55,9 +54,9 @@ function ConfigurarCursos() {
     objeto,
     setObjeto,
     operacao,
-    campoId: "curso_id"
+    campoId: "curso_id",
+    campoNome: "nome"
   });
-
 
     return(
             <Box>
@@ -85,13 +84,13 @@ function ConfigurarCursos() {
                     </GridArea>
                     <GridArea $area="idCurso">
                         <Label htmlFor="idCurso">ID:</Label>
-                        <Input type="number" id="idCurso" name="idCurso" disabled={!operacao || Number(operacao)<=1} onChange={(e) => setId(e.target.value ? Number(e.target.value) : "")}/>
+                        <Input type="number" id="idCurso" name="idCurso" disabled={!operacao || Number(operacao)<=1} onChange={(e) => alterarObjeto(e, 'curso_id')}/>
                     </GridArea>
                     <GridArea $area="nome">
                         <Label htmlFor="nome">Nome do Curso:</Label>
                         <Input type="text" id="nome" value={objeto.nome} name="nome" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'nome')} required/>
                     </GridArea>
-                    <GridArea $area="reset" onClick={()=> setId("")}>
+                    <GridArea $area="reset">
                         <Button $bgcolor={cores.backgroundBotaoSemFoco} type="reset">Limpar</Button>   
                     </GridArea>
                     <GridArea $area="botoes">

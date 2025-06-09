@@ -1,12 +1,12 @@
 import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 
-function useBancoDeDados({ nomeTabela, objeto, setObjeto, operacao, campoId = "id" }) {
+function useBancoDeDados({ nomeTabela, objeto, setObjeto, operacao, campoId = "id", campoNome ='nome' }) {
   const [data, setData] = useState([]);
   const [pesquisa, setPesquisa] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔄 Atualiza a lista de dados
+  // Atualiza a lista de dados
   const atualizarLista = () => {
     setLoading(true);
     axios.get(`https://backend-mapa.onrender.com/${nomeTabela}/`)
@@ -19,33 +19,33 @@ function useBancoDeDados({ nomeTabela, objeto, setObjeto, operacao, campoId = "i
     atualizarLista();
   }, []);
 
-  // ➕ Criar (sem o campoId, ex: id)
+  //  Criar (sem o campoId, ex: id)
   const criar = async (novoObjeto) => {
     const { [campoId]: _, ...semId } = novoObjeto;
     await axios.post(`https://backend-mapa.onrender.com/${nomeTabela}/`, semId);
     atualizarLista();
   };
 
-  // ✏️ Alterar
+  //  Alterar
   const alterar = async (id, dadosAtualizados) => {
     await axios.put(`https://backend-mapa.onrender.com/${nomeTabela}/${id}`, dadosAtualizados);
     atualizarLista();
   };
 
-  // ❌ Deletar
+  //  Deletar
   const deletar = async (id) => {
     await axios.delete(`https://backend-mapa.onrender.com/${nomeTabela}/${id}`);
     atualizarLista();
   };
 
-  // 🔍 Pesquisa com base em nome ou ID
+  //  Pesquisa com base em nome ou ID
   const pesquisaFiltrada = useMemo(() => {
     return data.filter(item =>
       objeto[campoId]
         ? item[campoId] === Number(objeto[campoId])
-        : item.nome?.toLowerCase().includes(objeto.nome?.toLowerCase() || "")
+        : item[campoNome]?.toLowerCase().includes(objeto[campoNome]?.toLowerCase() || "")
     );
-  }, [data, objeto.nome, objeto[campoId]]);
+  }, [data, objeto[campoNome], objeto[campoId]]);
 
   useEffect(() => {
     setPesquisa(pesquisaFiltrada);
