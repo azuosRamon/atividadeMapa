@@ -120,9 +120,9 @@ function CampusOpcoes({ dados }) {
                         <Label htmlFor="complemento">Complemento:</Label>
                         <Input type="text" id="complemento" value={objeto.complemento} name="complemento" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'complemento')} required/>
                     </GridArea>
-                    <GridArea $area="latidude">
-                        <Label htmlFor="latidude">latidude:</Label>
-                        <Input type="text" id="latidude" value={objeto.latidude} name="latidude" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'latitude')} required/>
+                    <GridArea $area="latitude">
+                        <Label htmlFor="latitude">latitude:</Label>
+                        <Input type="text" id="latitude" value={objeto.latitude} name="latitude" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'latitude')} required/>
                     </GridArea>
                     <GridArea $area="longitude">
                         <Label htmlFor="longitude">Longitude:</Label>

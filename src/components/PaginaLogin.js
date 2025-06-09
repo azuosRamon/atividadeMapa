@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState, useEffect} from "react";
 import styled from "styled-components";
 import { Link } from 'react-router-dom';
 import Box from "./SubBox";
@@ -28,16 +28,56 @@ const StyledLink = styled(Link)`
 
 
 
-function Login(){
+function Login({dados}){
+    const data = dados || {};
     const [matricula, setMatricula] = useState("");
     const [senha, setSenha] = useState("");
+
+    const setarUsuarioLocalStorage = (usuario) => {
+        let parsedUsuario = JSON.stringify(usuario);
+        localStorage.setItem("usuario", parsedUsuario);
+    }
+
+    const [status, setStatus] = useState(false)
+        const capturarUsuarioLogadoLocalStorage = () => {
+
+            let usuario = localStorage.getItem("usuario");
+            if (usuario) {
+                return true;
+            } return false;
+    }
+
+    useEffect(() => {
+        setStatus(capturarUsuarioLogadoLocalStorage())
+    }, [])
+    useEffect(() => {
+        if (status) {
+            efetuarLogin();
+        }
+    },[])
+
+
     const navigate = useNavigate();
     const efetuarLogin = (event) => {
         event.preventDefault(); // Evita recarregamento da página
-        if (matricula === "2025" && senha === "admin") {
-          navigate("/logado");
-        } else {
-          alert("Matrícula ou senha incorreta!");
+        console.log(data.pessoas);
+        let matriculaEncontrada = false
+        data.pessoas.map((usuarioCadastrado) => {
+            console.log(usuarioCadastrado);
+            if (Number(usuarioCadastrado.matricula) === Number(matricula))  {
+                matriculaEncontrada = true;
+                if (usuarioCadastrado.senha === senha) {
+                    setarUsuarioLocalStorage(usuarioCadastrado);
+                    navigate("/logado");
+                }
+                else{
+                    alert("Senha incorreta!");
+
+                }
+            } 
+        }) 
+        if (!matriculaEncontrada){
+            alert("Matrícula não cadastrada!");
         }
       };
     return(

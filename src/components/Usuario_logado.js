@@ -47,15 +47,22 @@ const DivContent = styled.div`
 
 
 
-function Usuario({ dados, usuarioId, fecharMenu, mobile=false, logo=false }) {
-    const usuarioDados = dados?.[usuarioId] || {};
+function Usuario({ fecharMenu, mobile=false, logo=false }) {
+    const capturarUsuarioLogadoLocalStorage = () => {
+        let usuario = localStorage.getItem("usuario");
+        if (!usuario) return null;
+        try {
+            let parsedUsuario = JSON.parse(usuario);
+            return parsedUsuario
+        } catch (error){
+            console.log(error);
+            return null;
+        }
+    }
+    const usuarioLogadoDados = capturarUsuarioLogadoLocalStorage() || {};
     const telaAtual = useNavigate();
 
-    const [usuario, setUsuario] = useState(usuarioDados);
-
-    useEffect(() => {
-        setUsuario(dados[usuarioId] || {});
-    }, [usuarioId])
+    const [usuario, setUsuario] = useState(usuarioLogadoDados);
 
     const navegar = (rota) => {
         telaAtual(rota);
@@ -73,23 +80,56 @@ function Usuario({ dados, usuarioId, fecharMenu, mobile=false, logo=false }) {
                         <Titulo3>{usuario.nome}</Titulo3>
                     </DivContentInformacoes>
                     <DivContentInformacoes>
-                        <ParagrafoInformacao>{usuario.funcao}</ParagrafoInformacao>
+                        <ParagrafoInformacao>{usuario.cargo}</ParagrafoInformacao>
                     </DivContentInformacoes>
                 </DivContent>
                 
                 <DivContent>
-                    <Button onClick={()=>{navegar('/logado')}} $bgcolor="rgb(38, 38, 38)">Início</Button>
-                    <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>
-                    <Button onClick={()=>{navegar('/periodoHorarios')}} $bgcolor="rgb(38, 38, 38)">Períodos e Horários</Button>
-                    <Button onClick={()=>{navegar('/edificio')}} $bgcolor="rgb(38, 38, 38)">Edifício</Button>
-                    <Button onClick={()=>{navegar('/cursos')}} $bgcolor="rgb(38, 38, 38)">Cursos</Button>
-                    <Button onClick={()=>{navegar('/disciplinas')}} $bgcolor="rgb(38, 38, 38)">Disciplinas</Button>
-                    <Button onClick={()=>{navegar('/tabelas')}} $bgcolor="rgb(38, 38, 38)">Tabelas</Button>
-                    <Button onClick={()=>{navegar('/quadroAulas')}} $bgcolor="rgb(38, 38, 38)">Quadro de aulas</Button>
-                    <Button onClick={()=>{navegar('/empresa')}} $bgcolor="rgb(38, 38, 38)">Adicionar Empresa</Button>
-                    <Button onClick={()=>{navegar('/funcoes')}} $bgcolor="rgb(38, 38, 38)">Adicionar Funcoes</Button>
-                    <Button onClick={()=>{navegar('/cargos')}} $bgcolor="rgb(38, 38, 38)">Adicionar Cargos</Button>
-                    <Button onClick={()=>{navegar('/cadastro')}} $bgcolor="rgb(38, 38, 38)">Adicionar usuário</Button>
+                    { (usuario.funcao.toLowerCase() === "moderadorsite") && (
+                        <React.Fragment>
+                            <Button onClick={()=>{navegar('/logado')}} $bgcolor="rgb(38, 38, 38)">Início</Button>
+                            <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>
+                            <Button onClick={()=>{navegar('/periodoHorarios')}} $bgcolor="rgb(38, 38, 38)">Períodos e Horários</Button>
+                            <Button onClick={()=>{navegar('/edificio')}} $bgcolor="rgb(38, 38, 38)">Edifício</Button>
+                            <Button onClick={()=>{navegar('/cursos')}} $bgcolor="rgb(38, 38, 38)">Cursos</Button>
+                            <Button onClick={()=>{navegar('/disciplinas')}} $bgcolor="rgb(38, 38, 38)">Disciplinas</Button>
+                            <Button onClick={()=>{navegar('/tabelas')}} $bgcolor="rgb(38, 38, 38)">Tabelas</Button>
+                            <Button onClick={()=>{navegar('/quadroAulas')}} $bgcolor="rgb(38, 38, 38)">Quadro de aulas</Button>
+                            <Button onClick={()=>{navegar('/empresa')}} $bgcolor="rgb(38, 38, 38)">Empresa</Button>
+                            <Button onClick={()=>{navegar('/funcoes')}} $bgcolor="rgb(38, 38, 38)">Funcoes</Button>
+                            <Button onClick={()=>{navegar('/cargos')}} $bgcolor="rgb(38, 38, 38)">Cargos</Button>
+                            <Button onClick={()=>{navegar('/cadastro')}} $bgcolor="rgb(38, 38, 38)">Adicionar usuário</Button>
+                        </React.Fragment>
+                    )}
+                    { (usuario.funcao.toLowerCase() === "moderador") && (
+                        <React.Fragment>
+                            <Button onClick={()=>{navegar('/logado')}} $bgcolor="rgb(38, 38, 38)">Início</Button>
+                            <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>
+                            <Button onClick={()=>{navegar('/empresa')}} $bgcolor="rgb(38, 38, 38)">Empresa</Button>
+                            <Button onClick={()=>{navegar('/funcoes')}} $bgcolor="rgb(38, 38, 38)">Funcoes</Button>
+                        </React.Fragment>
+                    )}
+                    { (usuario.funcao.toLowerCase() === "administrador") && (
+                        <React.Fragment>
+                            <Button onClick={()=>{navegar('/logado')}} $bgcolor="rgb(38, 38, 38)">Início</Button>
+                            <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>
+                            <Button onClick={()=>{navegar('/tabelas')}} $bgcolor="rgb(38, 38, 38)">Tabelas</Button>
+                            <Button onClick={()=>{navegar('/periodoHorarios')}} $bgcolor="rgb(38, 38, 38)">Períodos e Horários</Button>
+                            <Button onClick={()=>{navegar('/edificio')}} $bgcolor="rgb(38, 38, 38)">Edifício</Button>
+                            <Button onClick={()=>{navegar('/cursos')}} $bgcolor="rgb(38, 38, 38)">Cursos</Button>
+                            <Button onClick={()=>{navegar('/disciplinas')}} $bgcolor="rgb(38, 38, 38)">Disciplinas</Button>
+                            <Button onClick={()=>{navegar('/quadroAulas')}} $bgcolor="rgb(38, 38, 38)">Quadro de aulas</Button>
+                            <Button onClick={()=>{navegar('/cargos')}} $bgcolor="rgb(38, 38, 38)">Cargos</Button>
+                            <Button onClick={()=>{navegar('/cadastro')}} $bgcolor="rgb(38, 38, 38)">Adicionar usuário</Button>
+                        </React.Fragment>
+                    )}
+                    { (usuario.funcao.toLowerCase() === "professor") && (
+                        <React.Fragment>
+                            <Button onClick={()=>{navegar('/logado')}} $bgcolor="rgb(38, 38, 38)">Início</Button>
+                            <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>
+                            <Button onClick={()=>{navegar('/tabelas')}} $bgcolor="rgb(38, 38, 38)">Tabelas</Button>
+                        </React.Fragment>
+                    )}
                 </DivContent>
 
 

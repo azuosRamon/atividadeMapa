@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FaSearchLocation, FaBars, FaTimes } from "react-icons/fa";
@@ -115,9 +115,29 @@ color
 
 
 
-function Header({dados, userId, status}) {
+function Header() {
+    const [status, setStatus] = useState(false)
+     const capturarUsuarioLogadoLocalStorage = () => {
+
+            let usuario = localStorage.getItem("usuario");
+            if (usuario) {
+                return true;
+            } return false;
+    }
+
+    useEffect(() => {
+        setStatus(capturarUsuarioLogadoLocalStorage())
+    }, [])
+
     const LogInOut = status ? "Logout" : <PessoaIcon />;
     const [abrirMenu, setAbrirMenu] = useState(false);
+
+    const fazerLogout = () => {
+        if (status) {
+            localStorage.removeItem('usuario')
+            setStatus(false);
+        }
+    }
 
     const abrindoMenu = () => {
         setAbrirMenu(!abrirMenu);
@@ -131,7 +151,7 @@ function Header({dados, userId, status}) {
                 </StyledLink>
                 
                 <UlMenu>
-                    <LiMenu><StyledLink to="/login">{LogInOut}</StyledLink></LiMenu>
+                    <LiMenu><StyledLink to="/login" onClick={status ? fazerLogout : undefined}>{LogInOut}</StyledLink></LiMenu>
                 </UlMenu>
 
                 <HamburgerIcon onClick={abrindoMenu} aria-label="Menu de navegação">
@@ -142,7 +162,7 @@ function Header({dados, userId, status}) {
                     <CelularMenu $abrir={abrirMenu}>
                         <DivSeparador></DivSeparador>
                             <LiMenu><StyledLink to="/" onClick={()=> setAbrirMenu(false)}><FaSearchLocation /></StyledLink></LiMenu>
-                             {status && <Usuario_logado mobile={true} fecharMenu={() => setAbrirMenu(false)} dados={dados} usuarioId={Number(userId)}/>}
+                             {status && <Usuario_logado mobile={true} fecharMenu={() => setAbrirMenu(false)}/>}
                             <LiMenu><StyledLink to="/login" onClick={()=> setAbrirMenu(false)}>{LogInOut}</StyledLink></LiMenu>
                     </CelularMenu>
         </HeaderMenu>

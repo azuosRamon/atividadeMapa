@@ -30,10 +30,10 @@ const Aside = styled.aside`
 
 const LayoutLogado = ({ usuarioDados, usuarioId, children }) => (
   <div className="corpo">
-    <Header dados={usuarioDados} userId={usuarioId} status={1} />
+    <Header />
     <DivGrid2>
       <Section>
-        <Usuario_logado dados={usuarioDados} usuarioId={usuarioId} />
+        <Usuario_logado />
       </Section>
       <Aside>{children}</Aside>
     </DivGrid2>
