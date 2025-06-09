@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import Login from "./components/PaginaLogin";
 import MenuCadastro from "./components/MenuCadastro";
@@ -71,7 +71,7 @@ const dadosJson = {
     {"usuario_id":8, "nome": "Andre", "sobrenome": "Souza", "telefone": "21943214321","nascimento":"2025-04-14", "email":"terezinha@mail.com", "cpf": "111.222.333-44", "matricula":"2033", "funcao": "Professor", "foto": "", "senha": "professor", "cargo": "professor", "informacoes_publicas": 1, "empresa_id": 0 },
     {"usuario_id":9, "nome": "Mario", "sobrenome": "Souza", "telefone": "21943214321","nascimento":"2025-04-14", "email":"terezinha@mail.com", "cpf": "111.222.333-44", "matricula":"2034", "funcao": "Professor", "foto": "", "senha": "professor", "cargo": "professor", "informacoes_publicas": 1, "empresa_id": 0 },
     {"usuario_id":10, "nome": "ramon", "sobrenome": "Souza", "telefone": "21943214321","nascimento":"2025-04-14", "email":"ramon@mail.com", "cpf": "111.222.333-44", "matricula":"1999", "funcao": "moderador", "foto": "", "senha": "1234", "cargo": "Gerente", "informacoes_publicas": 1, "empresa_id": 0 },
-    {"usuario_id":10, "nome": "Nome", "sobrenome": "Souza", "telefone": "21943214321","nascimento":"2025-04-14", "email":"ramon@mail.com", "cpf": "111.222.333-44", "matricula":"2025", "funcao": "moderadorSite", "foto": "", "senha": "admin", "cargo": "FrontEnd", "informacoes_publicas": 1, "empresa_id": 0 },
+    {"usuario_id":10, "nome": "Andre", "sobrenome": "Souza", "telefone": "21943214321","nascimento":"2025-04-14", "email":"andre@mail.com", "cpf": "111.222.333-44", "matricula":"2025", "funcao": "moderadorSite", "foto": "", "senha": "admin", "cargo": "FrontEnd", "informacoes_publicas": 1, "empresa_id": 0 },
   ],
   "campus":[
       { "id": 1, "nome": "Campus I", "cidade": "Maricá", "estado" : "RJ", "cep": "24900000", "logradouro": "Avenida Roberto Silveira", "complemento": "rodoviaria" },
@@ -175,7 +175,19 @@ const dadosJson = {
 
 
 function App() {
-
+  const capturarUsuarioLogadoLocalStorage = () => {
+        let usuario = localStorage.getItem("usuario");
+        if (!usuario) return null;
+        try {
+            let parsedUsuario = JSON.parse(usuario);
+            return parsedUsuario
+        } catch (error){
+            console.log(error);
+            return null;
+        }
+    }
+  const [usuarioLogadoDados, setUsuario] = useState(capturarUsuarioLogadoLocalStorage());
+  console.log(usuarioLogadoDados);
   return(
     <Router>
       <Routes>
@@ -209,37 +221,37 @@ function App() {
           <LayoutLogado usuarioDados={data} usuarioId={0}><Slide dados={dadosJson} lista_imagens={imagens} pagina_inicio={0}/></LayoutLogado>
       }/>
         <Route path="/editarPerfil" element={
-          <LayoutLogado usuarioDados={data} usuarioId={0}><Perfil dados={data} usuarioId={0}/></LayoutLogado>
+          <LayoutLogado usuarioDados={usuarioLogadoDados}><Perfil/></LayoutLogado>
         }/>
         <Route path="/periodoHorarios" element={
-          <LayoutLogado usuarioDados={data} usuarioId={0}><MenuHorarios tableHorarios={dadosJson.horarios}/></LayoutLogado>
+          <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuHorarios tableHorarios={dadosJson.horarios}/></LayoutLogado>
         }/>
         <Route path="/edificio" element={
-          <LayoutLogado usuarioDados={data} usuarioId={0}><MenuEdificios dados={dadosJson}/></LayoutLogado>
+          <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuEdificios dados={dadosJson}/></LayoutLogado>
         }/>
         <Route path="/cursos" element={
-          <LayoutLogado usuarioDados={data} usuarioId={0}><ConfigurarCursos/></LayoutLogado>
+          <LayoutLogado usuarioDados={usuarioLogadoDados}><ConfigurarCursos/></LayoutLogado>
         }/>
         <Route path="/disciplinas" element={
-          <LayoutLogado usuarioDados={data} usuarioId={0}><MenuDisciplinas/></LayoutLogado>
+          <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuDisciplinas/></LayoutLogado>
         }/>
         <Route path="/tabelas" element={
-          <LayoutLogado usuarioDados={data} usuarioId={0}><Tabelas dados={dadosJson}></Tabelas></LayoutLogado>
+          <LayoutLogado usuarioDados={usuarioLogadoDados}><Tabelas dados={dadosJson}></Tabelas></LayoutLogado>
         }/>
         <Route path="/quadroAulas" element={
-          <LayoutLogado usuarioDados={data} usuarioId={0}><MenuQuadroAulas table={dadosJson} imagens={imagens}/></LayoutLogado>
+          <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuQuadroAulas table={dadosJson} imagens={imagens}/></LayoutLogado>
         }/>
         <Route path="/cadastro" element={
-          <LayoutLogado usuarioDados={data} usuarioId={0}><MenuCadastro/></LayoutLogado>
+          <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuCadastro/></LayoutLogado>
         }/>
         <Route path="/empresa" element={
-          <LayoutLogado usuarioDados={data} usuarioId={0}><CadastrarEmpresa/></LayoutLogado>
+          <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarEmpresa/></LayoutLogado>
         }/>
         <Route path="/funcoes" element={
-          <LayoutLogado usuarioDados={data} usuarioId={0}><CadastrarFuncao/></LayoutLogado>
+          <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarFuncao/></LayoutLogado>
         }/>
         <Route path="/cargos" element={
-          <LayoutLogado usuarioDados={data} usuarioId={0}><CadastrarCargos/></LayoutLogado>
+          <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarCargos/></LayoutLogado>
         }/>
         <Route path="/slide" element={
           <Slide

@@ -48,22 +48,23 @@ const DivContent = styled.div`
 
 
 function Usuario({ fecharMenu, mobile=false, logo=false }) {
-    const capturarUsuarioLogadoLocalStorage = () => {
-        let usuario = localStorage.getItem("usuario");
-        if (!usuario) return null;
-        try {
-            let parsedUsuario = JSON.parse(usuario);
-            return parsedUsuario
-        } catch (error){
-            console.log(error);
-            return null;
+     const capturarUsuarioLogadoLocalStorage = () => {
+            let usuario = localStorage.getItem("usuario");
+            if (!usuario) return null;
+            try {
+                let parsedUsuario = JSON.parse(usuario);
+                return parsedUsuario
+            } catch (error){
+                console.log(error);
+                return null;
+            }
         }
-    }
-    const usuarioLogadoDados = capturarUsuarioLogadoLocalStorage() || {};
+
     const telaAtual = useNavigate();
 
-    const [usuario, setUsuario] = useState(usuarioLogadoDados);
-
+const [usuario, setUsuario] = useState(capturarUsuarioLogadoLocalStorage());
+   console.log('logado');
+   console.log(usuario);
     const navegar = (rota) => {
         telaAtual(rota);
         if (mobile) fecharMenu();

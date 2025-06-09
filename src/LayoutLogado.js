@@ -28,7 +28,7 @@ const Aside = styled.aside`
 `;
 
 
-const LayoutLogado = ({ usuarioDados, usuarioId, children }) => (
+const LayoutLogado = ({ usuarioDados, children }) => (
   <div className="corpo">
     <Header />
     <DivGrid2>

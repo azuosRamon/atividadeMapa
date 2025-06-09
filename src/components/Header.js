@@ -151,6 +151,9 @@ function Header() {
                 </StyledLink>
                 
                 <UlMenu>
+                    {status && (
+                        <LiMenu><StyledLink to="/logado">Menu</StyledLink></LiMenu>
+                    )}
                     <LiMenu><StyledLink to="/login" onClick={status ? fazerLogout : undefined}>{LogInOut}</StyledLink></LiMenu>
                 </UlMenu>
 

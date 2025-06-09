@@ -43,22 +43,21 @@ grid-template-areas:
 
 
 
-function AtualizarPerfil({ dados, usuarioId }) {
+function AtualizarPerfil() {
+    const capturarUsuarioLogadoLocalStorage = () => {
+            let usuario = localStorage.getItem("usuario");
+            if (!usuario) return null;
+            try {
+                let parsedUsuario = JSON.parse(usuario);
+                return parsedUsuario
+            } catch (error){
+                console.log(error);
+                return null;
+            }
+        }
 
-     const [objeto, setObjeto] = useState({
-        usuario_id: "",
-        nome: "",
-        sobrenome: "",
-        nascimento: "",
-        cpf: "",
-        matricula: "",
-        email: "",
-        telefone: "",
-        senha: "",
-        foto:"",
-        empresa_id: "",
-        informacoes_publicas: ""
-    });
+
+    const [objeto, setObjeto] = useState(capturarUsuarioLogadoLocalStorage());
 
     const [operacao, setOperacao] = useState("1");
 
@@ -83,7 +82,7 @@ function AtualizarPerfil({ dados, usuarioId }) {
                 <Title>Atualizar Perfil</Title>
                 <DivSeparador></DivSeparador>
                 <FormGrid onSubmit={fazerEnvio}>
-                    <Input type="hidden" id="usuarioId" name="usuarioId" value={usuarioId}/>
+                    <Input type="hidden" id="usuarioId" name="usuarioId" value={objeto.usuario_id}/>
                     <GridArea $area="nome">
                         <Label htmlFor="nome">Nome:</Label>
                         <Input type="text" id="nome" name="nome" value={objeto.nome} required onChange={(e) => alterarObjeto(e, 'nome')}/>
