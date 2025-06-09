@@ -41,7 +41,7 @@ function CadastrarFuncao() {
     const [operacao, setOperacao] = useState("1");
     const [objeto, setObjeto] = useState({
         id: '',
-        nome: "",
+        nome_funcao: "",
     })
     const [loading, setLoading] = useState(true);
     const nomeTabela = 'funcoes'
@@ -52,13 +52,13 @@ function CadastrarFuncao() {
         .finally(() => setLoading(false));
     }, []);
     console.log(objeto);
-    const criar = async (nome) => {
-      await axios.post(`https://backend-mapa.onrender.com/${nomeTabela}/`, { nome });
+    const criar = async (nome_funcao) => {
+      await axios.post(`https://backend-mapa.onrender.com/${nomeTabela}/`, { nome_funcao });
       atualizarLista();
     };
 
-    const alterar = async (id, nome) => {
-      await axios.put(`https://backend-mapa.onrender.com/${nomeTabela}/${id}`, { nome});
+    const alterar = async (id, nome_funcao) => {
+      await axios.put(`https://backend-mapa.onrender.com/${nomeTabela}/${id}`, { nome_funcao });
       atualizarLista();
     };
 
@@ -76,27 +76,31 @@ function CadastrarFuncao() {
 
     const pesquisa2 = useMemo(() => {
         return data.filter(item => 
-            (objeto.id ? item.empresa_id === Number(objeto.id) : item.nome.toLowerCase().includes(objeto.nome.toLowerCase()))
+            (objeto.id ? item.funcao_id === Number(objeto.id) : item.nome_funcao.toLowerCase().includes(objeto.nome_funcao.toLowerCase()))
         );
-    }, [data,objeto.nome, objeto.id]);
+    }, [data,objeto.nome_funcao, objeto.id]);
     
     useEffect(() => {
         setPesquisa(pesquisa2);
     }, [pesquisa2]);
 
     useEffect(() => {
-        const objetoSelecionado = data.find(objeto => objeto.empresa_id === Number(objeto.id));
-        setObjeto(objetoSelecionado ? objetoSelecionado.nome : "");
-    }, [objeto.id,data]);
+        if (!objeto.id) return;
+        const funcaoSelecionada = data.find(item => item.funcao_id === Number(objeto.id));
+        if (funcaoSelecionada) setObjeto({
+            id: funcaoSelecionada.funcao_id,
+            nome_funcao: funcaoSelecionada.nome_funcao,
+        });
+}, [objeto.id, data]);
 
     const fazerEnvio = async (event) => {
     event.preventDefault();
       try {
         if (operacao === "1") {
-          await criar(objeto.nome );
+          await criar(objeto.nome_funcao );
           alert(`Adicionado com sucesso!`);
         } else if (operacao === "2") {
-          await alterar(objeto.id, objeto.nome);
+          await alterar(objeto.id, objeto.nome_funcao);
           alert("Alterado com sucesso!");
         } else if (operacao === "3") {
           await deletar(objeto.id);
@@ -145,7 +149,7 @@ function CadastrarFuncao() {
                     </GridArea>
                     <GridArea $area="nome">
                         <Label htmlFor="nome">Nome:</Label>
-                        <Input type="text" id="nome" value={objeto.nome} name="nome" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'nome')} required/>
+                        <Input type="text" id="nome" value={objeto.nome_funcao} name="nome" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'nome_funcao')} required/>
                     </GridArea>
                     <GridArea $area="reset">
                         <Button $bgcolor={cores.backgroundBotaoSemFoco} type="reset">Limpar</Button>   
