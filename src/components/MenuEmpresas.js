@@ -34,8 +34,18 @@ grid-template-areas:
     grid-template-areas: 
         "tabela"
         "operacao"
-        "idCurso"
+        "id"
         "nome"
+        "cnpj"
+        "telefone"
+        "inicioContrato"
+        "dataRenovacao"
+        "tempoContrato"
+        "email "
+        "valorContrato"
+        "senha"
+        "redeSocial1"
+        "redeSocial2"
         "reset"
         "botoes";
 }
