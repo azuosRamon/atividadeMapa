@@ -171,7 +171,7 @@ function Header() {
                         <DivSeparador></DivSeparador>
                             <LiMenu><StyledLink to="/" onClick={()=> setAbrirMenu(false)}><FaSearchLocation /></StyledLink></LiMenu>
                              {status && <Usuario_logado mobile={true} fecharMenu={() => setAbrirMenu(false)}/>}
-                            <LiMenu><StyledLink to="/login" onClick={()=> setAbrirMenu(false)}>{LogInOut}</StyledLink></LiMenu>
+                                <LiMenu><StyledLink to="/login" onClick={() => { setAbrirMenu(false); if (status) {fazerLogout();}}}>{LogInOut}</StyledLink></LiMenu>
                     </CelularMenu>
         </HeaderMenu>
     )
