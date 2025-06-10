@@ -35,11 +35,11 @@ grid-template-areas:
 }
 `;
 
-function CadastrarCargos() {
+function CadastrarCargos({usuarioLogado}) {
     const [objeto, setObjeto] = useState({
-        cargos_id: "",
-        nome: "",
-        empresa_id: ""
+        cargo_id: "",
+        nome_cargo: "",
+        empresa_id: usuarioLogado.empresa_id
       });
       const [operacao, setOperacao] = useState("1");
     
@@ -54,8 +54,8 @@ function CadastrarCargos() {
         objeto,
         setObjeto,
         operacao,
-        campoId: "cargos_id",
-        campoNome: "nome"
+        campoId: "cargo_id",
+        campoNome: "nome_cargo"
       });
 
     return(
@@ -88,7 +88,7 @@ function CadastrarCargos() {
                     </GridArea>
                     <GridArea $area="nome">
                         <Label htmlFor="nome">Nome:</Label>
-                        <Input type="text" id="nome" value={objeto.nome} name="nome" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'nome')} required/>
+                        <Input type="text" id="nome" value={objeto.nome_cargo} name="nome" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'nome_cargo')} required/>
                     </GridArea>
                     <GridArea $area="reset">
                         <Button $bgcolor={cores.backgroundBotaoSemFoco} type="reset">Limpar</Button>   

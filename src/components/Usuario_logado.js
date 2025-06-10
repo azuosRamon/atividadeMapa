@@ -63,8 +63,6 @@ function Usuario({ fecharMenu, mobile=false, logo=false }) {
     const telaAtual = useNavigate();
 
 const [usuario, setUsuario] = useState(capturarUsuarioLogadoLocalStorage());
-   console.log('logado');
-   console.log(usuario);
     const navegar = (rota) => {
         telaAtual(rota);
         if (mobile) fecharMenu();

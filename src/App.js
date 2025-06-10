@@ -70,8 +70,8 @@ const dadosJson = {
     {"usuario_id":7, "nome": "Suelen", "sobrenome": "Souza", "telefone": "21943214321","nascimento":"2025-04-14", "email":"terezinha@mail.com", "cpf": "111.222.333-44", "matricula":"2032", "funcao": "Professor", "foto": "", "senha": "professor", "cargo": "professor", "informacoes_publicas": 1, "empresa_id": 0 },
     {"usuario_id":8, "nome": "Andre", "sobrenome": "Souza", "telefone": "21943214321","nascimento":"2025-04-14", "email":"terezinha@mail.com", "cpf": "111.222.333-44", "matricula":"2033", "funcao": "Professor", "foto": "", "senha": "professor", "cargo": "professor", "informacoes_publicas": 1, "empresa_id": 0 },
     {"usuario_id":9, "nome": "Mario", "sobrenome": "Souza", "telefone": "21943214321","nascimento":"2025-04-14", "email":"terezinha@mail.com", "cpf": "111.222.333-44", "matricula":"2034", "funcao": "Professor", "foto": "", "senha": "professor", "cargo": "professor", "informacoes_publicas": 1, "empresa_id": 0 },
-    {"usuario_id":10, "nome": "ramon", "sobrenome": "Souza", "telefone": "21943214321","nascimento":"2025-04-14", "email":"ramon@mail.com", "cpf": "111.222.333-44", "matricula":"1999", "funcao": "moderador", "foto": "", "senha": "1234", "cargo": "Gerente", "informacoes_publicas": 1, "empresa_id": 0 },
-    {"usuario_id":10, "nome": "Andre", "sobrenome": "Souza", "telefone": "21943214321","nascimento":"2025-04-14", "email":"andre@mail.com", "cpf": "111.222.333-44", "matricula":"2025", "funcao": "moderadorSite", "foto": "", "senha": "admin", "cargo": "FrontEnd", "informacoes_publicas": 1, "empresa_id": 0 },
+    {"usuario_id":10, "nome": "ramon", "sobrenome": "Souza", "telefone": "21943214321","nascimento":"2025-04-14", "email":"ramon@mail.com", "cpf": "111.222.333-44", "matricula":"1999", "funcao": "moderador", "foto": "", "senha": "1234", "cargo": "Gerente", "informacoes_publicas": 1, "empresa_id": 1 },
+    {"usuario_id":10, "nome": "Andre", "sobrenome": "Souza", "telefone": "21943214321","nascimento":"2025-04-14", "email":"andre@mail.com", "cpf": "111.222.333-44", "matricula":"2025", "funcao": "moderadorSite", "foto": "", "senha": "admin", "cargo": "FrontEnd", "informacoes_publicas": 1, "empresa_id": 1 },
   ],
   "campus":[
       { "id": 1, "nome": "Campus I", "cidade": "Maricá", "estado" : "RJ", "cep": "24900000", "logradouro": "Avenida Roberto Silveira", "complemento": "rodoviaria" },
@@ -242,7 +242,7 @@ function App() {
           <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuQuadroAulas table={dadosJson} imagens={imagens}/></LayoutLogado>
         }/>
         <Route path="/cadastro" element={
-          <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuCadastro/></LayoutLogado>
+          <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuCadastro usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
         }/>
         <Route path="/empresa" element={
           <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarEmpresa/></LayoutLogado>
@@ -251,7 +251,7 @@ function App() {
           <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarFuncao/></LayoutLogado>
         }/>
         <Route path="/cargos" element={
-          <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarCargos/></LayoutLogado>
+          <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarCargos usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
         }/>
         <Route path="/slide" element={
           <Slide

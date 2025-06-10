@@ -44,17 +44,17 @@ grid-template-areas:
 function CadastrarEmpresa() {
     const [objeto, setObjeto] = useState({
         empresa_id: '',
-        nome: "",
+        nome_empresa: "",
         cnpj: "",
         telefone: "",
         email: "",
         senha: "",
-        inicioContrato: "",
-        dataRenovacao: "",
-        valorContrato: "",
-        tempoContrato: '',
-        redeSocial1: "",
-        redeSocial2: "",
+        inicio_contrato: "",
+        data_renovacao: "",
+        tempo_contrato_meses: '',
+        valor_contrato: "",
+        rede_social_1: "",
+        rede_social_2: "",
     })
       const [operacao, setOperacao] = useState("1");
     
@@ -70,7 +70,7 @@ function CadastrarEmpresa() {
         setObjeto,
         operacao,
         campoId: "empresa_id",
-        campoNome: "nome"
+        campoNome: "nome_empresa"
       });
     
 
@@ -104,7 +104,7 @@ function CadastrarEmpresa() {
                     </GridArea>
                     <GridArea $area="nome">
                         <Label htmlFor="nome">Nome:</Label>
-                        <Input type="text" id="nome" value={objeto.nome} name="nome" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'nome')} required/>
+                        <Input type="text" id="nome" value={objeto.nome_empresa} name="nome" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'nome_empresa')} required/>
                     </GridArea>
                     <GridArea $area="cnpj">
                         <Label htmlFor="cnpj">CNPJ:</Label>
@@ -124,27 +124,27 @@ function CadastrarEmpresa() {
                     </GridArea>
                     <GridArea $area="inicioContrato">
                         <Label htmlFor="inicioContrato">Data Inicio:</Label>
-                        <Input type="date" id="inicioContrato" value={objeto.inicioContrato} name="inicioContrato" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'inicioContrato')} required/>
+                        <Input type="date" id="inicioContrato" value={objeto.inicio_contrato} name="inicioContrato" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'inicio_contrato')} required/>
                     </GridArea>
                     <GridArea $area="dataRenovacao">
                         <Label htmlFor="dataRenovacao">Data Renovacao:</Label>
-                        <Input type="date" id="dataRenovacao" value={objeto.dataRenovacao} name="dataRenovacao" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'dataRenovacao')} required/>
+                        <Input type="date" id="dataRenovacao" value={objeto.data_renovacao} name="dataRenovacao" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'data_renovacao')} required/>
                     </GridArea>
                     <GridArea $area="tempoContrato">
                         <Label htmlFor="tempoContrato">Duração em meses:</Label>
-                        <Input type="number" id="tempoContrato" value={objeto.tempoContrato} name="tempoContrato" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'tempoContrato')} required/>
+                        <Input type="number" id="tempoContrato" value={objeto.tempoContrato} name="tempoContrato" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'tempo_contrato_meses')} required/>
                     </GridArea>
                     <GridArea $area="valorContrato">
                         <Label htmlFor="valorContrato">Valor do contrato:</Label>
-                        <Input type="number" id="valorContrato" value={objeto.valorContrato} name="valorContrato" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'valorContrato')} required/>
+                        <Input type="number" id="valorContrato" value={objeto.valor_contrato} name="valorContrato" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'valor_contrato')} required/>
                     </GridArea>
                     <GridArea $area="redeSocial1">
                         <Label htmlFor="redeSocial1">Rede Social:</Label>
-                        <Input type="text" id="redeSocial1" value={objeto.redeSocial1} name="redeSocial1" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'redeSocial1')} required/>
+                        <Input type="text" id="redeSocial1" value={objeto.rede_social_1} name="redeSocial1" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'rede_social_1')} required/>
                     </GridArea>
                     <GridArea $area="redeSocial2">
                         <Label htmlFor="redeSocial2">Rede Social:</Label>
-                        <Input type="text" id="redeSocial2" value={objeto.redeSocial2} name="redeSocial2" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'redeSocial2')} required/>
+                        <Input type="text" id="rede_social_2" value={objeto.rede_social_2} name="redeSocial2" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'rede_social_2')} required/>
                     </GridArea>
                     
                     <GridArea $area="reset">

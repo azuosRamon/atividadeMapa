@@ -59,7 +59,7 @@ function AtualizarPerfil() {
 
     const [objeto, setObjeto] = useState(capturarUsuarioLogadoLocalStorage());
 
-    const [operacao, setOperacao] = useState("1");
+    const [operacao, setOperacao] = useState("2");
 
     const {
         data,
