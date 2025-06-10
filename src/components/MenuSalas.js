@@ -45,10 +45,10 @@ function SalaOpcoes() {
         sala_id: "",
         numero: "",
         apelido: "",
-        tipo_area_id: "",
+        tipo_area_id: 1,
         pavimento_id: "",
-        imagem: "",
-        lista_coordenadas: "",
+        imagem: "url da imagem",
+        lista_coordenadas: "[123,123]",
     });
     const [operacao, setOperacao] = useState("1");
 
@@ -59,7 +59,7 @@ function SalaOpcoes() {
         fazerEnvio,
         alterarObjeto
     } = useBancoDeDados({
-        nomeTabela: "campi",
+        nomeTabela: "salas",
         objeto,
         setObjeto,
         operacao,
@@ -67,13 +67,13 @@ function SalaOpcoes() {
         campoNome: "numero"
     });
 
-    const [campusSelecionado, setCampusSelecionado] = useState("")
-    const [blocoSelecionado, setBlocoSelecionado] = useState("")
+    const [campusSelecionado, setCampusSelecionado] = useState(0)
+    const [blocoSelecionado, setBlocoSelecionado] = useState(0)
 
-    const [listaPavimentos, setListaPavimentos] = useState("")
+    const [listaPavimentos, setListaPavimentos] = useState([])
     const [loadingPavimentos, setLoadingPavimentos] = useState(true)
-    const [listaBlocos, setListaBlocos] = useState("")
-    const [listaCampus, setListaCampus] = useState("")
+    const [listaBlocos, setListaBlocos] = useState([])
+    const [listaCampus, setListaCampus] = useState([])
     const [loadingCampus, setLoadingCampus] = useState(true)
     const [loadingBlocos, setLoadingBlocos] = useState(true)
     useEffect(() => {
@@ -99,8 +99,8 @@ function SalaOpcoes() {
                         <Input type="number" id="idSala" name="idSala" disabled={!operacao || Number(operacao)<=1} onChange={(e) => alterarObjeto(e, 'sala_id')}/>
                     </GridArea>
                     <GridArea $area="numero">
-                        <Label tipo_area_id="numero">Numero:</Label>
-                        <Input type="pavimento_id" id="numero" value={objeto.numero} name="numero" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'numero')} required/>
+                        <Label htmlFor="numero">Numero:</Label>
+                        <Input type="number" id="numero" value={objeto.numero} name="numero" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'numero')} required/>
                     </GridArea>
                     <GridArea $area="apelido">
                         <Label htmlFor="apelido">Apelido:</Label>
@@ -114,7 +114,7 @@ function SalaOpcoes() {
                                         <option value={0} disabled> Carregando... </option>
                                         :                                         
                                     listaCampus.map(campus => (
-                                        <option value={campus.campus_id}> {campus.nome + " - " + campus.cidade} </option>
+                                        <option key={campus.campus_id} value={campus.campus_id}> {campus.nome + " - " + campus.cidade} </option>
                                     ))
                                 }
                                 </Select>
@@ -163,11 +163,11 @@ function SalaOpcoes() {
                     </GridArea>
                     <GridArea $area="imagem">
                         <Label htmlFor="imagem">Imagem:</Label>
-                        <Input type="text" id="imagem" value={objeto.imagem} name="imagem" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'imagem')} required/>
+                        <Input type="text" id="imagem" value={objeto.imagem} name="imagem" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'imagem')}/>
                     </GridArea>
                     <GridArea $area="croqui">
                         <Label htmlFor="croqui">Croqui:</Label>
-                        <Input type="text" id="croqui" value={objeto.croqui} name="croqui" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'croqui')} required/>
+                        <Input type="text" id="croqui" value={objeto.croqui} name="croqui" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'lista_coordenadas')}/>
                     </GridArea>
 
 
