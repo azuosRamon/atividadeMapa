@@ -78,7 +78,7 @@ function BlocosOpcoes({ dados }) {
                     <FormGrid onSubmit={fazerEnvio}>
                         <GridArea $area="campusId">
                             <Label htmlFor="campusId">Selecione o campus:</Label>
-                                <Select autoFocus id="campusId" name="campusId" required onChange={(e) => {setCampusSelecionado(e.target.value)}}>
+                                <Select autoFocus id="campusId" name="campusId" required onChange={(e) => {setCampusSelecionado(e.target.value); alterarObjeto(e, 'pavimento_id')}}>
                                     <option value="0">Selecione o Campus</option>
                                 { loadingCampus ? 
                                         <option value={0} disabled> Carregando... </option>
@@ -91,7 +91,8 @@ function BlocosOpcoes({ dados }) {
                         </GridArea>
                         <GridArea $area="blocoId">
                             <Label htmlFor="blocoId">Selecione o bloco:</Label>
-                                <Select id="blocoId" type='number' name="blocoId" required onChange={(e) => { alterarObjeto(e, 'bloco_id', 'numero')}}>
+                                <Select id="blocoId" type='number' name="blocoId" required onChange={(e) => { alterarObjeto(e, 'bloco_id')}}>
+                                    <option value="0">Selecione o Bloco</option>
                                 {!loadingBlocos && 
                                     listaBlocos.filter(bloco => (
                                         Number(bloco.campus_id) === Number(campusSelecionado)
@@ -112,7 +113,7 @@ function BlocosOpcoes({ dados }) {
 
                         <GridArea $area="operacao">
                             <Label htmlFor="operacao">Operacao:</Label>
-                                <Select id="operacao" name="operacao" required onChange={(e) => {setOperacao(e.target.value);alterarObjeto(e, 'pavimento_id')}}>
+                                <Select id="operacao" name="operacao" required onChange={(e) => {setOperacao(e.target.value)}}>
                                 <option value="0">Selecione a operação desejada</option>
                                 <option value="1">Adicionar</option>
                                 <option value="2">Alterar</option>
@@ -125,7 +126,7 @@ function BlocosOpcoes({ dados }) {
                         </GridArea>
                         <GridArea $area="nome">
                             <Label htmlFor="nome">Número do pavimento:</Label>
-                            <Input type="number" id="nome" value={objeto.numero} name="nome" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'numero', 'numero')} required/>
+                            <Input type="number" id="nome" value={objeto.numero} name="nome" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'numero')} required/>
                         </GridArea>
                         <GridArea $area="imagem">
                             <Label htmlFor="imagem">Foto do pavimento:</Label>

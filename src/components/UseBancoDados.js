@@ -40,12 +40,25 @@ function useBancoDeDados({ nomeTabela, objeto, setObjeto, operacao, campoId = "i
 
   //  Pesquisa com base em nome ou ID
   const pesquisaFiltrada = useMemo(() => {
+  const id = Number(objeto[campoId]);
+  const nome = String(objeto[campoNome] || "").toLowerCase();
+
+  return data.filter(item => {
+    if (!isNaN(id) && id !== 0) {
+      return item[campoId] === id;
+    } else {
+      return String(item[campoNome] || "").toLowerCase().includes(nome);
+    }
+  });
+}, [data, objeto, campoId, campoNome]);
+/*
+  const pesquisaFiltrada = useMemo(() => {
     return data.filter(item =>
       objeto[campoId]
         ? item[campoId] === Number(objeto[campoId])
-        : item[campoNome]?.toLowerCase().includes(objeto[campoNome]?.toLowerCase() || "")
+        : isNaN(item[campoNome])?.toLowerCase().includes(isNaN(objeto[campoNome])?.toLowerCase() || "")
     );
-  }, [data, objeto[campoNome], objeto[campoId]]);
+  }, [data, objeto[campoNome], objeto[campoId]]);*/
 
   useEffect(() => {
     setPesquisa(pesquisaFiltrada);
@@ -77,23 +90,17 @@ function useBancoDeDados({ nomeTabela, objeto, setObjeto, operacao, campoId = "i
       console.error(err);
       alert("Erro ao salvar. Tente novamente.");
     }
+    console.log(objeto)
   };
 
   // Atualiza o objeto com o valor de um campo
-  const alterarObjeto = (event, campo, tipo = 'string') => {
+  const alterarObjeto = (event, campo) => {
     event.preventDefault();
-      if (tipo = 'numero'){
-        console.log(parseInt(event.target.value)+ "teste "+ event.target.value);
-      setObjeto({
-        ...objeto,
-        [campo]: parseInt(event.target.value)
-      });
-    } else {
       setObjeto({
         ...objeto,
         [campo]: event.target.value
       });
-    }
+
   };
 
   return {

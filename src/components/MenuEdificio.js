@@ -9,6 +9,7 @@ import BlocosOpcoes from "./MenuEdificioBlocos";
 import PavimentosOpcoes from "./MenuEdificioPavimentos";
 import Colapse from "./SubColapse";
 import TabelaCompletaTeste from "./SubTabelaEditavel";
+import SalaOpcoes from "./MenuSalas";
 
 
 function ConfigurarEdificio({ usuarioLogado, dados }) {
@@ -44,7 +45,8 @@ function ConfigurarEdificio({ usuarioLogado, dados }) {
                     <PavimentosOpcoes dados={data}></PavimentosOpcoes>
                 </Colapse>
                <Colapse nome = "Salas">
-                    <TabelaCompletaTeste dados={data.salas} lista={["id", "numero", "apelido", "pavimentoId", "area"]}></TabelaCompletaTeste>
+                    <SalaOpcoes></SalaOpcoes>
+                    {/*<TabelaCompletaTeste dados={data.salas} lista={["id", "numero", "apelido", "pavimentoId", "area"]}></TabelaCompletaTeste>*/}
                 </Colapse>
             </Box>
     )
