@@ -11,7 +11,7 @@ import Colapse from "./SubColapse";
 import TabelaCompletaTeste from "./SubTabelaEditavel";
 
 
-function ConfigurarEdificio({ dados }) {
+function ConfigurarEdificio({ usuarioLogado, dados }) {
     const data = dados || {};
     const [operacao, setOperacao] = useState(0);
     const selecionarDados = [
@@ -34,7 +34,7 @@ function ConfigurarEdificio({ dados }) {
                 </Colapse>
 
                 <Colapse nome = "Campus">
-                    <CampusOpcoes dados={data.campus}></CampusOpcoes>
+                    <CampusOpcoes usuarioLogado={usuarioLogado} dados={data.campus}></CampusOpcoes>
                 </Colapse>
 
                <Colapse nome = "Blocos">

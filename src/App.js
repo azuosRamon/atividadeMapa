@@ -227,7 +227,7 @@ function App() {
           <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuHorarios tableHorarios={dadosJson.horarios}/></LayoutLogado>
         }/>
         <Route path="/edificio" element={
-          <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuEdificios dados={dadosJson}/></LayoutLogado>
+          <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuEdificios usuarioLogado={usuarioLogadoDados} dados={dadosJson}/></LayoutLogado>
         }/>
         <Route path="/cursos" element={
           <LayoutLogado usuarioDados={usuarioLogadoDados}><ConfigurarCursos/></LayoutLogado>

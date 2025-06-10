@@ -40,7 +40,7 @@ grid-template-areas:
 `;
 
 
-function CampusOpcoes({ dados }) {
+function CampusOpcoes({ usuarioLogado, dados }) {
     const [objeto, setObjeto] = useState({
         campus_id: "",
         nome: "",
@@ -50,7 +50,8 @@ function CampusOpcoes({ dados }) {
         cidade: "",
         estado: "",
         latitude: "",
-        longitude: ""
+        longitude: "",
+        empresa_id: usuarioLogado.empresa_id
     });
     const [operacao, setOperacao] = useState("1");
 

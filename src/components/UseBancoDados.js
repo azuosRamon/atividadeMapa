@@ -80,12 +80,20 @@ function useBancoDeDados({ nomeTabela, objeto, setObjeto, operacao, campoId = "i
   };
 
   // Atualiza o objeto com o valor de um campo
-  const alterarObjeto = (event, campo) => {
+  const alterarObjeto = (event, campo, tipo = 'string') => {
     event.preventDefault();
-    setObjeto({
-      ...objeto,
-      [campo]: event.target.value
-    });
+      if (tipo = 'numero'){
+        console.log(parseInt(event.target.value)+ "teste "+ event.target.value);
+      setObjeto({
+        ...objeto,
+        [campo]: parseInt(event.target.value)
+      });
+    } else {
+      setObjeto({
+        ...objeto,
+        [campo]: event.target.value
+      });
+    }
   };
 
   return {
