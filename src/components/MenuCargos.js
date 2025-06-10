@@ -28,7 +28,7 @@ grid-template-areas:
     grid-template-areas: 
         "tabela"
         "operacao"
-        "idCurso"
+        "id"
         "nome"
         "reset"
         "botoes";

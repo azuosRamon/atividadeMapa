@@ -77,7 +77,10 @@ const LiMenu = styled.li`
    &:hover{
         transition: .7s;
         background-color: ${cores.cor1};
-    }
+    } 
+     @media screen and (max-width: 768px) {
+        background-color: ${cores.backgroundMenusMobile};
+    };
 `;
 
 const StyledLink = styled(Link)`
@@ -104,13 +107,15 @@ const HamburgerIcon = styled.div`
     z-index: 999;
     @media screen and (max-width: 768px) {
         display: block;
+
     }
     
 `;
 
 const PessoaIcon = styled(BsPersonFillGear)`
-font-size: 30px;
-color
+    font-size: 30px;
+    color
+
 `;
 
 
