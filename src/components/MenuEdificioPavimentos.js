@@ -63,8 +63,8 @@ function BlocosOpcoes({ dados }) {
     
     const [campusSelecionado, setCampusSelecionado] = useState("")
 
-    const [listaBlocos, setListaBlocos] = useState("")
-    const [listaCampus, setListaCampus] = useState("")
+    const [listaBlocos, setListaBlocos] = useState([])
+    const [listaCampus, setListaCampus] = useState([])
     const [loadingCampus, setLoadingCampus] = useState(true)
     const [loadingBlocos, setLoadingBlocos] = useState(true)
     useEffect(() => {
