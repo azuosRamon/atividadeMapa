@@ -9,7 +9,7 @@ function useBancoDeDados({ nomeTabela, objeto, setObjeto, operacao, campoId = "i
   // Atualiza a lista de dados
   const atualizarLista = () => {
     setLoading(true);
-    axios.get(`https://backend-mapa.onrender.com/${nomeTabela}/`)
+    axios.get(`https://backend-mapa-4eyq.onrender.com//${nomeTabela}/`)
       .then(resp => setData(resp.data))
       .catch(() => alert("Erro ao carregar dados!"))
       .finally(() => setLoading(false));
@@ -22,19 +22,19 @@ function useBancoDeDados({ nomeTabela, objeto, setObjeto, operacao, campoId = "i
   //  Criar (sem o campoId, ex: id)
   const criar = async (novoObjeto) => {
     const { [campoId]: _, ...semId } = novoObjeto;
-    await axios.post(`https://backend-mapa.onrender.com/${nomeTabela}/`, semId);
+    await axios.post(`https://backend-mapa-4eyq.onrender.com//${nomeTabela}/`, semId);
     atualizarLista();
   };
 
   //  Alterar
   const alterar = async (id, dadosAtualizados) => {
-    await axios.put(`https://backend-mapa.onrender.com/${nomeTabela}/${id}`, dadosAtualizados);
+    await axios.put(`https://backend-mapa-4eyq.onrender.com//${nomeTabela}/${id}`, dadosAtualizados);
     atualizarLista();
   };
 
   //  Deletar
   const deletar = async (id) => {
-    await axios.delete(`https://backend-mapa.onrender.com/${nomeTabela}/${id}`);
+    await axios.delete(`https://backend-mapa-4eyq.onrender.com//${nomeTabela}/${id}`);
     atualizarLista();
   };
 
