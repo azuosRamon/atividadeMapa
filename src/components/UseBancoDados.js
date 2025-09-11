@@ -1,78 +1,63 @@
 import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 
-function useBancoDeDados({ nomeTabela, objeto, setObjeto, operacao, campoId = "id", campoNome ='nome' }) {
+function useBancoDeDados({ nomeTabela, objeto, setObjeto, operacao, campoId = "id", campoNome = "nome" }) {
   const [data, setData] = useState([]);
   const [pesquisa, setPesquisa] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Atualiza a lista de dados
+  const base = "https://backend-mapa-4eyq.onrender.com";
+
   const atualizarLista = () => {
     setLoading(true);
-    axios.get(`https://backend-mapa-4eyq.onrender.com/${nomeTabela}/`)
+    axios.get(`${base}/${nomeTabela}/`)
       .then(resp => setData(resp.data))
       .catch(() => alert("Erro ao carregar dados!"))
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => {
-    atualizarLista();
-  }, []);
+  useEffect(() => { atualizarLista(); }, []);
 
-  //  Criar (sem o campoId, ex: id)
   const criar = async (novoObjeto) => {
-    const { [campoId]: _, ...semId } = novoObjeto;
-    await axios.post(`https://backend-mapa-4eyq.onrender.com/${nomeTabela}/`, semId);
+    const { [campoId]: _omitCampoId, id: _omitId, ...semIds } = novoObjeto || {};
+    await axios.post(`${base}/${nomeTabela}/`, semIds);
     atualizarLista();
   };
 
-  //  Alterar
   const alterar = async (id, dadosAtualizados) => {
-    await axios.put(`https://backend-mapa-4eyq.onrender.com/${nomeTabela}/${id}`, dadosAtualizados);
+    const idStr = String(id || "").trim();
+    const { [campoId]: _omitCampoId, id: _omitId, ...payload } = dadosAtualizados || {};
+    await axios.put(`${base}/${nomeTabela}/${idStr}`, payload);
     atualizarLista();
   };
 
-  //  Deletar
   const deletar = async (id) => {
-    await axios.delete(`https://backend-mapa-4eyq.onrender.com/${nomeTabela}/${id}`);
+    const idStr = String(id || "").trim();
+    await axios.delete(`${base}/${nomeTabela}/${idStr}`);
     atualizarLista();
   };
 
-  //  Pesquisa com base em nome ou ID
   const pesquisaFiltrada = useMemo(() => {
-  const id = Number(objeto[campoId]);
-  const nome = String(objeto[campoNome] || "").toLowerCase();
+    const idStr = String(objeto?.[campoId] ?? "").trim();
+    const nome = String(objeto?.[campoNome] ?? "").toLowerCase().trim();
 
-  return data.filter(item => {
-    if (!isNaN(id) && id !== 0) {
-      return item[campoId] === id;
-    } else {
-      return String(item[campoNome] || "").toLowerCase().includes(nome);
-    }
-  });
-}, [data, objeto, campoId, campoNome]);
-/*
-  const pesquisaFiltrada = useMemo(() => {
-    return data.filter(item =>
-      objeto[campoId]
-        ? item[campoId] === Number(objeto[campoId])
-        : isNaN(item[campoNome])?.toLowerCase().includes(isNaN(objeto[campoNome])?.toLowerCase() || "")
-    );
-  }, [data, objeto[campoNome], objeto[campoId]]);*/
+    return data.filter(item => {
+      if (idStr) {
+        return String(item?.[campoId] ?? "") === idStr;
+      }
+      return String(item?.[campoNome] ?? "").toLowerCase().includes(nome);
+    });
+  }, [data, objeto, campoId, campoNome]);
+
+  useEffect(() => { setPesquisa(pesquisaFiltrada); }, [pesquisaFiltrada]);
 
   useEffect(() => {
-    setPesquisa(pesquisaFiltrada);
-  }, [pesquisaFiltrada]);
+    const idStr = String(objeto?.[campoId] ?? "").trim();
+    if (!idStr) return;
+    const encontrado = data.find(item => String(item?.[campoId] ?? "") === idStr);
+    if (encontrado) setObjeto(encontrado);
+  }, [objeto?.[campoId], data, campoId, setObjeto]);
 
-  // Atualiza o objeto com os dados do item selecionado (em caso de alteração ou exclusão)
-  useEffect(() => {
-    const encontrado = data.find(item => item[campoId] === Number(objeto[campoId]));
-    if (encontrado) {
-      setObjeto(encontrado);
-    }
-  }, [objeto[campoId], data]);
-
-  // ✉️ Envio de formulário
   const fazerEnvio = async (event) => {
     event.preventDefault();
     try {
@@ -80,37 +65,23 @@ function useBancoDeDados({ nomeTabela, objeto, setObjeto, operacao, campoId = "i
         await criar(objeto);
         alert("Adicionado com sucesso!");
       } else if (operacao === "2") {
-        await alterar(objeto[campoId], objeto);
+        await alterar(objeto?.[campoId], objeto);
         alert("Alterado com sucesso!");
       } else if (operacao === "3") {
-        await deletar(objeto[campoId]);
+        await deletar(objeto?.[campoId]);
         alert("Deletado com sucesso!");
       }
     } catch (err) {
       console.error(err);
       alert("Erro ao salvar. Tente novamente.");
     }
-    console.log(objeto)
   };
 
-  // Atualiza o objeto com o valor de um campo
   const alterarObjeto = (event, campo) => {
-    event.preventDefault();
-      setObjeto({
-        ...objeto,
-        [campo]: event.target.value
-      });
-
+    setObjeto(prev => ({ ...prev, [campo]: event.target.value }));
   };
 
-  return {
-    data,
-    pesquisa,
-    loading,
-    fazerEnvio,
-    alterarObjeto,
-    atualizarLista
-  };
+  return { data, pesquisa, loading, fazerEnvio, alterarObjeto, atualizarLista };
 }
 
 export default useBancoDeDados;
