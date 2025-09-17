@@ -6,8 +6,7 @@ function useBancoDeDados({ nomeTabela, objeto, setObjeto, operacao, campoId = "i
   const [pesquisa, setPesquisa] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const base = "https://backend-mapa-4eyq.onrender.com";
-/*"https://backend-mapa.onrender.com"*/
+  const base = "https://backend-mapa.onrender.com";
   const atualizarLista = () => {
     setLoading(true);
     axios.get(`${base}/${nomeTabela}/`)
@@ -19,14 +18,14 @@ function useBancoDeDados({ nomeTabela, objeto, setObjeto, operacao, campoId = "i
   useEffect(() => { atualizarLista(); }, []);
 
   const criar = async (novoObjeto) => {
-    await axios.post(`${base}/${nomeTabela}/`, semIds);
+    await axios.post(`${base}/${nomeTabela}/`);
     const { [campoId]: _, ...semId } = novoObjeto;
     atualizarLista();
   };
 
   const alterar = async (id, dadosAtualizados) => {
     const idStr = String(id || "").trim();
-    await axios.put(`${base}/${nomeTabela}/${idStr}`, payload);
+    await axios.put(`${base}/${nomeTabela}/${idStr}`);
     atualizarLista();
   };
 
