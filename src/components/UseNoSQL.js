@@ -1,13 +1,13 @@
 import { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 
-function useBancoDeDados({ nomeTabela, objeto, setObjeto, operacao, campoId = "id", campoNome = "nome" }) {
+function useNoSql({ nomeTabela, objeto, setObjeto, operacao, campoId = "id", campoNome = "nome" }) {
   const [data, setData] = useState([]);
   const [pesquisa, setPesquisa] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const base = "https://backend-mapa-4eyq.onrender.com";
-/*"https://backend-mapa.onrender.com"*/
+
   const atualizarLista = () => {
     setLoading(true);
     axios.get(`${base}/${nomeTabela}/`)
@@ -19,13 +19,14 @@ function useBancoDeDados({ nomeTabela, objeto, setObjeto, operacao, campoId = "i
   useEffect(() => { atualizarLista(); }, []);
 
   const criar = async (novoObjeto) => {
+    const { [campoId]: _omitCampoId, id: _omitId, ...semIds } = novoObjeto || {};
     await axios.post(`${base}/${nomeTabela}/`, semIds);
-    const { [campoId]: _, ...semId } = novoObjeto;
     atualizarLista();
   };
 
   const alterar = async (id, dadosAtualizados) => {
     const idStr = String(id || "").trim();
+    const { [campoId]: _omitCampoId, id: _omitId, ...payload } = dadosAtualizados || {};
     await axios.put(`${base}/${nomeTabela}/${idStr}`, payload);
     atualizarLista();
   };
@@ -83,4 +84,4 @@ function useBancoDeDados({ nomeTabela, objeto, setObjeto, operacao, campoId = "i
   return { data, pesquisa, loading, fazerEnvio, alterarObjeto, atualizarLista };
 }
 
-export default useBancoDeDados;
+export default useNoSql;
