@@ -15,15 +15,15 @@ import LayoutLogado from "./LayoutLogado";
 import './App.css'
 import RecuperarSenha from "./components/PaginaRecuperarSenha";
 import Slide from "./components/Slide";
-import terreo from "./components/Plantas/TERREO_PAVIMENTO.png";
-import primeiro_pavimento from "./components/Plantas/PRIMEIRO_PAVIMENTO.png";
-import segundo_pavimento from "./components/Plantas/SEGUNDO_PAVIMENTO.png";
-import terceiro_pavimento from "./components/Plantas/TERCEIRO_PAVIMENTO.png";
 import BotaoFlutuante from "./components/SubButtonFlutuante";
 import Tabelas from "./components/MenuTabelas";
 import CadastrarEmpresa from "./components/MenuEmpresas";
 import CadastrarFuncao from "./components/MenuFuncoes";
 import CadastrarCargos from "./components/MenuCargos";
+import terreo from "./components/Plantas/TERREO_PAVIMENTO.png";
+import primeiro_pavimento from "./components/Plantas/PRIMEIRO_PAVIMENTO.png";
+import segundo_pavimento from "./components/Plantas/SEGUNDO_PAVIMENTO.png";
+import terceiro_pavimento from "./components/Plantas/TERCEIRO_PAVIMENTO.png";
 
 const imagens = [terreo, primeiro_pavimento, segundo_pavimento, terceiro_pavimento];
 const data = [

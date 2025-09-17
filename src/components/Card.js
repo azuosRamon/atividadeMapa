@@ -106,11 +106,11 @@ const imagensPorSalaEAndar = {
 
 function CriarCard({ dados, nome, disciplina, dia, horarioInicial, horarioFinal, campus, bloco, pavimento, sala, fotoProfessor }) {
     const data = dados || {};
-    const [mostrarMapa, setMostrarMapa] = useState(false)
-
+    
     const chaveSalaAndar = `${Number(pavimento)}-${Number(sala)}`;
     const imagens = imagensPorSalaEAndar[chaveSalaAndar] || [terreo, primeiro_pavimento, segundo_pavimento, terceiro_pavimento]
-
+    
+    const [mostrarMapa, setMostrarMapa] = useState(false)
     const abrirImagem = () => {
         setMostrarMapa(true)
     }

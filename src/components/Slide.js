@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { CiSquareChevLeft } from "react-icons/ci";
 import { CiSquareChevRight } from "react-icons/ci";
 import cores from "./Cores"
+import SelectBancoDeDados from "./SelectBuscaBd";
 
 import Button from "./SubButton";
 import sala001 from "./salasAtivadas/001.png";
@@ -323,6 +324,12 @@ function Slide({ lista_imagens, pagina_inicio, listaSalasAtivas=[], pavimento = 
       }
     };
 
+
+    const [listaPavimentos, setListaPavimentos] = useState([])
+    const [loadingPavimentos, setLoadingPavimentos] = useState(true)
+    useEffect(() => {
+        SelectBancoDeDados({nomeTabela: 'pavimentos', setData: setListaPavimentos, setLoading: setLoadingPavimentos })
+    }, [])
 
     return(
         <DivContent>

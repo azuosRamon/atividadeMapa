@@ -8,6 +8,8 @@ import GridArea from "./SubGridArea";
 import cores from "./Cores"
 import useBancoDeDados from "./UseBancoDados";
 import SelectBancoDeDados from "./SelectBuscaBd";
+import Slide from "./Slide";
+
 
 const FormGrid = styled.form`
 gap: 10px;
@@ -37,6 +39,31 @@ grid-template-areas:
         "reset"
         "botoes";
 }
+`;
+const MapaBG = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: ${cores.backgroundMapa};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+`;
+
+const FecharBotao = styled.button`
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: ${cores.backgroundBox};
+    color: ${cores.corTexto};
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 20px;
+    border-radius: 50%;
 `;
 
 
@@ -81,6 +108,16 @@ function SalaOpcoes() {
         SelectBancoDeDados({nomeTabela: 'blocos', setData: setListaBlocos, setLoading: setLoadingBlocos })
         SelectBancoDeDados({nomeTabela: 'pavimentos', setData: setListaPavimentos, setLoading: setLoadingPavimentos })
     }, [])
+
+       const [mostrarMapa, setMostrarMapa] = useState(false)
+       const abrirImagem = () => {
+           setMostrarMapa(true)
+       }
+   
+       const fecharImagem = () => {
+           setMostrarMapa(false)
+       }
+       
 
     return(
             <div>
@@ -167,7 +204,7 @@ function SalaOpcoes() {
                     </GridArea>
                     <GridArea $area="croqui">
                         <Label htmlFor="croqui">Croqui:</Label>
-                        <Input type="text" id="croqui" value={objeto.croqui} name="croqui" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'lista_coordenadas')}/>
+                        <Button>Editar</Button>
                     </GridArea>
 
 
@@ -180,6 +217,7 @@ function SalaOpcoes() {
                     </GridArea>
 
                 </FormGrid>
+
             </div>
     )
 }
