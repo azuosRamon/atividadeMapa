@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import Input from "./SubInput";
-import Select from "./SubSelect";
-import Label from "./SubLabel";
-import Button from "./SubButton";
-import GridArea from "./SubGridArea";
-import cores from "./Cores"
+import Input from "../SubInput";
+import Select from "../SubSelect";
+import Label from "../SubLabel";
+import Button from "../SubButton";
+import GridArea from "../SubGridArea";
+import cores from "../Cores"
 import axios from "axios";
-import useBancoDeDados from "./UseBancoDados";
-import SelectBancoDeDados from "./SelectBuscaBd";
+import useBancoDeDados from "../BdSql";
+import SelectBancoDeDados from "../BdSelectBusca";
 const FormGrid = styled.form`
 gap: 10px;
 display: grid;

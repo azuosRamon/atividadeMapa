@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import Container from "./SubContainer";
-import Box from "./SubBox";
-import Input from "./SubInput";
-import Button from "./SubButton";
-import ParagrafoInformacao from "./SubParagrafo";
-import SpamSublinhado from "./SubSpam"
-import cores from "./Cores"
+import Container from "../SubContainer";
+import Box from "../SubBox";
+import Input from "../SubInput";
+import Button from "../SubButton";
+import ParagrafoInformacao from "../SubParagrafo";
+import SpamSublinhado from "../SubSpam"
+import cores from "../Cores"
 
 const Title = styled.h2`
 margin: 0 0 20px;

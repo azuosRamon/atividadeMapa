@@ -1,13 +1,13 @@
 import React, { useState} from "react";
 import styled from "styled-components";
-import Box from "./SubBox";
-import Input from "./SubInput";
-import Label from "./SubLabel";
-import Button from "./SubButton";
-import Title from "./SubTitleH2";
-import GridArea from "./SubGridArea";
-import DivSeparador from "./SubDivSeparador";
-import useBancoDeDados from "./UseBancoDados";
+import Box from "../SubBox";
+import Input from "../SubInput";
+import Label from "../SubLabel";
+import Button from "../SubButton";
+import Title from "../SubTitleH2";
+import GridArea from "../SubGridArea";
+import DivSeparador from "../SubDivSeparador";
+import useBancoDeDados from "../BdSql";
 
 const FormGrid = styled.form`
 gap: 10px;

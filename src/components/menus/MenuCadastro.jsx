@@ -1,12 +1,12 @@
 import React, {useState, useEffect} from "react";
 import styled from "styled-components";
-import Box from "./SubBox";
-import Input from "./SubInput";
-import Select from "./SubSelect";
-import Button from "./SubButton";
-import DivSeparador from "./SubDivSeparador";
-import cores from "./Cores"
-import useBancoDeDados from "./UseBancoDados";
+import Box from "../SubBox";
+import Input from "../SubInput";
+import Select from "../SubSelect";
+import Button from "../SubButton";
+import DivSeparador from "../SubDivSeparador";
+import cores from "../Cores"
+import useBancoDeDados from "../BdSql";
 
 const Title = styled.h2`
 margin: 0 0 20px;

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import Box from "./SubBox";
-import Select from "./SubSelect";
-import Label from "./SubLabel";
-import TabelaCompleta from "./SubTabela";
-import Colapse from "./SubColapse";
+import Box from "../SubBox";
+import Select from "../SubSelect";
+import Label from "../SubLabel";
+import TabelaCompleta from "../SubTabela";
+import Colapse from "../SubColapse";
 
 
 

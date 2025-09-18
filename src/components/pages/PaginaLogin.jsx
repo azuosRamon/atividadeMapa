@@ -1,14 +1,14 @@
 import React, { useState, useEffect} from "react";
 import styled from "styled-components";
 import { Link } from 'react-router-dom';
-import Box from "./SubBox";
-import Button from "./SubButton";
-import Input from "./SubInput";
-import Container from "./SubContainer";
-import ParagrafoInformacao from "./SubParagrafo";
-import SpamSublinhado from "./SubSpam";
+import Box from "../SubBox";
+import Button from "../SubButton";
+import Input from "../SubInput";
+import Container from "../SubContainer";
+import ParagrafoInformacao from "../SubParagrafo";
+import SpamSublinhado from "../SubSpam";
 import { useNavigate } from 'react-router-dom';
-import cores from "./Cores"
+import cores from "../Cores"
 
 const Title = styled.h2`
 margin: 0 0 20px;

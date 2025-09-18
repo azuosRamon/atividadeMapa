@@ -1,12 +1,12 @@
 import React, { useState, useEffect} from "react";
 import styled from "styled-components";
-import Select from "./SubSelect";
-import Input from "./SubInput";
-import Label from "./SubLabel";
-import Button from "./SubButton";
-import GridArea from "./SubGridArea";
-import cores from "./Cores"
-import useBancoDeDados from "./UseBancoDados";
+import Select from "../SubSelect";
+import Input from "../SubInput";
+import Label from "../SubLabel";
+import Button from "../SubButton";
+import GridArea from "../SubGridArea";
+import cores from "../Cores"
+import useBancoDeDados from "../BdSql";
 
 const FormGrid = styled.form`
 gap: 10px;

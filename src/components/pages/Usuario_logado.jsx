@@ -1,10 +1,10 @@
 import React, { useState, useEffect} from "react";
 import styled from "styled-components";
 import { CgProfile } from "react-icons/cg";
-import Button from "./SubButton";
+import Button from "../SubButton";
 import { useNavigate } from 'react-router-dom';
-import Box from "./SubBox";
-import cores from "./Cores"
+import Box from "../SubBox";
+import cores from "../Cores"
 
 
 

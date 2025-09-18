@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { CiSquareChevLeft } from "react-icons/ci";
 import { CiSquareChevRight } from "react-icons/ci";
 import cores from "./Cores"
-import SelectBancoDeDados from "./SelectBuscaBd";
+import SelectBancoDeDados from "./BdSelectBusca";
 
 import Button from "./SubButton";
 import sala001 from "./salasAtivadas/001.png";

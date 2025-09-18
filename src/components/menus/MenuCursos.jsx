@@ -1,18 +1,18 @@
 import axios from "axios";
 import React, { useState } from "react";
 import styled from "styled-components";
-import Box from "./SubBox";
-import Input from "./SubInput";
-import Select from "./SubSelect";
-import Label from "./SubLabel";
-import Button from "./SubButton";
-import Title from "./SubTitleH2";
-import GridArea from "./SubGridArea";
-import DivSeparador from "./SubDivSeparador";
-import TabelaCompleta from "./SubTabela";
-import Colapse from "./SubColapse";
-import cores from "./Cores";
-import useNoSql from "./UseNoSQL"; 
+import Box from "../SubBox";
+import Input from "../SubInput";
+import Select from "../SubSelect";
+import Label from "../SubLabel";
+import Button from "../SubButton";
+import Title from "../SubTitleH2";
+import GridArea from "../SubGridArea";
+import DivSeparador from "../SubDivSeparador";
+import TabelaCompleta from "../SubTabela";
+import Colapse from "../SubColapse";
+import cores from "../Cores";
+import useNoSql from "../BdNoSQL"; 
 
 const FormGrid = styled.form`
   gap: 10px;

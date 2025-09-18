@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import Box from "./SubBox";
-import Select from "./SubSelect";
-import Label from "./SubLabel";
-import TabelaCompleta from "./SubTabela";
+import Box from "../SubBox";
+import Select from "../SubSelect";
+import Label from "../SubLabel";
+import TabelaCompleta from "../SubTabela";
 import CampusOpcoes from "./MenuEdificioCampus";
 import BlocosOpcoes from "./MenuEdificioBlocos";
 import PavimentosOpcoes from "./MenuEdificioPavimentos";
-import Colapse from "./SubColapse";
-import TabelaCompletaTeste from "./SubTabelaEditavel";
+import Colapse from "../SubColapse";
+import TabelaCompletaTeste from "../SubTabelaEditavel";
 import SalaOpcoes from "./MenuSalas";
 
 
