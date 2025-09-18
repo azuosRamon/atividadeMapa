@@ -7,7 +7,7 @@ import Button from "../SubButton";
 import GridArea from "../SubGridArea";
 import cores from "../Cores"
 import { use } from "react";
-import useBancoDeDados from "../BdSql";
+import useBancoDeDados from "../BdSupabase";
 import SelectBancoDeDados from "../BdSelectBusca";
 
 const FormGrid = styled.form`

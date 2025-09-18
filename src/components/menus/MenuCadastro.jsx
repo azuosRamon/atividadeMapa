@@ -6,7 +6,7 @@ import Select from "../SubSelect";
 import Button from "../SubButton";
 import DivSeparador from "../SubDivSeparador";
 import cores from "../Cores"
-import useBancoDeDados from "../BdSql";
+import useBancoDeDados from "../BdSupabase";
 
 const Title = styled.h2`
 margin: 0 0 20px;

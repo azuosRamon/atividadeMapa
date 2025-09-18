@@ -7,6 +7,7 @@ function useBancoDeDados({ nomeTabela, objeto, setObjeto, operacao, campoId = "i
   const [loading, setLoading] = useState(true);
 
   const base = "https://backend-mapa.onrender.com";
+  
   const atualizarLista = () => {
     setLoading(true);
     axios.get(`${base}/${nomeTabela}/`)

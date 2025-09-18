@@ -12,7 +12,7 @@ import DivSeparador from "../SubDivSeparador";
 import TabelaCompleta from "../SubTabela";
 import Colapse from "../SubColapse"
 import cores from "../Cores"
-import useBancoDeDados from "../BdSql";
+import useBancoDeDados from "../BdSupabase";
 
 const FormGrid = styled.form`
 gap: 10px;

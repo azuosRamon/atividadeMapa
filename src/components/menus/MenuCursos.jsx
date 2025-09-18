@@ -12,7 +12,7 @@ import DivSeparador from "../SubDivSeparador";
 import TabelaCompleta from "../SubTabela";
 import Colapse from "../SubColapse";
 import cores from "../Cores";
-import useNoSql from "../BdNoSQL"; 
+import useBancoDeDados from "../BdSupabase";
 
 const FormGrid = styled.form`
   gap: 10px;
@@ -45,7 +45,7 @@ function ConfigurarCursos() {
   const [operacao, setOperacao] = useState("1");
 
   const { data, pesquisa, loading, fazerEnvio, alterarObjeto } =
-    useNoSql({
+    useBancoDeDados({
       nomeTabela: "cursos",
       objeto,
       setObjeto,

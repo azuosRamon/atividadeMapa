@@ -6,7 +6,7 @@ import Label from "../SubLabel";
 import Button from "../SubButton";
 import GridArea from "../SubGridArea";
 import cores from "../Cores"
-import useBancoDeDados from "../BdSql";
+import useBancoDeDados from "../BdSupabase";
 
 const FormGrid = styled.form`
 gap: 10px;

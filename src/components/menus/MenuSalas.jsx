@@ -6,7 +6,7 @@ import Label from "../SubLabel";
 import Button from "../SubButton";
 import GridArea from "../SubGridArea";
 import cores from "../Cores"
-import useBancoDeDados from "../BdSql";
+import useBancoDeDados from "../BdSupabase";
 import SelectBancoDeDados from "../BdSelectBusca";
 import Slide from "../Slide";
 
