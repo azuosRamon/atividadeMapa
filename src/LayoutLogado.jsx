@@ -1,6 +1,6 @@
 import React from "react";
 import Header from "./components/Header";
-import Usuario_logado from "./components/Usuario_logado";
+import Usuario_logado from "./components/pages/Usuario_logado";
 import Footer from "./components/Footer";
 import styled from "styled-components";
 

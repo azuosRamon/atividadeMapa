@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { FaSearchLocation, FaBars, FaTimes } from "react-icons/fa";
 import { BsPersonFillGear } from "react-icons/bs";
-import Usuario_logado from './Usuario_logado';
+import Usuario_logado from './pages/Usuario_logado';
 import Logo from './assets/Logo_2.png'
 import DivSeparador from './SubDivSeparador';
 import cores from "./Cores"
