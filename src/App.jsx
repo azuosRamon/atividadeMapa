@@ -255,10 +255,10 @@ function App() {
         }/>
         <Route path="/slide" element={
           <Slide
-          lista_imagens={imagens}
-          pagina_inicio={0}
-          dados={dadosJson}
-          capturarCoordenadas = {true}
+            lista_imagens={imagens}
+            pagina_inicio={0}
+            dados={dadosJson}
+            capturarCoordenadas = {true}
         />
           }/>
 

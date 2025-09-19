@@ -9,6 +9,14 @@ import cores from "../Cores"
 import useBancoDeDados from "../BdSupabase";
 import SelectBancoDeDados from "../BdSelectBusca";
 import Slide from "../Slide";
+import Modal from "../SubModal";
+
+import terreo from "../Plantas/TERREO_PAVIMENTO.png";
+import primeiro_pavimento from "../Plantas/PRIMEIRO_PAVIMENTO.png";
+import segundo_pavimento from "../Plantas/SEGUNDO_PAVIMENTO.png";
+import terceiro_pavimento from "../Plantas/TERCEIRO_PAVIMENTO.png";
+
+const imagens = [terreo, primeiro_pavimento, segundo_pavimento, terceiro_pavimento];
 
 
 const FormGrid = styled.form`
@@ -40,6 +48,10 @@ grid-template-areas:
         "botoes";
 }
 `;
+const ButtonVoltar = styled(Button)`
+  height: 100%;
+  margin-top: 0;
+`;
 const MapaBG = styled.div`
     position: fixed;
     top: 0;
@@ -68,6 +80,7 @@ const FecharBotao = styled.button`
 
 
 function SalaOpcoes() {
+    const [pontos, setPontos] = useState("[]");
     const [objeto, setObjeto] = useState({
         sala_id: "",
         numero: "",
@@ -75,9 +88,14 @@ function SalaOpcoes() {
         tipo_area_id: 1,
         pavimento_id: "",
         imagem: "url da imagem",
-        lista_coordenadas: "[123,123]",
+        lista_coordenadas: pontos,
     });
     const [operacao, setOperacao] = useState("1");
+
+    useEffect(() => {
+        setObjeto(prev => ({ ...prev, ["lista_coordenadas"]: pontos }));
+    }, [pontos])
+
 
     const {
         data,
@@ -103,6 +121,8 @@ function SalaOpcoes() {
     const [listaCampus, setListaCampus] = useState([])
     const [loadingCampus, setLoadingCampus] = useState(true)
     const [loadingBlocos, setLoadingBlocos] = useState(true)
+    const [mostrarModal, setMostrarModal] = useState(false);
+
     useEffect(() => {
         SelectBancoDeDados({nomeTabela: 'campi', setData: setListaCampus, setLoading: setLoadingCampus })
         SelectBancoDeDados({nomeTabela: 'blocos', setData: setListaBlocos, setLoading: setLoadingBlocos })
@@ -204,16 +224,30 @@ function SalaOpcoes() {
                     </GridArea>
                     <GridArea $area="croqui">
                         <Label htmlFor="croqui">Croqui:</Label>
-                        <Button>Editar</Button>
+                        <Button onClick={(e) => {
+                            e.preventDefault();
+                            setMostrarModal(true);
+                        }}>Editar sala</Button>
+                        <Modal aberto={mostrarModal} onFechar={() => setMostrarModal(false)}>
+                            <Slide
+                                lista_imagens={[terreo]}
+                                pagina_inicio={0}
+                                capturarCoordenadas = {true}
+                                setPontosArea={setPontos}
+                                />
+                            <ButtonVoltar $bgcolor="rgb(38, 38, 38)" onClick={() => setMostrarModal(false)}>
+                                Voltar
+                            </ButtonVoltar>
+                        </Modal>
+                        
                     </GridArea>
-
 
 
                     <GridArea $area="reset">
                         <Button $bgcolor={cores.backgroundBotaoSemFoco} type="reset">Limpar</Button>   
                     </GridArea>
                     <GridArea $area="botoes">
-                        <Button type="submit">Salvar</Button>   
+                        <Button type="submit" onClick={()=>console.log(objeto)}>Salvar</Button>   
                     </GridArea>
 
                 </FormGrid>

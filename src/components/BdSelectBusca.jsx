@@ -11,7 +11,8 @@ async function SelectBancoDeDados({ nomeTabela, setData, setLoading }) {
   } else {
     setData(data || [])
   }
-
+  console.log("=============="+nomeTabela+"==============")
+  console.log(data)
   setLoading(false)
 }
 

@@ -12,7 +12,7 @@ font-size: 16px;
 box-sizing: border-box;
 color: ${(props) => props.$color || cores.corTextoClaro};
 background-color: ${cores.backgroundInput};
-
+display: flex;
 &:hover{
     background-color: #222;
     transition: .5s;

@@ -15,7 +15,7 @@ const HeaderMenu = styled.header`
 `;
 
 const Content = styled.div`
-    max-width: 960px;
+    max-width: 1280px;
     margin: 0 auto;
     height: 60px;
     display: flex;
@@ -52,7 +52,7 @@ const CelularMenu = styled.div`
         justify-content: center;
         z-index:998;
         overflow: auto;
-    }
+    
 `;
 
 const ImagemLogo = styled.img`
@@ -114,7 +114,6 @@ const HamburgerIcon = styled.div`
 
 const PessoaIcon = styled(BsPersonFillGear)`
     font-size: 30px;
-    color
 
 `;
 

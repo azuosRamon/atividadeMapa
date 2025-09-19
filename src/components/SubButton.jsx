@@ -11,6 +11,10 @@ border: none;
 border-radius: 3px;
 font-size: 16px;
 cursor: pointer;
+display: flex;
+justify-content: center;
+align-items: center;
+align-content: center;
 
 &:hover{
 transition: .7s;

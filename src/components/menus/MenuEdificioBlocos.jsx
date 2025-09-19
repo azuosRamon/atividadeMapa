@@ -59,7 +59,7 @@ function BlocosOpcoes({ dados }) {
   const [listaCampus, setListaCampus] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 👇 aqui sim, a chamada correta
+
   useEffect(() => {
     SelectBancoDeDados({
       nomeTabela: "campi",

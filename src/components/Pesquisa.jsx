@@ -95,7 +95,7 @@ padding: 0;
 margin: 0;
 border: 1px solid #ccc;
 maxHeight: 150px;
-overflowY: auto
+overflowY: auto;
 `;
 
 const ButtonVoltar = styled(Button)`

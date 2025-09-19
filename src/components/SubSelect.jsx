@@ -10,6 +10,7 @@ color: ${cores.corTexto};
 border-radius: 5px;
 font-size: 16px;
 cursor: pointer;
+display: flex;
 background-color: ${cores.backgroundInput};
 &:hover{
     background-color: #222;

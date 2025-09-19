@@ -4,6 +4,8 @@ import { CiSquareChevLeft } from "react-icons/ci";
 import { CiSquareChevRight } from "react-icons/ci";
 import cores from "./Cores"
 import SelectBancoDeDados from "./BdSelectBusca";
+import { PiMouseRightClickFill } from "react-icons/pi";
+
 
 import Button from "./SubButton";
 import sala001 from "./salasAtivadas/001.png";
@@ -85,7 +87,7 @@ const imagensSalas = {
 
 const DivContent = styled.div`
 background-color: #222;
-padding: 50px 0;
+padding: ${(props) => (props.$capturar ? "20px 0" : "50px 0")};
 box-shadow: ${cores.boxShadow} 5px -5px 8px;
 `;
 const SlideContainer = styled.div`
@@ -241,8 +243,11 @@ gap: 10px;
 `;
 
 
-function Slide({ lista_imagens, pagina_inicio, listaSalasAtivas=[], pavimento = 0,dados, capturarCoordenadas = false}){
-    const data = dados || {};
+function Slide({ lista_imagens, pagina_inicio, listaSalasAtivas=[], pavimento = 0, capturarCoordenadas = false, setPontosArea = null}){
+    if (setPontosArea == null) {
+      console.log("troquei");
+      const [pontos, setPontosArea] = useState("");
+    }
     /*listaSalasAtivas = ["001","002","003","004","005","006","007","008","110","111","112","114","115","116","117","201", "202","203","204","222","223","224","225","226","227","228","301","302","303", "304","334","335","336","337","338","339"]*/
     const [pontosClicados, setPontosClicados] = useState([]);
     const [slide_atual, mudarSlide] = useState(0);
@@ -324,16 +329,19 @@ function Slide({ lista_imagens, pagina_inicio, listaSalasAtivas=[], pavimento = 
       }
     };
 
-
-    const [listaPavimentos, setListaPavimentos] = useState([])
-    const [loadingPavimentos, setLoadingPavimentos] = useState(true)
+    
+    const [listaPavimentos, setListaPavimentos] = useState([]);
+    const [loadingPavimentos, setLoadingPavimentos] = useState(true);
+    const [listaSalas, setListaSalas] = useState([]);
+    const [loadingSalas, setLoadingSalas] = useState(true);
     useEffect(() => {
         SelectBancoDeDados({nomeTabela: 'pavimentos', setData: setListaPavimentos, setLoading: setLoadingPavimentos })
+        SelectBancoDeDados({nomeTabela: 'salas', setData: setListaSalas, setLoading: setLoadingSalas })
     }, [])
 
     return(
-        <DivContent>
-                <DivAndares>
+        <DivContent $capturar={capturarCoordenadas}>
+                {!capturarCoordenadas && <DivAndares>
                     {
                         lista_imagens.map((item, indice) => (
                             <SpamAndares
@@ -344,14 +352,14 @@ function Slide({ lista_imagens, pagina_inicio, listaSalasAtivas=[], pavimento = 
                         ))
                     }
                     <SpamChao></SpamChao>
-                </DivAndares>
+                </DivAndares>}
                 <SlideContainer
                     onMouseDown={handleStart}
                     onMouseUp={handleEnd}
                     onTouchStart={handleStart}
                     onTouchEnd={handleEnd}
                     >
-                <Setas style={{left: "50px"}} onClick={()=> mudarPaginaSlide("anterior")}><CiSquareChevLeft size={40}/></Setas>
+                {!capturarCoordenadas &&<Setas style={{left: "50px"}} onClick={()=> mudarPaginaSlide("anterior")}><CiSquareChevLeft size={40}/></Setas>}
                 <DivSlide 
                 translate={-(slide_atual * (100 / total_slides))}
                 $lista_imagens_informada={lista_imagens}
@@ -375,10 +383,10 @@ function Slide({ lista_imagens, pagina_inicio, listaSalasAtivas=[], pavimento = 
                         >
 
                           {/* Polígonos existentes */}
-                          {data.salas.map((item) => (
+                          {listaSalas.map((item) => (
                             <AreaPoligonal
                               key={item.id}
-                              points={data.pavimentos.filter(pavimento => pavimento.id === item.pavimentoId)[0].numero === (slide_atual + 1) && JSON.parse(item.area).map(([x, y]) => `${x},${y}`).join(" ")}
+                              points={listaPavimentos.filter(pavimento => pavimento.id === item.pavimentoId)[0].numero === (slide_atual + 1) && JSON.parse(item.area).map(([x, y]) => `${x},${y}`).join(" ")}
                               onClick={(e) => {
                                 if (!capturarCoordenadas){
                                   alert(`Clicou na sala ${item.numero} - ${item.apelido}`);
@@ -417,7 +425,7 @@ function Slide({ lista_imagens, pagina_inicio, listaSalasAtivas=[], pavimento = 
                     </DivItem>
                 ))}
                 </DivSlide>
-                <UlNavegar>
+                {!capturarCoordenadas &&<UlNavegar>
                     {
                       lista_imagens.map((item, indice) => (
                         <LiNavegar
@@ -426,14 +434,18 @@ function Slide({ lista_imagens, pagina_inicio, listaSalasAtivas=[], pavimento = 
                         onClick={() => mudarSlide(indice)}>{indice+1}º</LiNavegar>
                       ))
                     }
-                </UlNavegar>
-                <Setas style={{right: "50px"}} onClick={() => mudarPaginaSlide("proximo")}><CiSquareChevRight size={40}/></Setas>
+                </UlNavegar>}
+                {!capturarCoordenadas &&<Setas style={{right: "50px"}} onClick={() => mudarPaginaSlide("proximo")}><CiSquareChevRight size={40}/></Setas>}
             </SlideContainer>
             {capturarCoordenadas && (
               <DivBotoesCoordenadas>
                 <Button $bgcolor={cores.backgroundBotaoSemFoco2} onClick={() => setPontosClicados([])}>Limpar croqui</Button>
-                <Button $bgcolor={cores.backgroundBotaoSemFoco2} onClick={() => setPontosClicados((prev) => prev.slice(0, -1))}>Deletar ultimo ponto</Button>
-                <Button onClick={() => (console.log(pontosClicados.map((item) => "[" + item + "]").toString()))}>Salvar croqui</Button>
+                <Button $bgcolor={cores.backgroundBotaoSemFoco2} onClick={() => setPontosClicados((prev) => prev.slice(0, -1))}>Deletar ultimo ponto <PiMouseRightClickFill /></Button>
+                <Button onClick={(e) => {
+                  event.preventDefault();
+                  setPontosArea(pontosClicados.map((item) => "[" + item + "]").toString());
+                  console.log(pontosClicados.map((item) => "[" + item + "]").toString());
+                  }}>Salvar croqui</Button>
 
               </DivBotoesCoordenadas>
 

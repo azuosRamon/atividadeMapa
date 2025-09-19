@@ -9,8 +9,9 @@ import cores from "../Cores"
 
 
 const BoxEditada = styled(Box)`
-min-width: 100px;
+    min-width: 100px;
     padding: 20px;
+    max-width: 200px;
 `;
 
 const DivContentInformacoes = styled.div`
