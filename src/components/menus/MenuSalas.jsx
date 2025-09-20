@@ -26,10 +26,10 @@ box-sizing: border-box;
 grid-template-columns: 1fr 1fr 1fr;
 grid-template-areas: 
     "operacao operacao idSala"
-    "campusId campusId campusId"
+    "campusId campusId lotacao"
     "blocoId blocoId pavimento"
     "numero apelido apelido"
-    "imagem imagem croqui"
+    "tipoArea tipoArea croqui"
     "reset . botoes";
 
 @media (max-width: 768px) {
@@ -38,6 +38,8 @@ grid-template-areas:
         "operacao"
         "idSala"
         "campusId"
+        "tipoArea"
+        "lotacao"
         "blocoId" 
         "pavimento"
         "numero" 
@@ -86,8 +88,8 @@ function SalaOpcoes() {
         numero: "",
         apelido: "",
         tipo_area_id: 1,
+        lotacao: 0,
         pavimento_id: "",
-        imagem: "url da imagem",
         lista_coordenadas: pontos,
     });
     const [operacao, setOperacao] = useState("1");
@@ -163,6 +165,14 @@ function SalaOpcoes() {
                         <Label htmlFor="apelido">Apelido:</Label>
                         <Input type="text" id="apelido" value={objeto.apelido} name="apelido" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'apelido')} required/>
                     </GridArea>
+                    <GridArea $area="tipoArea">
+                        <Label htmlFor="tipoArea">Tipo de área:</Label>
+                        <Input type="text" id="tipoArea" value={objeto.tipo_area_id} name="tipoArea" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'tipo_area_id')} required/>
+                    </GridArea>
+                    <GridArea $area="lotacao">
+                        <Label htmlFor="lotacao">Lotação:</Label>
+                        <Input type="text" id="lotacao" value={objeto.lotacao} name="tipoArea" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'lotacao')} required/>
+                    </GridArea>
                             <GridArea $area="campusId">
                             <Label htmlFor="campusId">Selecione o campus:</Label>
                                 <Select autoFocus id="campusId" name="campusId" required onChange={(e) => {setCampusSelecionado(e.target.value)}}>
@@ -217,10 +227,6 @@ function SalaOpcoes() {
                                     )
                                     }
                                 </Select>
-                    </GridArea>
-                    <GridArea $area="imagem">
-                        <Label htmlFor="imagem">Imagem:</Label>
-                        <Input type="text" id="imagem" value={objeto.imagem} name="imagem" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'imagem')}/>
                     </GridArea>
                     <GridArea $area="croqui">
                         <Label htmlFor="croqui">Croqui:</Label>
