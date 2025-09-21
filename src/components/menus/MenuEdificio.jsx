@@ -27,7 +27,7 @@ function ConfigurarEdificio({ usuarioLogado, dados }) {
                         <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(Number(e.target.value))}}>
                             {selecionarDados.map((_, idx) => (
                                 <option key={idx} value={idx}>
-                                    {["Campus", "Blocos", "Pavimentos"][idx]}
+                                    {["campi", "blocos", "pavimentos","salas"][idx]}
                                 </option>
                                 ))}
                         </Select>

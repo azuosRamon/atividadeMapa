@@ -10,7 +10,7 @@ import useBancoDeDados from "../BdSupabase";
 import SelectBancoDeDados from "../BdSelectBusca";
 import Slide from "../Slide";
 import Modal from "../SubModal";
-
+import SelectComDados from "../BdLerTabela";
 import terreo from "../Plantas/TERREO_PAVIMENTO.png";
 import primeiro_pavimento from "../Plantas/PRIMEIRO_PAVIMENTO.png";
 import segundo_pavimento from "../Plantas/SEGUNDO_PAVIMENTO.png";
@@ -98,7 +98,7 @@ function SalaOpcoes() {
         setObjeto(prev => ({ ...prev, ["lista_coordenadas"]: pontos }));
     }, [pontos])
 
-
+    
     const {
         data,
         pesquisa,
@@ -117,6 +117,9 @@ function SalaOpcoes() {
     const [campusSelecionado, setCampusSelecionado] = useState(0)
     const [blocoSelecionado, setBlocoSelecionado] = useState(0)
 
+    const [listaSalas, setListaSalas] = useState([])
+    const [loadingSalas, setLoadingSalas] = useState(true)
+
     const [listaPavimentos, setListaPavimentos] = useState([])
     const [loadingPavimentos, setLoadingPavimentos] = useState(true)
     const [listaBlocos, setListaBlocos] = useState([])
@@ -126,9 +129,16 @@ function SalaOpcoes() {
     const [mostrarModal, setMostrarModal] = useState(false);
 
     useEffect(() => {
+        setCampusSelecionado(objeto.campus_id);
+        setBlocoSelecionado(objeto.bloco_id);
+        console.log(objeto)
+    }, [objeto,campusSelecionado])
+    
+    useEffect(() => {
         SelectBancoDeDados({nomeTabela: 'campi', setData: setListaCampus, setLoading: setLoadingCampus })
         SelectBancoDeDados({nomeTabela: 'blocos', setData: setListaBlocos, setLoading: setLoadingBlocos })
         SelectBancoDeDados({nomeTabela: 'pavimentos', setData: setListaPavimentos, setLoading: setLoadingPavimentos })
+        SelectBancoDeDados({nomeTabela: 'salas', setData: setListaSalas, setLoading: setLoadingSalas })
     }, [])
 
        const [mostrarMapa, setMostrarMapa] = useState(false)
@@ -140,13 +150,18 @@ function SalaOpcoes() {
            setMostrarMapa(false)
        }
        
+       const retirarCampusId = ()=>{
+        const { [campus_id]: _, ...objetoSemCampus} = objeto
+        fazerEnvio()
+    }
+    
 
     return(
             <div>
-                <FormGrid onSubmit={fazerEnvio}>
+                <FormGrid onSubmit={retirarCampusId}>
                     <GridArea $area="operacao">
                         <Label htmlFor="operacao">Operacao:</Label>
-                            <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(e.target.value); alterarObjeto(e, 'sala_id')}}>
+                            <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(e.target.value)}}>
                             <option value="0">Selecione a operação</option>
                             <option value="1">Adicionar</option>
                             <option value="2">Alterar</option>
@@ -167,7 +182,7 @@ function SalaOpcoes() {
                     </GridArea>
                     <GridArea $area="tipoArea">
                         <Label htmlFor="tipoArea">Tipo de área:</Label>
-                        <Input type="text" id="tipoArea" value={objeto.tipo_area_id} name="tipoArea" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'tipo_area_id')} required/>
+                        <SelectComDados id="tipoArea" name="tipoArea" tabela="tipos_areas" listaColunas={["tipo_area_id", "nome"]} itemValue={objeto.tipo_area_id} change={setObjeto} required></SelectComDados>
                     </GridArea>
                     <GridArea $area="lotacao">
                         <Label htmlFor="lotacao">Lotação:</Label>
@@ -175,16 +190,7 @@ function SalaOpcoes() {
                     </GridArea>
                             <GridArea $area="campusId">
                             <Label htmlFor="campusId">Selecione o campus:</Label>
-                                <Select autoFocus id="campusId" name="campusId" required onChange={(e) => {setCampusSelecionado(e.target.value)}}>
-                                    <option value="0">Selecione o Campus</option>
-                                { loadingCampus ? 
-                                        <option value={0} disabled> Carregando... </option>
-                                        :                                         
-                                    listaCampus.map(campus => (
-                                        <option key={campus.campus_id} value={campus.campus_id}> {campus.nome + " - " + campus.cidade} </option>
-                                    ))
-                                }
-                                </Select>
+                            <SelectComDados id="campusId" name="campusId" tabela="campi" campoDesejado={["nome","cidade"]} listaColunas={["campus_id", "nome", "cidade"]} itemValue={objeto.campoId} change={setObjeto}  required></SelectComDados>
                         </GridArea>
                         <GridArea $area="blocoId">
                             <Label htmlFor="blocoId">Selecione o bloco:</Label>

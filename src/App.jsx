@@ -1,13 +1,6 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import Login from "./components/pages/PaginaLogin";
-import MenuCadastro from "./components/menus/MenuCadastro";
-import MenuHorarios from "./components/menus/MenuHorarios";
-import Perfil from "./components/menus/MenuPerfil";
-import ConfigurarCursos from "./components/menus/MenuCursos";
-import MenuDisciplinas from "./components/menus/MenuDisciplinas";
-import MenuEdificios from "./components/menus/MenuEdificio";
-import MenuQuadroAulas from "./components/menus/MenuQuadroAulas";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Pesquisa from "./components/Pesquisa";
@@ -16,10 +9,18 @@ import './App.css'
 import RecuperarSenha from "./components/pages/PaginaRecuperarSenha";
 import Slide from "./components/Slide";
 import BotaoFlutuante from "./components/SubButtonFlutuante";
+import MenuCadastro from "./components/menus/MenuCadastro";
+import MenuHorarios from "./components/menus/MenuHorarios";
+import Perfil from "./components/menus/MenuPerfil";
+import ConfigurarCursos from "./components/menus/MenuCursos";
+import MenuDisciplinas from "./components/menus/MenuDisciplinas";
+import MenuEdificios from "./components/menus/MenuEdificio";
+import MenuQuadroAulas from "./components/menus/MenuQuadroAulas";
 import Tabelas from "./components/menus/MenuTabelas";
 import CadastrarEmpresa from "./components/menus/MenuEmpresas";
 import CadastrarFuncao from "./components/menus/MenuFuncoes";
 import CadastrarCargos from "./components/menus/MenuCargos";
+import CadastrarAreas from "./components/menus/MenuTipoArea";
 import terreo from "./components/Plantas/TERREO_PAVIMENTO.png";
 import primeiro_pavimento from "./components/Plantas/PRIMEIRO_PAVIMENTO.png";
 import segundo_pavimento from "./components/Plantas/SEGUNDO_PAVIMENTO.png";
@@ -252,6 +253,9 @@ function App() {
         }/>
         <Route path="/cargos" element={
           <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarCargos usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
+        }/>
+        <Route path="/tiposAreas" element={
+          <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarAreas usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
         }/>
         <Route path="/slide" element={
           <Slide

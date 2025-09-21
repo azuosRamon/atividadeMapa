@@ -99,6 +99,7 @@ const [usuario, setUsuario] = useState(capturarUsuarioLogadoLocalStorage());
                             <Button onClick={()=>{navegar('/funcoes')}} $bgcolor="rgb(38, 38, 38)">Funcoes</Button>
                             <Button onClick={()=>{navegar('/cargos')}} $bgcolor="rgb(38, 38, 38)">Cargos</Button>
                             <Button onClick={()=>{navegar('/cadastro')}} $bgcolor="rgb(38, 38, 38)">Adicionar usuário</Button>
+                            <Button onClick={()=>{navegar('/tiposAreas')}} $bgcolor="rgb(38, 38, 38)">Tipos de Áreas</Button>
                         </React.Fragment>
                     )}
                     { (usuario.funcao.toLowerCase() === "moderador") && (

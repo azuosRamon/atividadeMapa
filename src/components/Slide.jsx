@@ -386,7 +386,7 @@ function Slide({ lista_imagens, pagina_inicio, listaSalasAtivas=[], pavimento = 
                           {listaSalas.map((item) => (
                             <AreaPoligonal
                               key={item.id}
-                              points={listaPavimentos.filter(pavimento => pavimento.id === item.pavimentoId)[0].numero === (slide_atual + 1) && JSON.parse(item.area).map(([x, y]) => `${x},${y}`).join(" ")}
+                              points={listaPavimentos.filter(pavimento => pavimento.id === item.pavimentoId)[0].numero === (slide_atual + 1) && JSON.parse(item.lista_coordenadas).map(([x, y]) => `${x},${y}`).join(" ")}
                               onClick={(e) => {
                                 if (!capturarCoordenadas){
                                   alert(`Clicou na sala ${item.numero} - ${item.apelido}`);
@@ -442,9 +442,9 @@ function Slide({ lista_imagens, pagina_inicio, listaSalasAtivas=[], pavimento = 
                 <Button $bgcolor={cores.backgroundBotaoSemFoco2} onClick={() => setPontosClicados([])}>Limpar croqui</Button>
                 <Button $bgcolor={cores.backgroundBotaoSemFoco2} onClick={() => setPontosClicados((prev) => prev.slice(0, -1))}>Deletar ultimo ponto <PiMouseRightClickFill /></Button>
                 <Button onClick={(e) => {
-                  event.preventDefault();
-                  setPontosArea(pontosClicados.map((item) => "[" + item + "]").toString());
-                  console.log(pontosClicados.map((item) => "[" + item + "]").toString());
+                  e.preventDefault();
+                  setPontosArea(("["+pontosClicados.map((item) => "[" + item + "]")+"]").toString());
+                  console.log(("["+pontosClicados.map((item) => "[" + item + "]")+"]").toString());
                   }}>Salvar croqui</Button>
 
               </DivBotoesCoordenadas>
