@@ -10,19 +10,21 @@ import PavimentosOpcoes from "./MenuEdificioPavimentos";
 import Colapse from "../SubColapse";
 import TabelaCompletaTeste from "../SubTabelaEditavel";
 import SalaOpcoes from "./MenuSalas";
-
+import LerDados from "../BdLerTabela";
+import { TbSettingsExclamation } from "react-icons/tb";
 
 function ConfigurarEdificio({ usuarioLogado, dados }) {
     const data = dados || {};
     const [operacao, setOperacao] = useState(0);
     const selecionarDados = [
-        [data.campus,["id", "nome", "cidade", "logradouro"]],
-        [data.blocos,["id", "nome", "campusId"]],
-        [data.pavimentos,["id", "numero", "blocoId"]]
+        [LerDados({tabela:"salas", listaColunas:"sala_id, numero, apelido, tipos_areas->>tipos_areasnome as teste, pavimentos(pavimento_id,numero, blocos(nome, campi(nome, cidade)))"}),["sala_id", "numero", "teste", "apelido", ["pavimentos", "numero"]]],
+        [LerDados({tabela:"campi", listaColunas:["*"]}),["campus_id", "nome", "cidade", "logradouro"]],
+        [LerDados({tabela:"blocos", listaColunas:["*"]}),["bloco_id", "nome", "campus_id"]],
+        [LerDados({tabela:"pavimentos", listaColunas:["*"]}),["pavimento_id", "numero", "bloco_id"]]
     ]
     return(
             <Box>
-                <Colapse nome = "Consultar dados" estadoInicial={false}>
+                <Colapse nome = "Consultar dados" estadoInicial={true}>
                     <Label htmlFor="operacao">Selecione a tabela a visualizar:</Label>
                         <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(Number(e.target.value))}}>
                             {selecionarDados.map((_, idx) => (

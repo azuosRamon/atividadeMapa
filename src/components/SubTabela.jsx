@@ -8,7 +8,7 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import cores from "./Cores";
-
+import LerDados from "./BdLerTabela";
 const TabelaContainer = styled.div`
     width: 100%;
     height: auto;
@@ -104,6 +104,12 @@ const JustifiedButton = styled(Button)`
 `;
 
 function TabelaCompleta({ dados, lista = [], exportar = false }) {
+    /*
+    * @description CRIA UMA TABELA COM PESQUISA POR NOME E ID
+    * @param DADOS =  JSON COM OS DADOS QUE A TABELA DEVE EXIBIR
+    * @param LISTA = ARRAY DE TITULOS, OS TITULOS DEVEM SER IGUAIS AOS CAMPOS NO BANCO DE DADOS, SE POSSUIR FOREIGN KEY PARA ENTRAR NELA COLOQUE O NOME DA TABELA E DEPOIS O CAMPO DESEJADO NESSE FORMATO ["NOME_TABELA","CAMPO_DESEJADO"]
+    * @param EXPORTAR = SE VERDADEIRO HABILITA OS BOTOES PARA GERAR PDF E EXCEL DA TABELA
+    */
     const data = dados || {};
     const [pesquisa, setPesquisa] = useState([]);
     const [idItem, setId] = useState("");
@@ -136,8 +142,20 @@ function TabelaCompleta({ dados, lista = [], exportar = false }) {
 
     const gerarPDF = () => {
         const doc = new jsPDF();
-        const headers = [lista.map(campo => campo.toUpperCase())];
-        const rows = pesquisa.map(item => lista.map(campo => item[campo]));
+        const headers = [lista.map(campo => {
+            if (typeof campo === "string"){
+                campo.toUpperCase();
+            } else {
+                String(campo).toUpperCase()
+            }
+        })];
+         const rows = pesquisa.map(item =>
+            lista.map(campo =>
+            Array.isArray(campo)
+                ? getNestedValue(item, campo)
+                : item[campo] ?? ""
+            )
+        );
 
         autoTable(doc, {
             head: headers,
@@ -159,6 +177,10 @@ function TabelaCompleta({ dados, lista = [], exportar = false }) {
     const imprimirTabela = () => {
         window.print();
     };
+    /* funcao para entrar nos elementos que fazem referencia as fks */
+    const getNestedValue = (obj, path) => {
+        return path.reduce((acc, key) => (acc && acc[key] !== undefined ? acc[key] : ""), obj);
+        };
 
     return (
         <FormGrid>
@@ -167,23 +189,29 @@ function TabelaCompleta({ dados, lista = [], exportar = false }) {
                     <Tabela id="tabela">
                         <thead>
                             <Tr>
-                                {lista.map((campo) => (
-                                    <Th key={campo}>{campo.toUpperCase()}</Th>
+                                {lista.map((campo, index) => (
+                                    index == 0 ? 
+                                    <Th key={index}>{"ID"}</Th> :
+                                    <Th key={index}>{(typeof campo === "string") ? campo.toUpperCase() : String(campo[0]).slice(0,-1).toUpperCase()}</Th>
                                 ))}
                             </Tr>
                         </thead>
                         <Tbody>
                             {pesquisa.length > 0 ? (
-                                pesquisa.map(item => (
-                                    <Tr key={item.id}>
-                                        {lista.map((campo) => (
-                                            <Td key={campo}>{item[campo]}</Td>
+                                pesquisa.map((item, linhaIndex) => (
+                                    <Tr key={linhaIndex}>
+                                        {lista.map((campo, colunaIndex) => (
+                                            <Td key={colunaIndex}>
+                                                {Array.isArray(campo) 
+                                                ? getNestedValue(item, campo) 
+                                                : item[campo]}
+                                            </Td>
                                         ))}
                                     </Tr>
                                 ))
                             ) : (
                                 <Tr>
-                                    <Td colSpan={lista.length}>Dados não encontrados!</Td>
+                                    <Td key={0} colSpan={lista.length}>Dados não encontrados!</Td>
                                 </Tr>
                             )}
                         </Tbody>

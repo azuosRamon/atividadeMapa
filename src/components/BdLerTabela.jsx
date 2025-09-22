@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../supabaseClient"
-import Select from "./SubSelect";
 
 
-function SelectComDados({tabela = "", listaColunas = ["id", "nome"], campoDesejado = listaColunas, itemValue, change, condicao = null }) {
+function LerDados({tabela = "campi", listaColunas = ["id", "nome"], campoDesejado = listaColunas, condicao = null }) {
   const [dados, setDados] = useState([])
   const select = listaColunas.join(", ")
   let query = supabase
@@ -19,6 +18,7 @@ function SelectComDados({tabela = "", listaColunas = ["id", "nome"], campoDeseja
       if (error) {
         console.error("Erro ao buscar dados:", error)
       } else {
+        console.log(data);
         setDados(data)
       }
     }
@@ -26,18 +26,7 @@ function SelectComDados({tabela = "", listaColunas = ["id", "nome"], campoDeseja
     fetch()
   }, [])
 
-  return (
-    <Select value={itemValue} onChange={(e) => change((prev) => ({ ...prev, [listaColunas[0]]: Number(e.target.value) }))}>
-      <option value="0">Selecione uma opção</option>
-      {dados.map((c) => (
-        <option key={c[listaColunas[0]]} value={c[listaColunas[0]]}>
-          {
-          campoDesejado.map(item => c[item]).join(" - ")
-          }
-        </option>
-      ))}
-    </Select>
-  )
+  return (dados)
 }
 
-export default SelectComDados;
+export default LerDados;

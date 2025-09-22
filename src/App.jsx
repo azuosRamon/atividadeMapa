@@ -25,7 +25,7 @@ import terreo from "./components/Plantas/TERREO_PAVIMENTO.png";
 import primeiro_pavimento from "./components/Plantas/PRIMEIRO_PAVIMENTO.png";
 import segundo_pavimento from "./components/Plantas/SEGUNDO_PAVIMENTO.png";
 import terceiro_pavimento from "./components/Plantas/TERCEIRO_PAVIMENTO.png";
-
+import LerDados from "./components/BdLerTabela";
 const imagens = [terreo, primeiro_pavimento, segundo_pavimento, terceiro_pavimento];
 const data = [
   { id:0, nome: "Carlos", sobrenome: "Silva", telefone: "21912341234",nascimento:"2025-03-24", email:"carlossilva@mail.com", cpf: "111.222.333-44", matricula:"202411122", funcao: "Administrador", foto: "", senha: "admin"},

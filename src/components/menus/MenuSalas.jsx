@@ -10,7 +10,7 @@ import useBancoDeDados from "../BdSupabase";
 import SelectBancoDeDados from "../BdSelectBusca";
 import Slide from "../Slide";
 import Modal from "../SubModal";
-import SelectComDados from "../BdLerTabela";
+import SelectComDados from "../BdSelectComDados";
 import terreo from "../Plantas/TERREO_PAVIMENTO.png";
 import primeiro_pavimento from "../Plantas/PRIMEIRO_PAVIMENTO.png";
 import segundo_pavimento from "../Plantas/SEGUNDO_PAVIMENTO.png";

@@ -84,7 +84,7 @@ function BlocosOpcoes({ dados }) {
                                         <option value={0} disabled> Carregando... </option>
                                         :                                         
                                     listaCampus.map(campus => (
-                                        <option value={campus.campus_id}> {campus.nome + " - " + campus.cidade} </option>
+                                        <option key={campus.campus_id} value={campus.campus_id}> {campus.nome + " - " + campus.cidade} </option>
                                     ))
                                 }
                                 </Select>
