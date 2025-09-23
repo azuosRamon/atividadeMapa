@@ -105,7 +105,7 @@ function ConfigurarHorarios() {
     
     return(
             <Box>
-                <Title>Horários</Title>
+                <Title>Cadastrar Horários</Title>
                 <FormGrid onSubmit={atualizarDados}>
                     <GridArea $area="ano">
                         <Label htmlFor="ano">Ano:</Label>

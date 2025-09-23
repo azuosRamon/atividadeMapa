@@ -22,9 +22,8 @@ grid-template-areas:
     "operacao operacao id"
     "nome nome nome"
     "cnpj cnpj telefone"
-    "inicioContrato dataRenovacao tempoContrato"
-    "email email valorContrato"
-    "senha senha ."
+    "email email exibirContatos"
+    "foto foto foto"
     "redeSocial1 redeSocial1 redeSocial1"
     "redeSocial2 redeSocial2 redeSocial2"
     ". reset botoes";
@@ -38,11 +37,7 @@ grid-template-areas:
         "nome"
         "cnpj"
         "telefone"
-        "inicioContrato"
-        "dataRenovacao"
-        "tempoContrato"
         "email "
-        "valorContrato"
         "senha"
         "redeSocial1"
         "redeSocial2"
@@ -128,25 +123,13 @@ function CadastrarEmpresa() {
                         <Label htmlFor="email">Email:</Label>
                         <Input type="email" id="email" value={objeto.email} name="email" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'email')} required/>
                     </GridArea>
-                    <GridArea $area="senha">
-                        <Label htmlFor="senha">Senha:</Label>
-                        <Input type="password" id="senha" value={objeto.senha} name="senha" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'senha')} required/>
+                    <GridArea $area="foto">
+                        <Label htmlFor="foto">Foto:</Label>
+                        <Input type="file" id="foto" name="foto"/>
                     </GridArea>
-                    <GridArea $area="inicioContrato">
-                        <Label htmlFor="inicioContrato">Data Inicio:</Label>
-                        <Input type="date" id="inicioContrato" value={objeto.inicio_contrato} name="inicioContrato" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'inicio_contrato')} required/>
-                    </GridArea>
-                    <GridArea $area="dataRenovacao">
-                        <Label htmlFor="dataRenovacao">Data Renovacao:</Label>
-                        <Input type="date" id="dataRenovacao" value={objeto.data_renovacao} name="dataRenovacao" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'data_renovacao')} required/>
-                    </GridArea>
-                    <GridArea $area="tempoContrato">
-                        <Label htmlFor="tempoContrato">Duração em meses:</Label>
-                        <Input type="number" id="tempoContrato" value={objeto.tempoContrato} name="tempoContrato" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'tempo_contrato_meses')} required/>
-                    </GridArea>
-                    <GridArea $area="valorContrato">
-                        <Label htmlFor="valorContrato">Valor do contrato:</Label>
-                        <Input type="number" id="valorContrato" value={objeto.valor_contrato} name="valorContrato" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'valor_contrato')} required/>
+                    <GridArea $area="exibirContatos">
+                        <Label htmlFor="exibirContatos">Exibir Contatos:</Label>
+                        <Input type="checkbox" value={objeto.informacoes_publicas} id="exibirContatos" name="exibirContatos"/>
                     </GridArea>
                     <GridArea $area="redeSocial1">
                         <Label htmlFor="redeSocial1">Rede Social:</Label>

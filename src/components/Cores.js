@@ -2,6 +2,7 @@ const cores = {
     "cor1" : "#66ffff",
     "cor2" : "#33cccc",
     "cor3" : "#00a2a2",
+    "cor3Transparente" : "rgbA(0, 162, 162, 0.5)",
     "cor4" : "rgba(161, 123, 123, 0.23)",
     "cor5" : "rgb(43, 184, 205)",
     "corFocus" : "#457676",

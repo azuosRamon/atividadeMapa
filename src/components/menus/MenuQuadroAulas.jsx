@@ -29,7 +29,7 @@ const FormGrid = styled.form`
             "disciplinas disciplinas disciplinas"
             "separar separar separar"
             "ano semestre dia"
-            "inicio termino ."
+            "inicio termino qtdAlunos"
             "separar2 separar2 separar2"
             "campus campus blocos"
             "pavimentos salas salas"
@@ -47,7 +47,7 @@ const FormGrid = styled.form`
       }
 
     }
-};
+;
     
     
 
@@ -62,6 +62,7 @@ const FormGrid = styled.form`
     "id"
     "inicio"
     "termino"
+    "qtdAlunos"
     "campus"
     "blocos"
     "pavimentos"
@@ -100,6 +101,7 @@ function ConfigurarQuadroAulas({ table, imagens }) {
     const [salas, setSalas] = useState([])
     const listaSalas = ["001","002"]
     const [salasAtivas, setSalasAtivas] = useState([]);
+    const [qtdAlunos, setQtdAlunos] = useState(0);
     const limparFormulario = () => {
         setOperacao();
         setId("");
@@ -331,6 +333,10 @@ function ConfigurarQuadroAulas({ table, imagens }) {
                     <GridArea $area="ano">
                         <Label htmlFor="ano">Ano:</Label>
                         <Input type="number" id="ano" name="ano" value={ano} required onChange={(e) => setAno(Number(e.target.value))}/>
+                    </GridArea>
+                    <GridArea $area="qtdAlunos">
+                        <Label htmlFor="qtdAlunos">Quantidade de Alunos:</Label>
+                        <Input type="number" id="qtdAlunos" name="qtdAlunos" value={qtdAlunos} required onChange={(e) => setQtdAlunos(Number(e.target.value))}/>
                     </GridArea>
                     <GridArea $area="semestre">
                         <Label htmlFor="semestre">Semestre:</Label>
