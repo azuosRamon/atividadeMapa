@@ -150,9 +150,9 @@ function SalaOpcoes() {
            setMostrarMapa(false)
        }
        
-       const retirarCampusId = ()=>{
-        const { [campus_id]: _, ...objetoSemCampus} = objeto
-        fazerEnvio()
+       const retirarCampusId = (e)=>{
+        const { campus_id: _, ...objetoSemCampus} = objeto;
+        fazerEnvio(e)
     }
     
 
@@ -259,7 +259,7 @@ function SalaOpcoes() {
                         <Button $bgcolor={cores.backgroundBotaoSemFoco} type="reset">Limpar</Button>   
                     </GridArea>
                     <GridArea $area="botoes">
-                        <Button type="submit" onClick={()=>console.log(objeto)}>Salvar</Button>   
+                        <Button type="submit">Salvar</Button>   
                     </GridArea>
 
                 </FormGrid>

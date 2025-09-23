@@ -18,7 +18,7 @@ function LerDados({tabela = "campi", listaColunas = ["id", "nome"], campoDesejad
       if (error) {
         console.error("Erro ao buscar dados:", error)
       } else {
-        console.log(data);
+        //console.log(data);
         setDados(data)
       }
     }

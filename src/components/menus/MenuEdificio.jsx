@@ -17,10 +17,10 @@ function ConfigurarEdificio({ usuarioLogado, dados }) {
     const data = dados || {};
     const [operacao, setOperacao] = useState(0);
     const selecionarDados = [
-        [LerDados({tabela:"salas", listaColunas:"sala_id, numero, apelido, tipos_areas->>tipos_areasnome as teste, pavimentos(pavimento_id,numero, blocos(nome, campi(nome, cidade)))"}),["sala_id", "numero", "teste", "apelido", ["pavimentos", "numero"]]],
         [LerDados({tabela:"campi", listaColunas:["*"]}),["campus_id", "nome", "cidade", "logradouro"]],
-        [LerDados({tabela:"blocos", listaColunas:["*"]}),["bloco_id", "nome", "campus_id"]],
-        [LerDados({tabela:"pavimentos", listaColunas:["*"]}),["pavimento_id", "numero", "bloco_id"]]
+        [LerDados({tabela:"blocos", listaColunas:["bloco_id", "nome","campi(nome)"]}),["bloco_id", "nome", ["campi", "nome"]]],
+        [LerDados({tabela:"pavimentos", listaColunas:["pavimento_id", "numero", "blocos(nome, campi(nome))"]}),["pavimento_id", "numero", ["blocos", "nome"], ["blocos",["campi","nome"]]]],
+        [LerDados({tabela:"salas", listaColunas:["sala_id", "numero", "apelido", "tipos_areas(nome)", "pavimentos(pavimento_id,numero, blocos(nome))"]}),["sala_id", "numero", ["tipos_areas","nome"], "apelido", ["pavimentos", "numero"]]]
     ]
     return(
             <Box>
