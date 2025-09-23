@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react"
 import { supabase } from "../../supabaseClient" // importa o cliente já configurado
+import AbrirModalSubmit from "./SubModalSubmit"
 
 function useBancoDeDados({
   nomeTabela,
@@ -9,10 +10,10 @@ function useBancoDeDados({
   campoId = "id",
   campoNome = "nome",
 }) {
-  const [data, setData] = useState([])
-  const [pesquisa, setPesquisa] = useState([])
-  const [loading, setLoading] = useState(true)
-
+  const [data, setData] = useState([]);
+  const [pesquisa, setPesquisa] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
   // 🔹 READ - buscar todos os registros
   const atualizarLista = async () => {
     setLoading(true)
@@ -98,6 +99,7 @@ function useBancoDeDados({
   // 🔹 Dispara operação CRUD
   const fazerEnvio = async (event) => {
     event.preventDefault()
+    
     try {
       if (operacao === "1") {
         await criar(objeto)
@@ -108,6 +110,8 @@ function useBancoDeDados({
       } else if (operacao === "3") {
         await deletar(objeto?.[campoId])
         alert("Deletado com sucesso!")
+      } else {
+        alert("Selecione uma operação valida!")
       }
     } catch (err) {
       console.error(err)

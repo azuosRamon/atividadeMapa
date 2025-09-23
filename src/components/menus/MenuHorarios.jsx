@@ -11,6 +11,8 @@ import DivSeparador from "../SubDivSeparador";
 import TabelaCompleta from "../SubTabela";
 import Colapse from "../SubColapse"
 import cores from "../Cores"
+import useBancoDeDados from "../BdSupabase";
+import LerDados from "../BdLerTabela";
 
 const FormGrid = styled.form`
 gap: 10px;
@@ -50,43 +52,68 @@ function adicionarTempo(horario, horas = 0, minutos = 0, segundos = 0) {
     return data.toTimeString().slice(0, 8); // Retorna HH:MM:SS
 }
 
-function ConfigurarHorarios({ tableHorarios }) {
-    const data = tableHorarios || {};
-    const [pesquisa, setPesquisa] = useState([]);
-    const [operacao, setOperacao] = useState();
-    const [idHorario, setId] = useState("");
-    const [ano, setAno] = useState(data.ano || 2025);
-    const [semestre, setSemestre] = useState(data.semestre || 1);
-    const [inicio, setInicio] = useState("00:00");
+function ConfigurarHorarios() {
+    const [objeto, setObjeto] = useState({
+        horario_id: "0",
+        hora_inicio: "00:00",
+        hora_termino: "",
+        ano: 2025,
+        semestre: 1
+        });
+    const [operacao, setOperacao] = useState("1");
     const [duracao, setDuracao] = useState(50);
-    const [termino, setTermino] = useState(adicionarTempo(inicio, 0,duracao,0));
+    const {
+    data,
+    pesquisa,
+    loading,
+    fazerEnvio,
+    alterarObjeto
+    } = useBancoDeDados({
+    nomeTabela: "horarios",
+    objeto,
+    setObjeto,
+    operacao,
+    campoId: "horario_id",
+    campoNome: "ano"
+    });
 
-    useEffect(() => {
-        setPesquisa(data.filter(data => (data.ano === Number(ano))&&(data.semestre === Number(semestre))));
-    }, [ano, semestre])
+    const [dadosTabela, setDadosTabela] = useState([])
 
-    useEffect(() => {
-        setTermino(adicionarTempo(inicio,0,duracao,0));
-    }, [inicio, duracao]);
-
-    const fazerEnvio = (event) =>{
-        event.preventDefault();
-        console.log({ 
-            ano, semestre, inicio, termino, duracao
-          });
+    const carregarDados = async () => {
+        const dados = await LerDados({tabela: "horarios", listaColunas: ["*"]});
+        setDadosTabela(dados);
     }
+
+    const atualizarDados = async (e) => {
+        await fazerEnvio(e);
+        await carregarDados();
+    }
+
+    useEffect(()=>{
+        carregarDados
+    },[])
+
+
+
+
+    useEffect(() => {
+        setObjeto((prev) => ({ ...prev, ['hora_termino']: adicionarTempo(objeto.hora_inicio, 0,duracao,0)}))
+        console.log(objeto)
+
+    }, [objeto.hora_inicio, duracao]);
+
     
     return(
             <Box>
                 <Title>Horários</Title>
-                <FormGrid onSubmit={fazerEnvio}>
+                <FormGrid onSubmit={atualizarDados}>
                     <GridArea $area="ano">
                         <Label htmlFor="ano">Ano:</Label>
-                        <Input type="number" id="ano" name="ano" value={ano} required onChange={(e) => setAno(Number(e.target.value))}/>
+                        <Input type="number" id="ano" name="ano" value={objeto.ano} required onChange={(e) => alterarObjeto(e, 'ano')}/>
                     </GridArea>
                     <GridArea $area="semestre">
                         <Label htmlFor="semestre">Semestre:</Label>
-                        <Select type="number" id="semestre" name="semestre" required onChange={(e) => setSemestre(Number(e.target.value))}>
+                        <Select type="number" id="semestre" value={objeto.semestre} name="semestre" required onChange={(e) => alterarObjeto(e, 'semestre')}>
                         <option value="1">1</option>
                         <option value="2">2</option>
                         </Select>
@@ -97,7 +124,7 @@ function ConfigurarHorarios({ tableHorarios }) {
                     <GridArea $area="tabela">
                         <DivSeparador></DivSeparador>
                             <Colapse marginBottom={'0px'} nome = "Consultar dados" estadoInicial={false}>
-                                <TabelaCompleta dados={pesquisa} lista={['id', 'inicio', 'termino']} camposPesquisa={false}></TabelaCompleta>
+                                <TabelaCompleta dados={dadosTabela} lista={['horario_id', 'ano', 'semestre','hora_inicio', 'hora_termino']} camposPesquisa={false}></TabelaCompleta>
                             </Colapse>
                         
                         <DivSeparador></DivSeparador>
@@ -114,11 +141,11 @@ function ConfigurarHorarios({ tableHorarios }) {
                     </GridArea>
                     <GridArea $area="idHorario">
                         <Label htmlFor="idHorario">ID:</Label>
-                        <Input type="number" id="idHorario" name="idHorario" disabled={!operacao || Number(operacao)<=1} onChange={(e) => setId(Number(e.target.value))}/>
+                        <Input type="number" id="idHorario" name="idHorario" disabled={!operacao || Number(operacao)<=1} onChange={(e) => alterarObjeto(e, 'horario_id')}/>
                     </GridArea>
                     <GridArea $area="inicio">
                         <Label htmlFor="horaInicio">Inicio:</Label>
-                        <Input type="time" id="horaInicio" value={inicio} name="horaInicio" onChange={(e) => setInicio(e.target.value)} required/>
+                        <Input type="time" id="horaInicio" value={objeto.hora_inicio} name="horaInicio" onChange={(e) => alterarObjeto(e, 'hora_inicio')} required/>
                     </GridArea>
                     <GridArea $area="duracao">
                         <Label htmlFor="duracao">Duração:</Label>
@@ -126,7 +153,7 @@ function ConfigurarHorarios({ tableHorarios }) {
                     </GridArea>
                     <GridArea $area="termino">
                         <Label htmlFor="termino">Termino:</Label>
-                        <Input type="time" id="termino" name="termino" value={termino} readOnly/>
+                        <Input type="time" id="termino" name="termino" value={objeto.hora_termino} readOnly onChange={(e) => alterarObjeto(e, 'hora_termino')}/>
                     </GridArea>
                     <GridArea $area="reset">
                         <Button $bgcolor={cores.backgroundBotaoSemFoco} type="reset">Limpar</Button>   

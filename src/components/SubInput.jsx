@@ -20,6 +20,11 @@ display: flex;
 &::placeholder{
     color: ${cores.corTexto};
 }
+&:focus{
+    background-color: ${cores.corFocus};
+    color: ${cores.corWhite};
+    transition: .5s;
+}
 
 `;
 

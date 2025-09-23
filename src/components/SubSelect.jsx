@@ -16,7 +16,11 @@ background-color: ${cores.backgroundInput};
     background-color: #222;
     transition: .5s;
 }
-
+&:focus{
+    background-color: ${cores.corFocus};
+    color: ${cores.corWhite};
+    transition: .5s;
+}
 `;
 
 export default Select;

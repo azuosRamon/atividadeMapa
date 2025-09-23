@@ -41,7 +41,7 @@ function CadastrarFuncao() {
         funcao_id: "",
         nome_funcao: "",
       });
-      const [operacao, setOperacao] = useState("1");
+      const [operacao, setOperacao] = useState("0");
     
       const {
         data,

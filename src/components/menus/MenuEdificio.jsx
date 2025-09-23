@@ -17,14 +17,14 @@ function ConfigurarEdificio({ usuarioLogado, dados }) {
     const data = dados || {};
     const [operacao, setOperacao] = useState(0);
     const selecionarDados = [
-        [LerDados({tabela:"campi", listaColunas:["*"]}),["campus_id", "nome", "cidade", "logradouro"]],
-        [LerDados({tabela:"blocos", listaColunas:["bloco_id", "nome","campi(nome)"]}),["bloco_id", "nome", ["campi", "nome"]]],
-        [LerDados({tabela:"pavimentos", listaColunas:["pavimento_id", "numero", "blocos(nome, campi(nome))"]}),["pavimento_id", "numero", ["blocos", "nome"], ["blocos",["campi","nome"]]]],
-        [LerDados({tabela:"salas", listaColunas:["sala_id", "numero", "apelido", "tipos_areas(nome)", "pavimentos(pavimento_id,numero, blocos(nome))"]}),["sala_id", "numero", ["tipos_areas","nome"], "apelido", ["pavimentos", "numero"]]]
+        [LerDados({tabela:"campi", listaColunas:["*"]}),["campus_id", "nome", "cidade", "logradouro"],[]],
+        [LerDados({tabela:"blocos", listaColunas:["bloco_id", "nome","campi(nome)"]}),["bloco_id", "nome", ["campi", "nome"]], ["id", "nome", "campus"]],
+        [LerDados({tabela:"pavimentos", listaColunas:["pavimento_id", "numero", "blocos(nome, campi(nome))"]}),["pavimento_id", "numero", ["blocos", "nome"], ["blocos",["campi","nome"]]],[]],
+        [LerDados({tabela:"salas", listaColunas:["sala_id", "numero", "apelido", "tipos_areas(nome)", "pavimentos(pavimento_id,numero, blocos(nome))"]}),["sala_id", "numero", ["tipos_areas","nome"], "apelido", ["pavimentos", "numero"]],["id", "numero", "tipo", "apelido", "pavimento"]]
     ]
     return(
             <Box>
-                <Colapse nome = "Consultar dados" estadoInicial={true}>
+                <Colapse nome = "Consultar dados" estadoInicial={false}>
                     <Label htmlFor="operacao">Selecione a tabela a visualizar:</Label>
                         <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(Number(e.target.value))}}>
                             {selecionarDados.map((_, idx) => (
@@ -33,7 +33,7 @@ function ConfigurarEdificio({ usuarioLogado, dados }) {
                                 </option>
                                 ))}
                         </Select>
-                    <TabelaCompleta key={operacao} dados={selecionarDados[operacao][0]} lista={selecionarDados[operacao][1]}></TabelaCompleta>
+                    <TabelaCompleta key={operacao} dados={selecionarDados[operacao][0]} lista={selecionarDados[operacao][1]} titulos={selecionarDados[operacao][2]}></TabelaCompleta>
                 </Colapse>
 
                 <Colapse nome = "Campus">

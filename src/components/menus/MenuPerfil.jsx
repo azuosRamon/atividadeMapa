@@ -20,6 +20,8 @@ grid-template-areas:
     "senhaAtual . ."
     "senhaAtual senhaNova confirmarSenha"
     "foto foto foto"
+    "empresa empresa empresa"
+    "funcao cargo exibirContatos"
     "botoes botoes botoes";
 
 @media (max-width: 768px) {
@@ -125,6 +127,22 @@ function AtualizarPerfil() {
                     <GridArea $area="foto">
                         <Label htmlFor="foto">Foto:</Label>
                         <Input type="file" id="foto" name="foto"/>
+                    </GridArea>
+                    <GridArea $area="exibirContatos">
+                        <Label htmlFor="exibirContatos">Exibir Contatos:</Label>
+                        <Input type="checkbox" value={objeto.informacoes_publicas} id="exibirContatos" name="exibirContatos"/>
+                    </GridArea>
+                    <GridArea $area="empresa">
+                        <Label htmlFor="empresa">Sua Empresa:</Label>
+                        <Input type="text" value={objeto.empresa_id} readOnly id="empresa" name="empresa"/>
+                    </GridArea>
+                    <GridArea $area="funcao">
+                        <Label htmlFor="funcao">Sua Função:</Label>
+                        <Input type="text" value={objeto.funcao} readOnly id="funcao" name="funcao"/>
+                    </GridArea>
+                    <GridArea $area="cargo">
+                        <Label htmlFor="cargo">Seu Cargo:</Label>
+                        <Input type="text" value={objeto.cargo} readOnly id="cargo" name="cargo"/>
                     </GridArea>
                     <GridArea $area="botoes">
                         <Button type="submit">Salvar</Button>   

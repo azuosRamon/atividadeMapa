@@ -103,14 +103,18 @@ const JustifiedButton = styled(Button)`
     margin-top: 0;
 `;
 
-function TabelaCompleta({ dados, lista = [], exportar = false }) {
+function TabelaCompleta({ dados, lista = [], exportar = false, titulos=[] }) {
     /*
     * @description CRIA UMA TABELA COM PESQUISA POR NOME E ID
     * @param DADOS =  JSON COM OS DADOS QUE A TABELA DEVE EXIBIR
     * @param LISTA = ARRAY DE TITULOS, OS TITULOS DEVEM SER IGUAIS AOS CAMPOS NO BANCO DE DADOS, SE POSSUIR FOREIGN KEY PARA ENTRAR NELA COLOQUE O NOME DA TABELA E DEPOIS O CAMPO DESEJADO NESSE FORMATO ["NOME_TABELA","CAMPO_DESEJADO"]
     * @param EXPORTAR = SE VERDADEIRO HABILITA OS BOTOES PARA GERAR PDF E EXCEL DA TABELA
+    * @param TITULOS = lista com o cabeçalho da tabela
     */
     const data = dados || {};
+    if (titulos.length === 0) {
+        titulos = lista;
+    }
     const [pesquisa, setPesquisa] = useState([]);
     const [idItem, setId] = useState("");
     const [nome, setNome] = useState("");
@@ -142,7 +146,7 @@ function TabelaCompleta({ dados, lista = [], exportar = false }) {
 
     const gerarPDF = () => {
         const doc = new jsPDF();
-        const headers = [lista.map(campo => {
+        const headers = [titulos.map(campo => {
             if (typeof campo === "string"){
                 campo.toUpperCase();
             } else {
@@ -189,7 +193,7 @@ function TabelaCompleta({ dados, lista = [], exportar = false }) {
                     <Tabela id="tabela">
                         <thead>
                             <Tr>
-                                {lista.map((campo, index) => (
+                                {titulos.map((campo, index) => (
                                     index == 0 ? 
                                     <Th key={index}>{"ID"}</Th> :
                                     <Th key={index}>{(typeof campo === "string") ? campo.toUpperCase() : String(campo[0]).slice(0,-1).toUpperCase()}</Th>

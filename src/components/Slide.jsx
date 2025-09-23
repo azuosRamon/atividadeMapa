@@ -245,7 +245,6 @@ gap: 10px;
 
 function Slide({ lista_imagens, pagina_inicio, listaSalasAtivas=[], pavimento = 0, capturarCoordenadas = false, setPontosArea = null}){
     if (setPontosArea == null) {
-      console.log("troquei");
       const [pontos, setPontosArea] = useState("");
     }
     /*listaSalasAtivas = ["001","002","003","004","005","006","007","008","110","111","112","114","115","116","117","201", "202","203","204","222","223","224","225","226","227","228","301","302","303", "304","334","335","336","337","338","339"]*/
@@ -381,12 +380,11 @@ function Slide({ lista_imagens, pagina_inicio, listaSalasAtivas=[], pavimento = 
                             setPontosClicados((prev) => prev.slice(0, -1));
                           }}
                         >
-
                           {/* Polígonos existentes */}
                           {listaSalas.map((item) => (
-                            <AreaPoligonal
+                           <AreaPoligonal
                               key={item.id}
-                              points={listaPavimentos.filter(pavimento => pavimento.id === item.pavimentoId)[0].numero === (slide_atual + 1) && JSON.parse(item.lista_coordenadas).map(([x, y]) => `${x},${y}`).join(" ")}
+                              points={listaPavimentos.filter(pavimento => pavimento.pavimento_id === item.pavimento_id)[0].numero === (slide_atual + 1) && JSON.parse(item.lista_coordenadas).map(([x, y]) => `${x},${y}`).join(" ")}
                               onClick={(e) => {
                                 if (!capturarCoordenadas){
                                   alert(`Clicou na sala ${item.numero} - ${item.apelido}`);

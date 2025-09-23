@@ -199,7 +199,6 @@ function App() {
             <Slide
               lista_imagens={imagens}
               pagina_inicio={0}
-              dados={dadosJson}
             />
             <Footer/>
           </div>
