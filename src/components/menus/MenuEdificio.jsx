@@ -18,9 +18,9 @@ function ConfigurarEdificio({ usuarioLogado, dados }) {
     const [operacao, setOperacao] = useState(0);
     const selecionarDados = [
         [LerDados({tabela:"campi", listaColunas:["*"]}),["campus_id", "nome", "cidade", "logradouro"],[]],
-        [LerDados({tabela:"blocos", listaColunas:["bloco_id", "nome","campi(nome)"]}),["bloco_id", "nome", ["campi", "nome"]], ["id", "nome", "campus"]],
-        [LerDados({tabela:"pavimentos", listaColunas:["pavimento_id", "numero", "blocos(nome, campi(nome))"]}),["pavimento_id", "numero", ["blocos", "nome"], ["blocos",["campi","nome"]]],[]],
-        [LerDados({tabela:"salas", listaColunas:["sala_id", "numero", "apelido", "tipos_areas(nome)", "pavimentos(pavimento_id,numero, blocos(nome))"]}),["sala_id", "numero", ["tipos_areas","nome"], "apelido", ["pavimentos", "numero"]],["id", "numero", "tipo", "apelido", "pavimento"]]
+        [LerDados({tabela:"blocos_view", listaColunas:["id", "bloco","campus", "cidade"]}),["id", "bloco","campus", "cidade"], []],
+        [LerDados({tabela:"pavimentos_view", listaColunas:["id", "pavimento", "bloco", "campus", "cidade"]}),["id", "pavimento", "bloco", "campus", "cidade"],[]],
+        [LerDados({tabela:"salas_view", listaColunas:["id", "sala", "tipo", "apelido", "pavimento", "bloco", "campus", "cidade"]}),["id", "sala", "tipo","apelido",  "pavimento", "bloco", "campus", "cidade"],[]]
     ]
     return(
             <Box>
@@ -29,7 +29,7 @@ function ConfigurarEdificio({ usuarioLogado, dados }) {
                         <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(Number(e.target.value))}}>
                             {selecionarDados.map((_, idx) => (
                                 <option key={idx} value={idx}>
-                                    {["campi", "blocos", "pavimentos","salas"][idx]}
+                                    {["Campi", "Blocos", "Pavimentos","Salas"][idx]}
                                 </option>
                                 ))}
                         </Select>
