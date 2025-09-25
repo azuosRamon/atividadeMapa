@@ -188,7 +188,7 @@ function App() {
         }
     }
   const [usuarioLogadoDados, setUsuario] = useState(capturarUsuarioLogadoLocalStorage());
-  console.log(usuarioLogadoDados);
+  //console.log(usuarioLogadoDados);
   return(
     <Router>
       <Routes>

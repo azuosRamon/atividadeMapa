@@ -12,7 +12,8 @@ import TabelaCompleta from "../SubTabela";
 import Colapse from "../SubColapse"
 import cores from "../Cores"
 import useBancoDeDados from "../BdSupabase";
-
+import CriarCamposFormulario from "../SubCriadorForm";
+import mapa from "../BdObjetoTabelas"
 const FormGrid = styled.form`
 gap: 10px;
 display: grid;
@@ -36,11 +37,12 @@ grid-template-areas:
 `;
 
 function CadastrarCargos({usuarioLogado}) {
-    const [objeto, setObjeto] = useState({
-        cargo_id: "",
-        nome_cargo: "",
-        empresa_id: usuarioLogado.empresa_id
-      });
+    const cargos = mapa.cargos;
+    const [objeto, setObjeto] = useState(
+        Object.fromEntries(
+            Object.entries(cargos.campos).map(([k, v]) => [k, v.valor])
+        )
+    );
       const [operacao, setOperacao] = useState("1");
     
       const {
@@ -50,7 +52,7 @@ function CadastrarCargos({usuarioLogado}) {
         fazerEnvio,
         alterarObjeto
       } = useBancoDeDados({
-        nomeTabela: "cargos",
+        nomeTabela: cargos.tabela.nome,
         objeto,
         setObjeto,
         operacao,
@@ -58,38 +60,18 @@ function CadastrarCargos({usuarioLogado}) {
         campoNome: "nome_cargo"
       });
 
-    return(
-            <Box>
+return(
+    <Box>
                 <Title>Cadastrar Cargos</Title>
-                <FormGrid onSubmit={fazerEnvio}>
-                    <GridArea $area="tabela">
-                        <DivSeparador></DivSeparador>
-                        <Colapse marginBottom={'0px'} nome = "Consultar dados" estadoInicial={false}>
-                            {loading
-                                ? <div style={{padding: "16px"}}>Carregando...</div>
-                                : <TabelaCompleta dados={pesquisa} lista={['cargo_id', 'nome_cargo']} camposPesquisa={false} />
-                            }
-                        </Colapse>
-                        <DivSeparador></DivSeparador>
-                    </GridArea>
+                <FormGrid onSubmit={(e)=> {e.preventDefault();console.log("enviou")}}>
 
-                    <GridArea $area="operacao">
-                        <Label htmlFor="operacao">Operacao:</Label>
-                            <Select id="operacao" autoFocus name="operacao" required onChange={(e) => {setOperacao(e.target.value); alterarObjeto(e, 'cargo_id')}}>
-                            <option value="0">Selecione a operação desejada</option>
-                            <option value="1">Adicionar</option>
-                            <option value="2">Alterar</option>
-                            <option value="3">Deletar</option>
-                            </Select>
-                    </GridArea>
-                    <GridArea $area="id">
-                        <Label htmlFor="id">ID:</Label>
-                        <Input type="number" id="id" name="id" disabled={!operacao || Number(operacao)<=1} onChange={(e) => alterarObjeto(e, 'cargo_id')}/>
-                    </GridArea>
-                    <GridArea $area="nome">
-                        <Label htmlFor="nome">Nome:</Label>
-                        <Input type="text" id="nome" value={objeto.nome_cargo} name="nome" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'nome_cargo')} required/>
-                    </GridArea>
+                    <CriarCamposFormulario 
+                    item={cargos}
+                    setFuncao={alterarObjeto}
+                    operacao={operacao}
+                    setOperacao={operacao}
+                    ></CriarCamposFormulario>
+
                     <GridArea $area="reset">
                         <Button $bgcolor={cores.backgroundBotaoSemFoco} type="reset">Limpar</Button>   
                     </GridArea>

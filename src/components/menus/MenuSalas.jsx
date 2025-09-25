@@ -151,7 +151,7 @@ function SalaOpcoes() {
        }
        
        const retirarCampusId = (e)=>{
-        const { campus_id: _, ...objetoSemCampus} = objeto;
+        const { [campus_id]: _, ...objetoSemCampus} = objeto;
         fazerEnvio(e)
     }
     

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { supabase } from "../../supabaseClient"
 
 
-function LerDados({tabela = "campi", listaColunas = ["id", "nome"], campoDesejado = listaColunas, condicao = null }) {
+function LerDados({setLoading = false, tabela = "campi", listaColunas = ["id", "nome"], campoDesejado = listaColunas, condicao = null }) {
   const [dados, setDados] = useState([])
   const select = listaColunas.join(", ")
   let query = supabase
@@ -13,12 +13,14 @@ function LerDados({tabela = "campi", listaColunas = ["id", "nome"], campoDesejad
     }
   useEffect(() => {
     async function fetch() {
+      setLoading(true)
       const { data, error } = await query
-        
+      
       if (error) {
         console.error("Erro ao buscar dados:", error)
       } else {
         //console.log(data);
+        setLoading(false)
         setDados(data)
       }
     }
