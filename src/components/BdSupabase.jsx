@@ -92,7 +92,7 @@ function useBancoDeDados({
     if (!idStr) return
     const encontrado = data.find(
       (item) => String(item?.[campoId] ?? "") === idStr
-    )
+    ) 
     if (encontrado) setObjeto(encontrado)
   }, [objeto?.[campoId], data, campoId, setObjeto])
 

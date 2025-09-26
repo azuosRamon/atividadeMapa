@@ -1,16 +1,7 @@
 import React, { useState, useEffect, useMemo} from "react";
 import styled from "styled-components";
 import Box from "../SubBox";
-import Input from "../SubInput";
-import Select from "../SubSelect";
-import Label from "../SubLabel";
-import Button from "../SubButton";
 import Title from "../SubTitleH2";
-import GridArea from "../SubGridArea";
-import DivSeparador from "../SubDivSeparador";
-import TabelaCompleta from "../SubTabela";
-import Colapse from "../SubColapse"
-import cores from "../Cores"
 import useBancoDeDados from "../BdSupabase";
 import CriarCamposFormulario from "../SubCriadorForm";
 import mapa from "../BdObjetoTabelas"
@@ -20,7 +11,7 @@ const FormGrid = styled.form`
 gap: 10px;
 display: grid;
 grid-template-columns: 1fr 1fr 1fr;
-grid-template-areas: 
+grid-template-areas: /* VERIFICAR OS NOMES DAS AREAS NO ARQUIVO BdObjeto */
     "tabela tabela tabela"
     "operacao operacao id"
     "nome nome nome"
@@ -42,10 +33,10 @@ function CadastrarCargos({usuarioLogado}) {
     const cargos = mapa.cargos;
     const [objeto, setObjeto] = useState(
         Object.fromEntries(
-            Object.entries(cargos.campos).map(([k, v]) => [k, v.valor])
+            Object.entries(cargos.campos).map(([k, v]) => ([k, k=="empresa_id"?usuarioLogado.empresa_id:v.valor]))
         )
     );
-      const [operacao, setOperacao] = useState("1");
+      const [operacao, setOperacao] = useState("0");
     
       const {
         data,
@@ -59,19 +50,20 @@ function CadastrarCargos({usuarioLogado}) {
         setObjeto,
         operacao,
         campoId: "cargo_id",
-        campoNome: "nome_cargo"
+        campoNome: "nome"
       });
 
 return(
     <Box>
                 <Title>Cadastrar Cargos</Title>
-                <FormGrid onSubmit={(e)=> {e.preventDefault();console.log(objeto)}}>
+                <FormGrid onSubmit={fazerEnvio}>
 
                     <CriarCamposFormulario 
                     item={cargos}
                     setFuncao={alterarObjeto}
                     operacao={operacao}
                     setOperacao={setOperacao}
+                    objeto ={objeto}
                     ></CriarCamposFormulario>
 
                     

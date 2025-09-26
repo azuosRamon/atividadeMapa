@@ -3,7 +3,7 @@ import { supabase } from "../../supabaseClient"
 import Select from "./SubSelect";
 
 
-function SelectComDados({tabela = "", listaColunas = ["id", "nome"], campoDesejado = listaColunas, itemValue, change, condicao = null }) {
+function SelectComDados({tabela = "", listaColunas = ["id", "nome"], campoDesejado = listaColunas, value, itemValue, change, condicao = null }) {
   const [dados, setDados] = useState([])
   const select = listaColunas.join(", ")
   let query = supabase
@@ -25,12 +25,11 @@ function SelectComDados({tabela = "", listaColunas = ["id", "nome"], campoDeseja
 
     fetch()
   }, [])
-
   return (
-    <Select value={itemValue} onChange={(e) => change((prev) => ({ ...prev, [listaColunas[0]]: Number(e.target.value) }))}>
+    <Select value={value ?? "0"} onChange={(e) => change(e,listaColunas[0])}>
       <option value="0">Selecione uma opção</option>
       {dados.map((c) => (
-        <option key={c[listaColunas[0]]} value={c[listaColunas[0]]}>
+        <option key={c[listaColunas[0]]} value={Number(c?.[`${itemValue}`])}>
           {
           campoDesejado.map(item => c[item]).join(" - ")
           }
