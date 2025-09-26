@@ -14,6 +14,8 @@ import cores from "../Cores"
 import useBancoDeDados from "../BdSupabase";
 import CriarCamposFormulario from "../SubCriadorForm";
 import mapa from "../BdObjetoTabelas"
+
+
 const FormGrid = styled.form`
 gap: 10px;
 display: grid;
@@ -63,22 +65,16 @@ function CadastrarCargos({usuarioLogado}) {
 return(
     <Box>
                 <Title>Cadastrar Cargos</Title>
-                <FormGrid onSubmit={(e)=> {e.preventDefault();console.log("enviou")}}>
+                <FormGrid onSubmit={(e)=> {e.preventDefault();console.log(objeto)}}>
 
                     <CriarCamposFormulario 
                     item={cargos}
                     setFuncao={alterarObjeto}
                     operacao={operacao}
-                    setOperacao={operacao}
+                    setOperacao={setOperacao}
                     ></CriarCamposFormulario>
 
-                    <GridArea $area="reset">
-                        <Button $bgcolor={cores.backgroundBotaoSemFoco} type="reset">Limpar</Button>   
-                    </GridArea>
-                    <GridArea $area="botoes">
-                        <Button type="submit">Salvar</Button>   
-                    </GridArea>
-
+                    
                 </FormGrid>
             </Box>
     )

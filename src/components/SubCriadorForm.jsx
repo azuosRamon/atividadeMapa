@@ -47,36 +47,67 @@ function ExibirTabelaConsulta({tabela}){
     );
 };
 
-function CriarInput({campo, setFuncao}){
+function CriarInput({nomeCampo, campo, setFuncao, operacao}){
     return(
 
             <GridArea $area={campo.nome}>
                 <Label htmlFor={campo.nome}>{campo.texto}</Label>
-                <Input type={campo.tipo} id={campo.nome} name={campo.nome} disabled={!operacao || Number(operacao)<=1} onChange={(e) => setFuncao(e, String(campo))}/>
+                <Input type={campo.tipo} id={campo.nome} name={campo.nome} onChange={(e) => setFuncao(e, nomeCampo)}/>
             </GridArea>
         
     )
 };
-function CriarSelect({campo, setFuncao}){
+function CriarSelect({nomeCampo, campo, setFuncao}){
     return(
             <GridArea $area={campo.nome}>
                 <Label htmlFor={campo.nome}>{campo.texto}</Label>
-                <SelectComDados id={campo.nome} name={campo.nome} tabela={campo.tabela.nome} listaColunas={campo.tabela.lista} itemValue={campo[2]} change={setFuncao} required></SelectComDados>
+                <SelectComDados id={campo.nome} name={campo.nome} tabela={campo.tabela} listaColunas={campo.lista} itemValue={nomeCampo} change={(e) => setFuncao(e, nomeCampo)} required></SelectComDados>
             </GridArea>
         
     )
 };
 
 function CriarCamposFormulario({item, setFuncao = ()=>{}, operacao, setOperacao}){
-    
-    Object.keys(item).map((chave, valor) =>{
-        if (chave == "tabela" && item.tabela.mostrar){
-            console.log(item.tabela);
-        return(
-            <ExibirTabelaConsulta tabela={item.tabela} ></ExibirTabelaConsulta>
+
+    if (!item) return null;
+
+    return (
+        <>
+            {item.tabela?.mostrar && (
+                <ExibirTabelaConsulta tabela={item.tabela} ></ExibirTabelaConsulta>
+            )}
+
+            <DefinirOperacao operacao={operacao} setOperacao={setOperacao}/>
+
+            {Object.entries(item.campos).map(([nome, campo]) =>{
+
+                    if (campo.campo == "input"){
+                        return (
+                            <CriarInput key={nome} nomeCampo={nome} campo={campo} setFuncao={setFuncao} operacao={operacao} />
+                        )
+                    }
+
+                    if (campo.campo =="select"){
+                        return(
+                            <CriarSelect key={nome}
+                                nomeCampo={nome}
+                                campo={campo}
+                                setFuncao={setFuncao} />
+                        )
+                    }
+                    return null;
+                })
+            }
+                    <GridArea $area="reset">
+                        <Button $bgcolor={cores.backgroundBotaoSemFoco} type="reset">Limpar</Button>   
+                    </GridArea>
+                    <GridArea $area="botoes">
+                        <Button type="submit">Salvar</Button>   
+                    </GridArea>
+        </>
     )
-        }
-    })
+    
+
     /*
         if(item == "operacao"){
         return(<DefinirOperacao />)
