@@ -39,6 +39,7 @@ grid-template-areas:
         "senhaNova"
         "confirmarSenha"
         "foto"
+        "exibirContatos"
         "empresa"
         "funcao"
         "cargo"
