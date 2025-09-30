@@ -44,7 +44,7 @@ const CelularMenu = styled.div`
         left: ${({ $abrir }) => ($abrir ? "0" : "-100%")};
         width: 100%;
         height: 100vh;
-        background-color: ${cores.backgroundMenus};
+        background-color: ${cores.backgroundMenusMobileLogado};
         transition: left 0.3s ease-in-out;
         display: flex;
         flex-direction: column;

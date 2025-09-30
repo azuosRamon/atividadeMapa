@@ -38,6 +38,8 @@ grid-template-areas:
         "cnpj"
         "telefone"
         "email "
+        "exibirContatos"
+        "foto"
         "senha"
         "redeSocial1"
         "redeSocial2"

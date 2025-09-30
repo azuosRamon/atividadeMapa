@@ -39,6 +39,9 @@ grid-template-areas:
         "senhaNova"
         "confirmarSenha"
         "foto"
+        "empresa"
+        "funcao"
+        "cargo"
         "botoes"
 }
 `;

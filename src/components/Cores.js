@@ -15,6 +15,7 @@ const cores = {
     "backgroundBox": "rgba(70,70,70,1)",
     "boxShadow": "rgba(0, 0, 0, 0.1)",
     "backgroundMenus": "rgba(0, 0, 0, .2)",
+    "backgroundMenusMobileLogado": "rgba(0, 0, 0, .6)",
     "backgroundMenusMobile": "rgba(70,70,70,1)",
     "backgroundMapa" : "rgba(0, 0, 0, 0.9)",
     "corBorda": "#00a2a2",
