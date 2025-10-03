@@ -1,12 +1,12 @@
 import { useState, useEffect, useMemo } from "react"
 import { supabase } from "../../supabaseClient" // importa o cliente já configurado
-import AbrirModalSubmit from "./SubModalSubmit"
 
 function useBancoDeDados({
   nomeTabela,
   objeto,
   setObjeto,
   operacao,
+  campoId = "id",
 }) {
   const [data, setData] = useState([]);
   const [pesquisa, setPesquisa] = useState([]);
@@ -65,6 +65,17 @@ function useBancoDeDados({
     atualizarLista()
   }
 
+  
+
+  // quando o ID mudar, atualiza o objeto com o encontrado
+  useEffect(() => {
+    const idStr = String(objeto?.[campoId] ?? "").trim()
+    if (!idStr) return
+    const encontrado = data.find(
+      (item) => String(item?.[campoId] ?? "") === idStr
+    ) 
+    if (encontrado) setObjeto(encontrado)
+  }, [objeto?.[campoId], data, campoId, setObjeto])
 
   // 🔹 Dispara operação CRUD
   const fazerEnvio = async (event) => {
@@ -93,7 +104,7 @@ function useBancoDeDados({
     setObjeto((prev) => ({ ...prev, [campo]: event.target.value }))
   }
 
-  return {fazerEnvio, alterarObjeto, atualizarLista }
+  return { data, pesquisa, loading, fazerEnvio, alterarObjeto, atualizarLista }
 }
 
 export default useBancoDeDados

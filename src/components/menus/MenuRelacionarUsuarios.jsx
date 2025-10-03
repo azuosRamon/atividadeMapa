@@ -29,9 +29,9 @@ grid-template-areas:
 }
 `;
 
-function CadastrarFuncao() {
+function RelacionarUsuarios() {
 
-    const tabela = mapa.funcoes;
+    const tabela = mapa.usuarios_empresas;
     const [objeto, setObjeto] = useState(
         Object.fromEntries(
             Object.entries(tabela.campos).map(([k, v]) => ([k, k=="empresa_id"?usuarioLogado.empresa_id:v.valor]))
@@ -72,4 +72,4 @@ function CadastrarFuncao() {
             </Box>
     )
 }
-export default CadastrarFuncao;
+export default RelacionarUsuarios;

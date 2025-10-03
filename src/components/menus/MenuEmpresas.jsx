@@ -1,17 +1,10 @@
 import React, { useState, useEffect, useMemo} from "react";
 import styled from "styled-components";
 import Box from "../SubBox";
-import Input from "../SubInput";
-import Select from "../SubSelect";
-import Label from "../SubLabel";
-import Button from "../SubButton";
 import Title from "../SubTitleH2";
-import GridArea from "../SubGridArea";
-import DivSeparador from "../SubDivSeparador";
-import TabelaCompleta from "../SubTabela";
-import Colapse from "../SubColapse"
-import cores from "../Cores"
-import useBancoDeDados from "../BdSupabase";
+import useBancoDeDados from "../BdCrudSupabase";
+import mapa from "../BdObjetoTabelas"
+import CriarCamposFormulario from "../SubCriadorForm";
 
 const FormGrid = styled.form`
 gap: 10px;
@@ -22,10 +15,11 @@ grid-template-areas:
     "operacao operacao id"
     "nome nome nome"
     "cnpj cnpj telefone"
-    "email email exibirContatos"
-    "foto foto foto"
-    "redeSocial1 redeSocial1 redeSocial1"
-    "redeSocial2 redeSocial2 redeSocial2"
+    "email email visibilidade"
+    "imagem imagem imagem"
+    "rede_social_1 rede_social_1 rede_social_1"
+    "rede_social_2 rede_social_2 rede_social_2"
+    "modelo_id modelo_id modelo_id"
     ". reset botoes";
 
 @media (max-width: 768px) {
@@ -49,21 +43,13 @@ grid-template-areas:
 `;
 
 function CadastrarEmpresa() {
-    const [objeto, setObjeto] = useState({
-        empresa_id: '',
-        nome_empresa: "",
-        cnpj: "",
-        telefone: "",
-        email: "",
-        senha: "",
-        inicio_contrato: "",
-        data_renovacao: "",
-        tempo_contrato_meses: '',
-        valor_contrato: "",
-        rede_social_1: "",
-        rede_social_2: "",
-    })
-      const [operacao, setOperacao] = useState("1");
+        const tabela = mapa.empresas;
+    const [objeto, setObjeto] = useState(
+        Object.fromEntries(
+            Object.entries(tabela.campos).map(([k, v]) => ([k, v.valor]))
+        )
+    );
+      const [operacao, setOperacao] = useState("0");
     
       const {
         data,
@@ -72,86 +58,32 @@ function CadastrarEmpresa() {
         fazerEnvio,
         alterarObjeto
       } = useBancoDeDados({
-        nomeTabela: "empresas",
+        nomeTabela: tabela.tabela.nome,
         objeto,
         setObjeto,
         operacao,
-        campoId: "empresa_id",
-        campoNome: "nome_empresa"
+        campoId: tabela.tabela.lista[0],
+        campoNome: tabela.tabela.lista[1],
       });
-    
 
-    return(
-            <Box>
-                <Title>Nova Empresa</Title>
+return(
+    <Box>
+                <Title>Cadastro de Empresas</Title>
                 <FormGrid onSubmit={fazerEnvio}>
-                    <GridArea $area="tabela">
-                        <DivSeparador></DivSeparador>
-                        <Colapse marginBottom={'0px'} nome = "Consultar dados" estadoInicial={false}>
-                            {loading
-                                ? <div style={{padding: "16px"}}>Carregando...</div>
-                                : <TabelaCompleta dados={pesquisa} lista={['empresa_id', 'nome_empresa', 'cnpj']} camposPesquisa={false} />
-                            }
-                        </Colapse>
-                        <DivSeparador></DivSeparador>
-                    </GridArea>
 
-                    <GridArea $area="operacao">
-                        <Label htmlFor="operacao">Operacao:</Label>
-                            <Select id="operacao" autoFocus name="operacao" required onChange={(e) => {setOperacao(e.target.value); alterarObjeto(e, 'empresa_id')}}>
-                            <option value="0">Selecione a operação desejada</option>
-                            <option value="1">Adicionar</option>
-                            <option value="2">Alterar</option>
-                            <option value="3">Deletar</option>
-                            </Select>
-                    </GridArea>
-                    <GridArea $area="id">
-                        <Label htmlFor="id">ID:</Label>
-                        <Input type="number" id="id" name="id" disabled={!operacao || Number(operacao)<=1} onChange={(e) => alterarObjeto(e, 'empresa_id')}/>
-                    </GridArea>
-                    <GridArea $area="nome">
-                        <Label htmlFor="nome">Nome:</Label>
-                        <Input type="text" id="nome" value={objeto.nome_empresa} name="nome" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'nome_empresa')} required/>
-                    </GridArea>
-                    <GridArea $area="cnpj">
-                        <Label htmlFor="cnpj">CNPJ:</Label>
-                        <Input type="text" id="cnpj" value={objeto.cnpj} name="cnpj" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'cnpj')} required/>
-                    </GridArea>
-                    <GridArea $area="telefone">
-                        <Label htmlFor="telefone">Telefone:</Label>
-                        <Input type="phone" id="telefone" value={objeto.telefone} name="telefone" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'telefone')} required/>
-                    </GridArea>
-                    <GridArea $area="email">
-                        <Label htmlFor="email">Email:</Label>
-                        <Input type="email" id="email" value={objeto.email} name="email" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'email')} required/>
-                    </GridArea>
-                    <GridArea $area="foto">
-                        <Label htmlFor="foto">Foto:</Label>
-                        <Input type="file" id="foto" name="foto"/>
-                    </GridArea>
-                    <GridArea $area="exibirContatos">
-                        <Label htmlFor="exibirContatos">Exibir Contatos:</Label>
-                        <Input type="checkbox" value={objeto.informacoes_publicas} id="exibirContatos" name="exibirContatos"/>
-                    </GridArea>
-                    <GridArea $area="redeSocial1">
-                        <Label htmlFor="redeSocial1">Rede Social:</Label>
-                        <Input type="text" id="redeSocial1" value={objeto.rede_social_1} name="redeSocial1" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'rede_social_1')} required/>
-                    </GridArea>
-                    <GridArea $area="redeSocial2">
-                        <Label htmlFor="redeSocial2">Rede Social:</Label>
-                        <Input type="text" id="rede_social_2" value={objeto.rede_social_2} name="redeSocial2" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'rede_social_2')} required/>
-                    </GridArea>
+                    <CriarCamposFormulario 
+                    item={tabela}
+                    setFuncao={alterarObjeto}
+                    operacao={operacao}
+                    setOperacao={setOperacao}
+                    objeto ={objeto}
+                    ></CriarCamposFormulario>
+
                     
-                    <GridArea $area="reset">
-                        <Button $bgcolor={cores.backgroundBotaoSemFoco} type="reset">Limpar</Button>   
-                    </GridArea>
-                    <GridArea $area="botoes">
-                        <Button type="submit">Salvar</Button>   
-                    </GridArea>
-
                 </FormGrid>
             </Box>
     )
 }
+
 
 export default CadastrarEmpresa;

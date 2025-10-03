@@ -101,20 +101,20 @@ function CriarCamposFormulario({item, setFuncao = ()=>{}, operacao, setOperacao,
     return (
         <>
             {(item.tabela?.mostrar ?? false) && (
-                <ExibirTabelaConsulta tabela={item.tabela} ></ExibirTabelaConsulta>
+                <ExibirTabelaConsulta tabela={item.view ?? item.tabela} ></ExibirTabelaConsulta>
             )}
 
             <DefinirOperacao operacao={operacao} setOperacao={setOperacao}/>
 
             {Object.entries(item.campos).map(([nome, campo]) =>{
                     
-                    if ((campo.mostrar ?? false )&& campo.campo == "input"){
+                    if ((campo.mostrar ?? true )&& campo.campo == "input"){
                         return (
                             <CriarInput key={nome} nomeCampo={nome} campo={campo} objeto={objeto} setFuncao={setFuncao} operacao={operacao} />
                         )
                     }
                     
-                    if ((campo.mostrar ?? false )&& campo.campo =="select"){
+                    if ((campo.mostrar ?? true )&& campo.campo =="select"){
                         return(
                             <CriarSelect key={nome}
                             nomeCampo={nome}

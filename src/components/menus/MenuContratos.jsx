@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Box from "../SubBox";
 import Title from "../SubTitleH2";
 import useBancoDeDados from "../BdCrudSupabase";
 import CriarCamposFormulario from "../SubCriadorForm";
 import mapa from "../BdObjetoTabelas"
+import { use } from "react";
 
 
 const FormGrid = styled.form`
@@ -14,7 +15,9 @@ grid-template-columns: 1fr 1fr 1fr;
 grid-template-areas: /* VERIFICAR OS NOMES DAS AREAS NO ARQUIVO BdObjeto */
     "tabela tabela tabela"
     "operacao operacao id"
-    "nome nome nome"
+    "empresa_id empresa_id valor"
+    "inicio tempo_contrato_meses renovacao"
+    "qtd_comodos qtd_produtos qtd_usuarios"
     ". reset botoes";
 
 @media (max-width: 768px) {
@@ -29,15 +32,30 @@ grid-template-areas: /* VERIFICAR OS NOMES DAS AREAS NO ARQUIVO BdObjeto */
 }
 `;
 
-function CadastrarCargos({usuarioLogado}) {
-    const tabela = mapa.cargos;
+function CadastroContratos({usuarioLogado}) {
+    const tabela = mapa.contratos_empresas;
     const [objeto, setObjeto] = useState(
         Object.fromEntries(
             Object.entries(tabela.campos).map(([k, v]) => ([k, k=="empresa_id"?usuarioLogado.empresa_id:v.valor]))
         )
     );
+    const alterarCampo = (valor, campo) => {
+        setObjeto((prev) => ({ ...prev, [campo]: valor }))
+    }
       const [operacao, setOperacao] = useState("0");
-    
+    useEffect(()=>{
+        console.log(objeto);
+        if (objeto.inicio && objeto.tempo_contrato_meses) {
+            const dataInicio = new Date(objeto.inicio);
+            const meses = parseInt(objeto.tempo_contrato_meses);
+            const dataRenovacao = new Date(dataInicio.setMonth(dataInicio.getMonth() + parseInt(objeto.tempo_contrato_meses)));
+            const ano = dataRenovacao.getFullYear();
+            const mesesRenovacao = String(dataRenovacao.getMonth() + 1).padStart(2, '0');
+            const dia = String(dataRenovacao.getDate()).padStart(2, '0');
+            const dataFormatada = `${ano}-${mesesRenovacao}-${dia}`;
+            alterarCampo(dataFormatada, "renovacao");
+        } 
+    }, [objeto.inicio, objeto.tempo_contrato_meses])
       const {
         data,
         pesquisa,
@@ -55,7 +73,7 @@ function CadastrarCargos({usuarioLogado}) {
 
 return(
     <Box>
-                <Title>Cadastrar Cargos</Title>
+                <Title>Cadastro Contratos</Title>
                 <FormGrid onSubmit={fazerEnvio}>
 
                     <CriarCamposFormulario 
@@ -72,4 +90,4 @@ return(
     )
 }
 
-export default CadastrarCargos;
+export default CadastroContratos;

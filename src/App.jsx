@@ -21,6 +21,9 @@ import CadastrarEmpresa from "./components/menus/MenuEmpresas";
 import CadastrarFuncao from "./components/menus/MenuFuncoes";
 import CadastrarCargos from "./components/menus/MenuCargos";
 import CadastrarAreas from "./components/menus/MenuTipoArea";
+import CadastroModelos from "./components/menus/MenuModelos";
+import CadastroContratos from "./components/menus/MenuContratos";
+import RelacionarUsuarios from "./components/menus/MenuRelacionarUsuarios";
 import terreo from "./components/Plantas/TERREO_PAVIMENTO.png";
 import primeiro_pavimento from "./components/Plantas/PRIMEIRO_PAVIMENTO.png";
 import segundo_pavimento from "./components/Plantas/SEGUNDO_PAVIMENTO.png";
@@ -255,6 +258,15 @@ function App() {
         }/>
         <Route path="/tiposAreas" element={
           <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarAreas usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
+        }/>
+        <Route path="/modelos" element={
+          <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastroModelos usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
+        }/>
+        <Route path="/contratos" element={
+          <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastroContratos usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
+        }/>
+        <Route path="/relacionarUsuarios" element={
+          <LayoutLogado usuarioDados={usuarioLogadoDados}><RelacionarUsuarios usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
         }/>
         <Route path="/slide" element={
           <Slide
