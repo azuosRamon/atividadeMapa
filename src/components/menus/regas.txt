@@ -1,0 +1,16 @@
+adicionar usuario
+    abrir um modal para inserir o cpf
+        if cpf
+            apenas relacione o usuario a empresa
+        else
+            insira as informaçoes do usuario, realize o cadastro e depois vá direto para a tela de relacionalo a empresa
+
+        - Quando um usuario for adicionado deverá ser enviado um email com pin e senhas aleátorios
+            o usuário deverá trocar a senha e o pin quando realizar o primeiro acesso
+        - Quando um usuário for relacionado deverá enviar um email para ele realizar a aprovação atestando que ele realmente quer ser relacionado aquela empresa
+        tambem deverá aparecer um modal assim que o usuario fizer o login mostrando as empresas que requerem validacao
+
+esqueci a senha
+    email com site para cadastro de nova senha será enviado
+
+

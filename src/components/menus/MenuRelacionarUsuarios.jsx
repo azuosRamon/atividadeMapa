@@ -14,7 +14,8 @@ grid-template-columns: 1fr 1fr 1fr;
 grid-template-areas: 
     "tabela tabela tabela"
     "operacao operacao id"
-    "nome nome nome"
+    "matricula usuario_id usuario_id"
+    "funcao_id cargo_id ."
     ". reset botoes";
 
 @media (max-width: 768px) {
@@ -29,7 +30,7 @@ grid-template-areas:
 }
 `;
 
-function RelacionarUsuarios() {
+function RelacionarUsuarios({ usuarioLogado }) {
 
     const tabela = mapa.usuarios_empresas;
     const [objeto, setObjeto] = useState(
@@ -56,7 +57,7 @@ function RelacionarUsuarios() {
     
     return(
         <Box>
-                <Title>Funções</Title>
+                <Title>Relacionar Usuário</Title>
                 <FormGrid onSubmit={fazerEnvio}>
 
                     <CriarCamposFormulario 

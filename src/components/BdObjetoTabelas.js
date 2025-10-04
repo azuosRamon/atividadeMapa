@@ -94,11 +94,10 @@ const mapa = {
             },
             view : {
                 nome: "usuarios_empresas_view",
-                lista:["contrato_id", "empresa", "inicio", "termino"], 
+                lista:["id","matricula","usuario", "funcao", "cargo"], 
                 camposPesquisa:false, 
                 mostrar: true
             },
-            
             operacao: 0,
             
             
@@ -115,7 +114,7 @@ const mapa = {
                     tipo: "text", 
                     campo:"input", 
                     texto:"", 
-                    nome:"id"},
+                    nome:"matricula"},
                 
                 usuario_id: {
                     valor: null, 
@@ -124,7 +123,7 @@ const mapa = {
                     texto:"Usuario", 
                     nome:"usuario_id",
                     tabela:"usuarios", 
-                    lista:["usuario_id","nome"]
+                    lista:["usuario_id","nome","cpf"]
                 },
                 empresa_id: {
                     valor: null, 
@@ -133,7 +132,8 @@ const mapa = {
                     texto:"Empresa", 
                     nome:"empresa_id",
                     tabela:"empresas", 
-                    lista:["empresa_id","nome"]
+                    lista:["empresa_id","nome"],
+                    mostrar: false
                 },
                 funcao_id: {
                     valor: null, 

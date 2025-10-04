@@ -1,55 +1,47 @@
-import React, {useState, useEffect} from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Box from "../SubBox";
-import Input from "../SubInput";
-import Select from "../SubSelect";
-import Button from "../SubButton";
-import DivSeparador from "../SubDivSeparador";
-import cores from "../Cores"
+import Title from "../SubTitleH2";
 import useBancoDeDados from "../BdSupabase";
+import mapa from "../BdObjetoTabelas"
+import CriarCamposFormulario from "../SubCriadorForm";
 
-const Title = styled.h2`
-margin: 0 0 20px;
-color: ${cores.corTexto};
-`;
 
-const Container = styled.div`
-    height: auto;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    text-align: center;
-    display: grid;
+const FormGrid = styled.form`
+gap: 10px;
+display: grid;
+grid-template-columns: 1fr 1fr 1fr;
+grid-template-areas: 
+    "tabela tabela tabela"
+    "operacao operacao id"
+    "nome nome nascimento"
+    "cpf telefone imagem"
+    "email email visibilidade"
+    "rede_social rede_social rede_social"
+    ". reset botoes";
+
+@media (max-width: 768px) {
     grid-template-columns: 1fr;
-    align-items: center;
+    grid-template-areas: 
+        "tabela"
+        "operacao"
+        "id"
+        "nome"
+        "reset"
+        "botoes";
+}
 `;
-function Cadastro({usuarioLogado}){
+
+function Cadastro({ usuarioLogado }) {
+
+    const tabela = mapa.usuarios;
+    const [objeto, setObjeto] = useState(
+        Object.fromEntries(
+            Object.entries(tabela.campos).map(([k, v]) => ([k, k=="empresa_id"?usuarioLogado.empresa_id:v.valor]))
+        )
+    );
+    const [operacao, setOperacao] = useState("0");
     
-     const [objeto, setObjeto] = useState({
-        usuario_id: "",
-        nome: "",
-        sobrenome: "",
-        nascimento: "1999-01-01",
-        cpf: "",
-        matricula: "",
-        email: "",
-        telefone: "",
-        senha: "",
-        foto:"",
-        informacoes_publicas: 1,
-        empresa_id: usuarioLogado.empresa_id,
-        funcao_id: "",
-        cargo_id: "",
-    });
-
-    useEffect((prev) => {
-        setObjeto({
-            ...prev,
-            senha: objeto.cpf
-        })
-    },[objeto.cpf])
-
-    const [operacao, setOperacao] = useState("1");
-
     const {
         data,
         pesquisa,
@@ -57,40 +49,30 @@ function Cadastro({usuarioLogado}){
         fazerEnvio,
         alterarObjeto
     } = useBancoDeDados({
-        nomeTabela: "usuarios",
+        nomeTabela: tabela.tabela.nome,
         objeto,
         setObjeto,
         operacao,
-        campoId: "usuario_id",
-        campoNome: "nome"
+        campoId: tabela.tabela.lista[0],
+        campoNome: tabela.tabela.lista[1],
     });
-
-
-
+    
     return(
-        <Container>
-            <Box>
-                <Title>Novo Usuário</Title>
-                <DivSeparador></DivSeparador>
-                <form onSubmit={fazerEnvio}>
-                    <Input type="text" placeholder="Nome" onChange={(e)=>{alterarObjeto(e, 'nome')}} required/>
-                    <Input type="text" placeholder="Sobrenome" onChange={(e)=>{alterarObjeto(e, 'sobrenome')}} required/>
-                    <Input type="email" placeholder="Email" onChange={(e)=>{alterarObjeto(e, 'email')}} required/>
-                    <Input type="text" placeholder="CPF" onChange={(e)=>{alterarObjeto(e, 'cpf')}} required/>
-                    <Input type="text" placeholder="Matricula" onChange={(e)=>{alterarObjeto(e, 'matricula')}} required/>
-                    <Input type="text" placeholder="Funcao" onChange={(e)=>{alterarObjeto(e, 'funcao_id')}} required/>
-                    <Input type="text" placeholder="Cargo" onChange={(e)=>{alterarObjeto(e, 'cargo_id')}} required/>
-                    {/*<Select>
-                        <option value="">Cargo ou Funcao</option>
-                        <option value="">Coordenador(a)</option>
-                        <option value="">Professor(a)</option>
-                        <option value="">Secretário(a)</option>
-                    </Select>*/}
-                    <Button type="submit">Cadastrar</Button>
-                </form>
+        <Box>
+                <Title>Cadastro de Usuário</Title>
+                <FormGrid onSubmit={fazerEnvio}>
+
+                    <CriarCamposFormulario 
+                    item={tabela}
+                    setFuncao={alterarObjeto}
+                    operacao={operacao}
+                    setOperacao={setOperacao}
+                    objeto ={objeto}
+                    ></CriarCamposFormulario>
+
+                    
+                </FormGrid>
             </Box>
-        </Container>
     )
 }
-
 export default Cadastro;

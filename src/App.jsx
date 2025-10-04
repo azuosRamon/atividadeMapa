@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Pesquisa from "./components/Pesquisa";
 import LayoutLogado from "./LayoutLogado";
+import RotaProtegida from "./components/FcRotaProtegida";
 import './App.css'
 import RecuperarSenha from "./components/pages/PaginaRecuperarSenha";
 import Slide from "./components/Slide";
