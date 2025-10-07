@@ -43,15 +43,13 @@ const mapa = {
                 
                 email: {valor: "", tipo: "text", campo:"input", texto:"", nome:"email"},
                 
-                senha: {valor: "", tipo: "text", campo:"input", texto:"", nome:"senha", mostrar: false},
-                
                 rede_social_1: {valor: "", tipo: "text", campo:"input", texto:"Rede Social", nome:"rede_social_1"},
                 
                 rede_social_2: {valor: "", tipo: "text", campo:"input", texto:"Rede Social", nome:"rede_social_2"},
                 
                 imagem: {valor: "", tipo: "file", campo:"input", texto:"", nome:"imagem"},
                 
-                visibilidade: {valor: "", tipo: "checkbox", campo:"input", texto:"visibilidade externa", nome:"visibilidade"},
+                visibilidade: {valor: true, tipo: "checkbox", campo:"input", texto:"visibilidade externa", nome:"visibilidade"},
              
                 modelo_id: {valor: "", tipo: "number", campo:"select", texto:"Modelo", nome:"modelo_id",tabela:"modelos", lista:["modelo_id", "nome"]}
                 

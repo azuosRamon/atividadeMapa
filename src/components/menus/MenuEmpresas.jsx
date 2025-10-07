@@ -41,9 +41,26 @@ grid-template-areas:
         "botoes";
 }
 `;
+import { supabase } from "../../../supabaseClient";
+
+async function cadastrarEmpresa(objeto) {
+  // 1. Cria conta no Supabase Auth
+  const { data, error } = await supabase.auth.signUp({
+    email: objeto.email,
+    password: objeto.cnpj,
+  });
+
+  if (error) throw error;
+
+  const user = data.user;
+    if (!user) throw new Error("Usuário não foi criado");
+
+  return user;
+}
+
 
 function CadastrarEmpresa() {
-        const tabela = mapa.empresas;
+    const tabela = mapa.empresas;
     const [objeto, setObjeto] = useState(
         Object.fromEntries(
             Object.entries(tabela.campos).map(([k, v]) => ([k, v.valor]))
@@ -65,11 +82,27 @@ function CadastrarEmpresa() {
         campoId: tabela.tabela.lista[0],
         campoNome: tabela.tabela.lista[1],
       });
+      const enviarCadastro = async (e)=>{
+        e.preventDefault();
+        try {
+            const objetoUsuario = await cadastrarEmpresa(objeto);
+            console.log(objeto);
+            const user_id = objetoUsuario.id;
+            console.log(user_id);
+            const objetoComUserId = {...objeto, user_id};
+            //setObjeto(objetoComUserId);
+            console.log(objeto);
+            await fazerEnvio(e, objetoComUserId);
+        }
+        catch(err){
+            console.error("erro ao cadastrar empresa", err.message);
+        }
+    }
 
 return(
     <Box>
                 <Title>Cadastro de Empresas</Title>
-                <FormGrid onSubmit={fazerEnvio}>
+                <FormGrid onSubmit={enviarCadastro}>
 
                     <CriarCamposFormulario 
                     item={tabela}

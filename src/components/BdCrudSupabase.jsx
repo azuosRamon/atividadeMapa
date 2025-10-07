@@ -78,18 +78,18 @@ function useBancoDeDados({
   }, [objeto?.[campoId], data, campoId, setObjeto])
 
   // 🔹 Dispara operação CRUD
-  const fazerEnvio = async (event) => {
+  const fazerEnvio = async (event, objetoEnviado = objeto) => {
     event.preventDefault()
     
     try {
       if (operacao === "1") {
-        await criar(objeto)
+        await criar(objetoEnviado)
         alert("Adicionado com sucesso!")
       } else if (operacao === "2") {
-        await alterar(objeto?.[campoId], objeto)
+        await alterar(objetoEnviado?.[campoId], objetoEnviado)
         alert("Alterado com sucesso!")
       } else if (operacao === "3") {
-        await deletar(objeto?.[campoId])
+        await deletar(objetoEnviado?.[campoId])
         alert("Deletado com sucesso!")
       } else {
         alert("Selecione uma operação valida!")

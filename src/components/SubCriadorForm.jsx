@@ -50,15 +50,36 @@ function ExibirTabelaConsulta({tabela}){
 };
 
 function CriarInput({nomeCampo, campo, setFuncao, operacao, objeto}){
+    const input = <Input 
+    required={campo.required ?? false} 
+    disabled={nomeCampo.includes('_id') && Number(operacao) <= 1} 
+    value={(nomeCampo.includes('_id') && (typeof objeto?.[nomeCampo] != 'string')) ? (objeto?.[nomeCampo] ?? "") : String(objeto?.[nomeCampo] ?? "").toUpperCase()} 
+    type={campo.tipo} 
+    id={campo.nome} 
+    name={campo.nome} 
+    onChange={(e) => setFuncao(e, nomeCampo)}/>;
+    switch(campo.tipo){
+        case "text":
+            break;
+        case "number":
+            break;
+        case "email":
+            break;
+        case "date":
+            break;
+        case "checkbox":
+            break;
+
+    }
     return(
 
             <GridArea $area={campo.nome}>
                 <Label htmlFor={campo.nome}>{campo.texto != "" ? campo.texto : campo.nome}:</Label>
-                <Input required={campo.required ?? false} disabled={nomeCampo.includes('_id') && Number(operacao) <= 1} value={objeto?.[nomeCampo] ?? ""} type={campo.tipo} id={campo.nome} name={campo.nome} onChange={(e) => setFuncao(e, nomeCampo)}/>
+                {input}
             </GridArea>
         
     )
-};
+}
 function CriarSelect({nomeCampo, campo, setFuncao, objeto}){
     return(
             <GridArea $area={campo.nome}>
@@ -107,8 +128,8 @@ function CriarCamposFormulario({item, setFuncao = ()=>{}, operacao, setOperacao,
             <DefinirOperacao operacao={operacao} setOperacao={setOperacao}/>
 
             {Object.entries(item.campos).map(([nome, campo]) =>{
-                    
                     if ((campo.mostrar ?? true )&& campo.campo == "input"){
+                        
                         return (
                             <CriarInput key={nome} nomeCampo={nome} campo={campo} objeto={objeto} setFuncao={setFuncao} operacao={operacao} />
                         )
