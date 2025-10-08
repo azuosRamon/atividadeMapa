@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Box from "../SubBox";
 import Title from "../SubTitleH2";
-import useBancoDeDados from "../BdSupabase";
+import useBancoDeDados from "../BdCrudSupabase";
 import mapa from "../BdObjetoTabelas"
 import CriarCamposFormulario from "../SubCriadorForm";
 
@@ -31,6 +31,22 @@ grid-template-areas:
         "botoes";
 }
 `;
+import { supabase } from "../../../supabaseClient";
+
+async function cadastrarUsuario(objeto) {
+  // 1. Cria conta no Supabase Auth
+  const { data, error } = await supabase.auth.signUp({
+    email: objeto.email,
+    password: objeto.cpf,
+  });
+
+  if (error) throw error;
+
+  const user = data.user;
+    if (!user) throw new Error("Usuário não foi criado");
+
+  return user;
+}
 
 function Cadastro({ usuarioLogado }) {
 
@@ -56,11 +72,25 @@ function Cadastro({ usuarioLogado }) {
         campoId: tabela.tabela.lista[0],
         campoNome: tabela.tabela.lista[1],
     });
+    const enviarCadastro = async (e)=>{
+        e.preventDefault();
+        try {
+            const objetoUsuario = await cadastrarUsuario(objeto);
+            console.log(objeto);
+            const user_id = objetoUsuario.id;
+            console.log(user_id);
+            const objetoComUserId = {...objeto, user_id};
+            await fazerEnvio(e, objetoComUserId);
+        }
+        catch(err){
+            console.error("erro ao cadastrar usuario", err.message);
+        }
+    }
     
     return(
         <Box>
                 <Title>Cadastro de Usuário</Title>
-                <FormGrid onSubmit={fazerEnvio}>
+                <FormGrid onSubmit={enviarCadastro}>
 
                     <CriarCamposFormulario 
                     item={tabela}

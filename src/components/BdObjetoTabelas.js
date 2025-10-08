@@ -70,16 +70,12 @@ const mapa = {
                 telefone: {valor: "", tipo: "text", campo:"input", texto:"", nome:"telefone"},
                 
                 email: {valor: "", tipo: "text", campo:"input", texto:"", nome:"email"},
-                
-                senha: {valor: "", tipo: "text", campo:"input", texto:"", nome:"senha", mostrar: false},
-                
-                pin: {valor: "", tipo: "text", campo:"input", texto:"", nome:"pin", mostrar: false},
-                
-                rede_social: {valor: "", tipo: "url", campo:"input", texto:"Rede Social", nome:"rede_social"},
+                                                
+                rede_social: {valor: "", tipo: "text", campo:"input", texto:"Rede Social", nome:"rede_social"},
                 
                 imagem: {valor: "", tipo: "file", campo:"input", texto:"", nome:"imagem"},
                 
-                visibilidade: {valor: "", tipo: "checkbox", campo:"input", texto:"visibilidade externa", nome:"visibilidade"}              
+                visibilidade: {valor: false, tipo: "checkbox", campo:"input", texto:"visibilidade externa", nome:"visibilidade"}              
             }
         },
 
