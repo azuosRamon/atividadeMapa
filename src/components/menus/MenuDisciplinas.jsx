@@ -40,7 +40,7 @@ function MenuDisciplinas() {
     
 
      const [objeto, setObjeto] = useState({
-        disciplina_id: "",
+        produtos_id: "",
         nome: "",
     });
     const [operacao, setOperacao] = useState("1");
@@ -52,11 +52,11 @@ function MenuDisciplinas() {
         fazerEnvio,
         alterarObjeto
     } = useBancoDeDados({
-        nomeTabela: "disciplinas",
+        nomeTabela: "produtos",
         objeto,
         setObjeto,
         operacao,
-        campoId: "disciplina_id",
+        campoId: "produtos_id",
         campoNome: "nome"
     });
 
@@ -69,7 +69,7 @@ function MenuDisciplinas() {
                         <Colapse marginBottom={'0px'} nome = "Consultar dados" estadoInicial={false}>
                             {loading
                                 ? <div style={{padding:"16px",color:"white"}}>Carregando...</div>
-                                : <TabelaCompleta dados={pesquisa} lista={['disciplina_id','nome']} camposPesquisa={false}/>
+                                : <TabelaCompleta dados={pesquisa} lista={['produtos_id','nome']} camposPesquisa={false}/>
                             }
                         </Colapse>
                         <DivSeparador></DivSeparador>
@@ -77,7 +77,7 @@ function MenuDisciplinas() {
 
                     <GridArea $area="operacao">
                         <Label htmlFor="operacao">Operacao:</Label>
-                            <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(e.target.value); alterarObjeto(e, 'disciplina_id')}}>
+                            <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(e.target.value); alterarObjeto(e, 'produtos_id')}}>
                             <option value="0">Selecione a operação desejada</option>
                             <option value="1">Adicionar</option>
                             <option value="2">Alterar</option>
@@ -86,7 +86,7 @@ function MenuDisciplinas() {
                     </GridArea>
                     <GridArea $area="idDisciplina">
                         <Label htmlFor="idDisciplina">ID:</Label>
-                        <Input type="number" id="idDisciplina" name="idDisciplina" disabled={!operacao || Number(operacao)<=1} onChange={(e) => alterarObjeto(e, 'disciplina_id')}/>
+                        <Input type="number" id="idDisciplina" name="idDisciplina" disabled={!operacao || Number(operacao)<=1} onChange={(e) => alterarObjeto(e, 'produtos_id')}/>
                     </GridArea>
                     <GridArea $area="nome">
                         <Label htmlFor="nome">Nome da Disciplina:</Label>

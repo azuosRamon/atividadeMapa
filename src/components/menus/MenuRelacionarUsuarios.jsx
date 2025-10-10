@@ -39,7 +39,7 @@ function RelacionarUsuarios({ usuarioLogado }) {
         )
     );
     const [operacao, setOperacao] = useState("0");
-    
+    console.log(objeto)
     const {
         data,
         pesquisa,

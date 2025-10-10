@@ -29,7 +29,7 @@ function SelectComDados({tabela = "", listaColunas = ["id", "nome"], campoDeseja
     <Select value={value ?? "0"} onChange={(e) => change(e,listaColunas[0])}>
       <option value="0">Selecione uma opção</option>
       {dados.map((c) => (
-        <option key={c[listaColunas[0]]} value={Number(c?.[`${itemValue}`])}>
+        <option key={c[listaColunas[0]]} value={(c?.[`${itemValue}`])}>
           {
           campoDesejado.map(item => c[item]).join(" - ")
           }

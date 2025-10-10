@@ -87,8 +87,8 @@ const mapa = {
                 mostrar: true
             },
             view : {
-                nome: "usuarios_empresas_view",
-                lista:["id","matricula","usuario", "funcao", "cargo"], 
+                nome: "sessao_usuario_view",
+                lista:["usuario_id","nome","empresa", "funcao"], 
                 camposPesquisa:false, 
                 mostrar: true
             },
@@ -112,7 +112,7 @@ const mapa = {
                 
                 usuario_id: {
                     valor: null, 
-                    tipo: "number", 
+                    tipo: "text", 
                     campo:"select", 
                     texto:"Usuario", 
                     nome:"usuario_id",
@@ -121,7 +121,7 @@ const mapa = {
                 },
                 empresa_id: {
                     valor: null, 
-                    tipo: "number", 
+                    tipo: "text", 
                     campo:"select", 
                     texto:"Empresa", 
                     nome:"empresa_id",

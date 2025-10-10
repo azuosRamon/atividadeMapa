@@ -41,14 +41,14 @@ font-size: 24px;
 `;
 
 
-function Colapse({ nome, children, estadoInicial = false}) {
+function Colapse({ nome, children, estadoInicial = false, fontSize = "24px" }) {
     const [status, setStatus] = useState(estadoInicial);
 
     return(
             <div>
                 <DivColapse $marginBottom={status} onClick={()=>{setStatus(status => !status)}}>
-                    <Span $ativo={status}><FaChevronRight /></Span>
-                    <Title>{nome}</Title>
+                    <Span $ativo={status} style={{fontSize:fontSize}}><FaChevronRight /></Span>
+                    <Title style={{fontSize:fontSize}}>{nome}</Title>
                 </DivColapse>
 
                 <DivColapseContent $mostrar={status}>

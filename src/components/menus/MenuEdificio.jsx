@@ -17,10 +17,10 @@ function ConfigurarEdificio({ usuarioLogado, dados }) {
     const data = dados || {};
     const [operacao, setOperacao] = useState(0);
     const selecionarDados = [
-        [LerDados({tabela:"campi", listaColunas:["*"]}),["campus_id", "nome", "cidade", "logradouro"],[]],
-        [LerDados({tabela:"blocos_view", listaColunas:["id", "bloco","campus", "cidade"]}),["id", "bloco","campus", "cidade"], []],
-        [LerDados({tabela:"pavimentos_view", listaColunas:["id", "pavimento", "bloco", "campus", "cidade"]}),["id", "pavimento", "bloco", "campus", "cidade"],[]],
-        [LerDados({tabela:"salas_view", listaColunas:["id", "sala", "tipo", "apelido", "pavimento", "bloco", "campus", "cidade"]}),["id", "sala", "tipo","apelido",  "pavimento", "bloco", "campus", "cidade"],[]]
+        [LerDados({tabela:"imoveis", listaColunas:["*"]}),["imovel_id", "nome", "cidade", "logradouro"],[]],
+        [LerDados({tabela:"blocos_view", listaColunas:["id", "bloco","imovel", "cidade"]}),["id", "bloco","imovel", "cidade"], []],
+        [LerDados({tabela:"pavimentos_view", listaColunas:["id", "pavimento", "bloco", "imovel", "cidade"]}),["id", "pavimento", "bloco", "imovel", "cidade"],[]],
+        [LerDados({tabela:"comodos_view", listaColunas:["id", "comodo", "tipo", "apelido", "pavimento", "bloco", "imovel", "cidade"]}),["id", "comodo", "tipo","apelido",  "pavimento", "bloco", "imovel", "cidade"],[]]
     ]
     return(
             <Box>
@@ -29,7 +29,7 @@ function ConfigurarEdificio({ usuarioLogado, dados }) {
                         <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(Number(e.target.value))}}>
                             {selecionarDados.map((_, idx) => (
                                 <option key={idx} value={idx}>
-                                    {["Campi", "Blocos", "Pavimentos","Salas"][idx]}
+                                    {["Imoveis", "Blocos", "Pavimentos","Comodos"][idx]}
                                 </option>
                                 ))}
                         </Select>
@@ -37,7 +37,7 @@ function ConfigurarEdificio({ usuarioLogado, dados }) {
                 </Colapse>
 
                 <Colapse nome = "Campus">
-                    <CampusOpcoes usuarioLogado={usuarioLogado} dados={data.campus}></CampusOpcoes>
+                    <CampusOpcoes usuarioLogado={usuarioLogado} dados={data.imovel}></CampusOpcoes>
                 </Colapse>
 
                <Colapse nome = "Blocos">
@@ -46,7 +46,7 @@ function ConfigurarEdificio({ usuarioLogado, dados }) {
                <Colapse nome = "Pavimentos">
                     <PavimentosOpcoes dados={data}></PavimentosOpcoes>
                 </Colapse>
-               <Colapse nome = "Salas">
+               <Colapse nome = "Comodos">
                     <SalaOpcoes></SalaOpcoes>
                     {/*<TabelaCompletaTeste dados={data.salas} lista={["id", "numero", "apelido", "pavimentoId", "area"]}></TabelaCompletaTeste>*/}
                 </Colapse>

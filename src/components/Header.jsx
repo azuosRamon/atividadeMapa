@@ -136,9 +136,10 @@ function Header() {
     const LogInOut = status ? "Logout" : <PessoaIcon />;
     const [abrirMenu, setAbrirMenu] = useState(false);
 
-    const fazerLogout = () => {
+    const fazerLogout = async () => {
         if (status) {
             localStorage.removeItem('usuario')
+            await supabase.auth.signOut()
             setStatus(false);
         }
     }

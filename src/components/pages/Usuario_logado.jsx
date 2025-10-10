@@ -5,8 +5,7 @@ import Button from "../SubButton";
 import { useNavigate } from 'react-router-dom';
 import Box from "../SubBox";
 import cores from "../Cores"
-
-
+import Colapse from "../SubColapse";
 
 const BoxEditada = styled(Box)`
     min-width: 100px;
@@ -71,8 +70,8 @@ const [usuario, setUsuario] = useState(capturarUsuarioLogadoLocalStorage());
     return (
             <BoxEditada>
                 <DivContent>
-                    {usuario.foto ? (
-                        <Imagem src={usuario.foto} alt={`${usuario.nome} - foto`} />
+                    {usuario.imagem ? (
+                        <Imagem src={usuario.imagem} alt={`${usuario.nome} - imagem`} />
                     ) : (
                         <CgProfile size={80} color="#999" />
                     )}
@@ -85,49 +84,55 @@ const [usuario, setUsuario] = useState(capturarUsuarioLogadoLocalStorage());
                 </DivContent>
                 
                 <DivContent>
-                    { (usuario.funcao.toLowerCase() === "moderadorsite") && (
+                    { (usuario.funcao?.toLowerCase() === "moderador(a)") && (
+                        <React.Fragment>
+                            <Button onClick={()=>{navegar('/logado')}} $bgcolor="rgb(38, 38, 38)">Início</Button>
+                            <Button onClick={()=>{navegar('/tabelas')}} $bgcolor="rgb(38, 38, 38)">Pesquisa</Button>
+                            <Colapse fontSize="1.2rem" nome = "Configurar" estadoInicial={false}>
+                                <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>
+                                <Button onClick={()=>{navegar('/tiposAreas')}} $bgcolor="rgb(38, 38, 38)">Tipos de Áreas</Button>
+                                <Button onClick={()=>{navegar('/relacionarUsuarios')}} $bgcolor="rgb(38, 38, 38)">Relacionamento</Button>
+                            </Colapse>
+                            <Colapse fontSize="1.2rem" nome = "Menu" estadoInicial={false}>
+                                <Button onClick={()=>{navegar('/edificio')}} $bgcolor="rgb(38, 38, 38)">Edifício</Button>
+                                <Button onClick={()=>{navegar('/periodoHorarios')}} $bgcolor="rgb(38, 38, 38)">Períodos e Horários</Button>
+                                <Button onClick={()=>{navegar('/cursos')}} $bgcolor="rgb(38, 38, 38)">Cursos</Button>
+                                <Button onClick={()=>{navegar('/disciplinas')}} $bgcolor="rgb(38, 38, 38)">Disciplinas</Button>
+                                <Button onClick={()=>{navegar('/quadroAulas')}} $bgcolor="rgb(38, 38, 38)">Quadro de aulas</Button>
+                            </Colapse>
+                            <Colapse fontSize="1.2rem" nome = "Adicionar" estadoInicial={false}>
+                                <Button onClick={()=>{navegar('/cadastro')}} $bgcolor="rgb(38, 38, 38)">Usuários</Button>
+                                <Button onClick={()=>{navegar('/empresa')}} $bgcolor="rgb(38, 38, 38)">Empresas</Button>
+                                <Button onClick={()=>{navegar('/contratos')}} $bgcolor="rgb(38, 38, 38)">Contratos</Button>
+                                <Button onClick={()=>{navegar('/modelos')}} $bgcolor="rgb(38, 38, 38)">Modelos</Button>
+                                <Button onClick={()=>{navegar('/funcoes')}} $bgcolor="rgb(38, 38, 38)">Funcoes</Button>
+                                <Button onClick={()=>{navegar('/cargos')}} $bgcolor="rgb(38, 38, 38)">Cargos</Button>
+                            </Colapse>
+                        </React.Fragment>
+                    )}
+                    { (usuario.tipo.toLowerCase() === "moderador") && (
                         <React.Fragment>
                             <Button onClick={()=>{navegar('/logado')}} $bgcolor="rgb(38, 38, 38)">Início</Button>
                             <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>
-                            <Button onClick={()=>{navegar('/periodoHorarios')}} $bgcolor="rgb(38, 38, 38)">Períodos e Horários</Button>
-                            <Button onClick={()=>{navegar('/edificio')}} $bgcolor="rgb(38, 38, 38)">Edifício</Button>
-                            <Button onClick={()=>{navegar('/cursos')}} $bgcolor="rgb(38, 38, 38)">Cursos</Button>
-                            <Button onClick={()=>{navegar('/disciplinas')}} $bgcolor="rgb(38, 38, 38)">Disciplinas</Button>
-                            <Button onClick={()=>{navegar('/tabelas')}} $bgcolor="rgb(38, 38, 38)">Tabelas</Button>
-                            <Button onClick={()=>{navegar('/quadroAulas')}} $bgcolor="rgb(38, 38, 38)">Quadro de aulas</Button>
                             <Button onClick={()=>{navegar('/empresa')}} $bgcolor="rgb(38, 38, 38)">Empresa</Button>
                             <Button onClick={()=>{navegar('/funcoes')}} $bgcolor="rgb(38, 38, 38)">Funcoes</Button>
-                            <Button onClick={()=>{navegar('/cargos')}} $bgcolor="rgb(38, 38, 38)">Cargos</Button>
+                        </React.Fragment>
+                    )}
+                    { (usuario.tipo.toLowerCase() === "empresa") && (
+                        <React.Fragment>
+                            <Button onClick={()=>{navegar('/logado')}} $bgcolor="rgb(38, 38, 38)">Início</Button>
+                            <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>
+                            <Button onClick={()=>{navegar('/tabelas')}} $bgcolor="rgb(38, 38, 38)">Tabelas</Button>
+                            <Button onClick={()=>{navegar('/edificio')}} $bgcolor="rgb(38, 38, 38)">Edifício</Button>
+                            <Button onClick={()=>{navegar('/periodoHorarios')}} $bgcolor="rgb(38, 38, 38)">Períodos e Horários</Button>
+                            <Button onClick={()=>{navegar('/cursos')}} $bgcolor="rgb(38, 38, 38)">Cursos</Button>
+                            <Button onClick={()=>{navegar('/disciplinas')}} $bgcolor="rgb(38, 38, 38)">Disciplinas</Button>
+                            <Button onClick={()=>{navegar('/quadroAulas')}} $bgcolor="rgb(38, 38, 38)">Quadro de aulas</Button>
                             <Button onClick={()=>{navegar('/cadastro')}} $bgcolor="rgb(38, 38, 38)">Adicionar usuário</Button>
-                            <Button onClick={()=>{navegar('/tiposAreas')}} $bgcolor="rgb(38, 38, 38)">Tipos de Áreas</Button>
-                            <Button onClick={()=>{navegar('/contratos')}} $bgcolor="rgb(38, 38, 38)">Contratos</Button>
-                            <Button onClick={()=>{navegar('/modelos')}} $bgcolor="rgb(38, 38, 38)">Modelos</Button>
                             <Button onClick={()=>{navegar('/relacionarUsuarios')}} $bgcolor="rgb(38, 38, 38)">Relacionar Usuários</Button>
                         </React.Fragment>
                     )}
-                    { (usuario.funcao.toLowerCase() === "moderador") && (
-                        <React.Fragment>
-                            <Button onClick={()=>{navegar('/logado')}} $bgcolor="rgb(38, 38, 38)">Início</Button>
-                            <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>
-                            <Button onClick={()=>{navegar('/empresa')}} $bgcolor="rgb(38, 38, 38)">Empresa</Button>
-                            <Button onClick={()=>{navegar('/funcoes')}} $bgcolor="rgb(38, 38, 38)">Funcoes</Button>
-                        </React.Fragment>
-                    )}
-                    { (usuario.funcao.toLowerCase() === "administrador") && (
-                        <React.Fragment>
-                            <Button onClick={()=>{navegar('/logado')}} $bgcolor="rgb(38, 38, 38)">Início</Button>
-                            <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>
-                            <Button onClick={()=>{navegar('/tabelas')}} $bgcolor="rgb(38, 38, 38)">Tabelas</Button>
-                            <Button onClick={()=>{navegar('/periodoHorarios')}} $bgcolor="rgb(38, 38, 38)">Períodos e Horários</Button>
-                            <Button onClick={()=>{navegar('/edificio')}} $bgcolor="rgb(38, 38, 38)">Edifício</Button>
-                            <Button onClick={()=>{navegar('/cursos')}} $bgcolor="rgb(38, 38, 38)">Cursos</Button>
-                            <Button onClick={()=>{navegar('/disciplinas')}} $bgcolor="rgb(38, 38, 38)">Disciplinas</Button>
-                            <Button onClick={()=>{navegar('/quadroAulas')}} $bgcolor="rgb(38, 38, 38)">Quadro de aulas</Button>
-                            <Button onClick={()=>{navegar('/cargos')}} $bgcolor="rgb(38, 38, 38)">Cargos</Button>
-                            <Button onClick={()=>{navegar('/cadastro')}} $bgcolor="rgb(38, 38, 38)">Adicionar usuário</Button>
-                        </React.Fragment>
-                    )}
-                    { (usuario.funcao.toLowerCase() === "professor") && (
+                    { (usuario.funcao?.toLowerCase() === "funcionario(a)") && (
                         <React.Fragment>
                             <Button onClick={()=>{navegar('/logado')}} $bgcolor="rgb(38, 38, 38)">Início</Button>
                             <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>

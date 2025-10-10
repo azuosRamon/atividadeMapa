@@ -106,11 +106,11 @@ function SalaOpcoes() {
         fazerEnvio,
         alterarObjeto
     } = useBancoDeDados({
-        nomeTabela: "salas",
+        nomeTabela: "comodos",
         objeto,
         setObjeto,
         operacao,
-        campoId: "sala_id",
+        campoId: "comodo_id",
         campoNome: "numero"
     });
 

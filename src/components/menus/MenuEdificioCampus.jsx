@@ -42,7 +42,7 @@ grid-template-areas:
 
 function CampusOpcoes({ usuarioLogado, dados }) {
     const [objeto, setObjeto] = useState({
-        campus_id: "",
+        imovel_id: "",
         nome: "",
         logradouro: "",
         complemento: "",
@@ -62,11 +62,11 @@ function CampusOpcoes({ usuarioLogado, dados }) {
         fazerEnvio,
         alterarObjeto
     } = useBancoDeDados({
-        nomeTabela: "campi",
+        nomeTabela: "imoveis",
         objeto,
         setObjeto,
         operacao,
-        campoId: "campus_id",
+        campoId: "imovel_id",
         campoNome: "nome"
     });
    
@@ -86,7 +86,7 @@ function CampusOpcoes({ usuarioLogado, dados }) {
                 <FormGrid onSubmit={fazerEnvio}>
                     <GridArea $area="operacao">
                         <Label htmlFor="operacao">Operacao:</Label>
-                            <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(e.target.value); alterarObjeto(e, 'campus_id')}}>
+                            <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(e.target.value); alterarObjeto(e, 'imovel_id')}}>
                             <option value="0">Selecione a operação</option>
                             <option value="1">Adicionar</option>
                             <option value="2">Alterar</option>
@@ -95,7 +95,7 @@ function CampusOpcoes({ usuarioLogado, dados }) {
                     </GridArea>
                     <GridArea $area="idCampus">
                         <Label htmlFor="idCampus">ID:</Label>
-                        <Input type="number" id="idCampus" name="idCampus" disabled={!operacao || Number(operacao)<=1} onChange={(e) => alterarObjeto(e, 'campus_id')}/>
+                        <Input type="number" id="idCampus" name="idCampus" disabled={!operacao || Number(operacao)<=1} onChange={(e) => alterarObjeto(e, 'imovel_id')}/>
                     </GridArea>
                     <GridArea $area="nome">
                         <Label htmlFor="nome">Nome do Campus:</Label>

@@ -38,7 +38,7 @@ const FormGrid = styled.form`
 
 function ConfigurarCursos() {
   const [objeto, setObjeto] = useState({
-    curso_id: "",
+    categoria_id: "",
     nome: "",
   });
 
@@ -46,11 +46,11 @@ function ConfigurarCursos() {
 
   const { data, pesquisa, loading, fazerEnvio, alterarObjeto } =
     useBancoDeDados({
-      nomeTabela: "cursos",
+      nomeTabela: "categorias",
       objeto,
       setObjeto,
       operacao,
-      campoId: "curso_id",
+      campoId: "categoria_id",
       campoNome: "nome",
     });
 
@@ -69,7 +69,7 @@ function ConfigurarCursos() {
             ) : (
               <TabelaCompleta
                 dados={pesquisa}
-                lista={["curso_id", "nome"]}
+                lista={["categoria_id", "nome"]}
                 camposPesquisa={false}
               />
             )}
@@ -99,10 +99,10 @@ function ConfigurarCursos() {
             type="text"                 
             id="idCurso"
             name="idCurso"
-            value={objeto.curso_id}   
-            placeholder="cole o curso_id"
+            value={objeto.categoria_id}   
+            placeholder="Id"
             disabled={idDesabilitado}
-            onChange={(e) => alterarObjeto(e, "curso_id")}
+            onChange={(e) => alterarObjeto(e, "categoria_id")}
           />
         </GridArea>
 

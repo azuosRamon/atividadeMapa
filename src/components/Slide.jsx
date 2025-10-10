@@ -183,7 +183,7 @@ function Slide({
       setLoading: () => {},
     });
     SelectBancoDeDados({
-      nomeTabela: "salas",
+      nomeTabela: "comodos",
       setData: setListaSalas,
       setLoading: () => {},
     });
