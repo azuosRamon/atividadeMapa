@@ -7,7 +7,7 @@ import Usuario_logado from './pages/Usuario_logado';
 import Logo from './assets/Logo_2.png'
 import DivSeparador from './SubDivSeparador';
 import cores from "./Cores"
-
+import { supabase } from "/supabaseClient";
 
 const HeaderMenu = styled.header`
     background-color: ${cores.backgroundMenus};
@@ -157,7 +157,7 @@ function Header() {
                 
                 <UlMenu>
                     {status && (
-                        <LiMenu><StyledLink to="/logado">Menu</StyledLink></LiMenu>
+                        <LiMenu><StyledLink to="/dashboard">Menu</StyledLink></LiMenu>
                     )}
                     <LiMenu><StyledLink to="/login" onClick={status ? fazerLogout : undefined}>{LogInOut}</StyledLink></LiMenu>
                 </UlMenu>

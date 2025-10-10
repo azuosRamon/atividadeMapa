@@ -25,6 +25,8 @@ import CadastrarAreas from "./components/menus/MenuTipoArea";
 import CadastroModelos from "./components/menus/MenuModelos";
 import CadastroContratos from "./components/menus/MenuContratos";
 import RelacionarUsuarios from "./components/menus/MenuRelacionarUsuarios";
+import { AuthProvider } from "./components/AuthProvider";
+
 import terreo from "./components/Plantas/TERREO_PAVIMENTO.png";
 import primeiro_pavimento from "./components/Plantas/PRIMEIRO_PAVIMENTO.png";
 import segundo_pavimento from "./components/Plantas/SEGUNDO_PAVIMENTO.png";
@@ -195,6 +197,7 @@ function App() {
   //console.log(usuarioLogadoDados);
   return(
     <Router>
+      <AuthProvider>
       <Routes>
         <Route path="/" element={
           <div className="corpo">
@@ -221,64 +224,99 @@ function App() {
             <Footer/>
           </div>
         }/>
-        <Route path="/logado" element={
-          <LayoutLogado usuarioDados={data} usuarioId={0}><Slide dados={dadosJson} lista_imagens={imagens} pagina_inicio={0}/></LayoutLogado>
+        <Route path="/dashboard" element={
+          <RotaProtegida>
+            <LayoutLogado usuarioDados={data} usuarioId={0}><Slide dados={dadosJson} lista_imagens={imagens} pagina_inicio={0}/></LayoutLogado>
+          </RotaProtegida>
       }/>
         <Route path="/editarPerfil" element={
-          <LayoutLogado usuarioDados={usuarioLogadoDados}><Perfil/></LayoutLogado>
+          <RotaProtegida>
+            <LayoutLogado usuarioDados={usuarioLogadoDados}><Perfil/></LayoutLogado>
+          </RotaProtegida>
         }/>
         <Route path="/periodoHorarios" element={
-          <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuHorarios tableHorarios={dadosJson.horarios}/></LayoutLogado>
+          <RotaProtegida>
+            <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuHorarios tableHorarios={dadosJson.horarios}/></LayoutLogado>
+          </RotaProtegida>
         }/>
         <Route path="/edificio" element={
-          <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuEdificios usuarioLogado={usuarioLogadoDados} dados={dadosJson}/></LayoutLogado>
+          <RotaProtegida>
+            <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuEdificios usuarioLogado={usuarioLogadoDados} dados={dadosJson}/></LayoutLogado>
+          </RotaProtegida>
         }/>
-        <Route path="/cursos" element={
-          <LayoutLogado usuarioDados={usuarioLogadoDados}><ConfigurarCursos/></LayoutLogado>
+        <Route path="/categorias" element={
+          <RotaProtegida>
+            <LayoutLogado usuarioDados={usuarioLogadoDados}><ConfigurarCursos/></LayoutLogado>
+          </RotaProtegida>
         }/>
-        <Route path="/disciplinas" element={
-          <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuDisciplinas/></LayoutLogado>
+        <Route path="/produtos" element={
+          <RotaProtegida>
+            <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuDisciplinas/></LayoutLogado>
+          </RotaProtegida>
         }/>
-        <Route path="/tabelas" element={
-          <LayoutLogado usuarioDados={usuarioLogadoDados}><Tabelas dados={dadosJson}></Tabelas></LayoutLogado>
+        <Route path="/pesquisarDados" element={
+          <RotaProtegida>
+            <LayoutLogado usuarioDados={usuarioLogadoDados}><Tabelas dados={dadosJson}/><pesquisarDados/></LayoutLogado>
+          </RotaProtegida>
         }/>
         <Route path="/quadroAulas" element={
-          <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuQuadroAulas table={dadosJson} imagens={imagens}/></LayoutLogado>
+          <RotaProtegida>
+            <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuQuadroAulas table={dadosJson} imagens={imagens}/></LayoutLogado>
+          </RotaProtegida>
         }/>
-        <Route path="/cadastro" element={
-          <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuCadastro usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
+        <Route path="/cadastroUsuario" element={
+          <RotaProtegida>
+            <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuCadastro usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
+          </RotaProtegida>
         }/>
-        <Route path="/empresa" element={
-          <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarEmpresa/></LayoutLogado>
+        <Route path="/cadastroEmpresas" element={
+          <RotaProtegida>
+            <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarEmpresa/></LayoutLogado>
+          </RotaProtegida>
         }/>
         <Route path="/funcoes" element={
-          <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarFuncao/></LayoutLogado>
+          <RotaProtegida>
+            <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarFuncao/></LayoutLogado>
+          </RotaProtegida>
         }/>
         <Route path="/cargos" element={
-          <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarCargos usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
+          <RotaProtegida>
+            <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarCargos usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
+          </RotaProtegida>
         }/>
         <Route path="/tiposAreas" element={
-          <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarAreas usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
+          <RotaProtegida>
+            <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarAreas usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
+          </RotaProtegida>
         }/>
         <Route path="/modelos" element={
-          <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastroModelos usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
+          <RotaProtegida>
+            <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastroModelos usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
+          </RotaProtegida>
         }/>
-        <Route path="/contratos" element={
-          <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastroContratos usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
+        <Route path="/cadastroContrato" element={
+          <RotaProtegida>
+            <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastroContratos usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
+          </RotaProtegida>
         }/>
         <Route path="/relacionarUsuarios" element={
-          <LayoutLogado usuarioDados={usuarioLogadoDados}><RelacionarUsuarios usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
+          <RotaProtegida>
+            <LayoutLogado usuarioDados={usuarioLogadoDados}><RelacionarUsuarios usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
+          </RotaProtegida>
         }/>
         <Route path="/slide" element={
+          <RotaProtegida>
           <Slide
             lista_imagens={imagens}
             pagina_inicio={0}
             dados={dadosJson}
             capturarCoordenadas = {true}
-        />
+            />
+            </RotaProtegida>
           }/>
 
       </Routes>
+      </AuthProvider>
       <BotaoFlutuante/>
     </Router>
   );
