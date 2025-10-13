@@ -27,6 +27,7 @@ origins = [
     "http://localhost:5173",                # desenvolvimento local
     "https://atividade-mapa.vercel.app",    # seu frontend hospedado
 ]
+"""
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -34,7 +35,7 @@ app.add_middleware(
     allow_methods=["*"],  # inclui OPTIONS
     allow_headers=["*"],
 )
-
+"""
 
 # ----------------------------------
 # 🔹 Instancia clientes
