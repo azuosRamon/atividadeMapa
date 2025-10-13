@@ -55,8 +55,8 @@ async def login(req: Request):
         raise HTTPException(status_code=401, detail="Usuário ou senha incorretos")
 
     # 🔹 Busca dados adicionais
-    empresa = supabase.from_("empresas").select("*").eq("user_id", user.id).maybe_single().execute().data
-    usuario = supabase.from_("usuarios").select("*").eq("user_id", user.id).maybe_single().execute().data
+    empresa = supabase.from("empresas").select("*").eq("user_id", user.id).maybe_single().execute().data
+    usuario = supabase.from("usuarios").select("*").eq("user_id", user.id).maybe_single().execute().data
 
     dados = empresa or usuario
     tipo = "empresa" if empresa else "usuario"
