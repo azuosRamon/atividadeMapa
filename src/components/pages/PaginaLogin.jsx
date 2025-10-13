@@ -46,7 +46,7 @@ function Login() {
     e.preventDefault();
     setLogando(true);
 
-    await axios.post('https://atividademapa.onrender.com', {
+    await axios.post('https://atividademapa.onrender.com/login', {
       email,
       password
     });
