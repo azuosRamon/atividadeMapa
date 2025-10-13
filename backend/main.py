@@ -27,14 +27,14 @@ origins = [
     "http://localhost:5173",                # desenvolvimento local
     "https://atividade-mapa.vercel.app",    # seu frontend hospedado
 ]
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["*"],  # inclui OPTIONS
     allow_headers=["*"],
 )
+
 
 # ----------------------------------
 # 🔹 Instancia clientes
@@ -45,8 +45,13 @@ redis = Redis.from_url(UPSTASH_REDIS_URL, decode_responses=True)
 # ----------------------------------
 # 🔹 Rotas
 # ----------------------------------
+@app.options("/{path:path}")
+async def preflight_handler():
+    return {"status": "ok"}
 
-@app.get("/")
+
+
+@app.get("/status")
 def root():
     return {"status": "API online e CORS ativo ✅"}
 
