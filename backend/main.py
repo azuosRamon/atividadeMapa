@@ -4,20 +4,18 @@ from supabase import create_client, Client
 from redis import Redis
 from dotenv import load_dotenv
 import os
-import json
 
-# ----------------------------------
 # 🔹 Carrega variáveis de ambiente
-# ----------------------------------
 load_dotenv()
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 UPSTASH_REDIS_URL = os.getenv("UPSTASH_REDIS_URL")
 
-# ----------------------------------
-# 🔹 Cria app FastAPI
-# ----------------------------------
+# 🔹 Instancia clientes
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+redis = Redis.from_url(UPSTASH_REDIS_URL, decode_responses=True)
+
 app = FastAPI()
 
 # ----------------------------------
@@ -36,28 +34,11 @@ app.add_middleware(
 )
 
 
-# ----------------------------------
-# 🔹 Instancia clientes
-# ----------------------------------
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-redis = Redis.from_url(UPSTASH_REDIS_URL, decode_responses=True)
-
-# ----------------------------------
-# 🔹 Rotas
-# ----------------------------------
-@app.options("/{path:path}")
-async def preflight_handler():
-    return {"status": "ok"}
-
-
-
-@app.get("/status")
-def root():
-    return {"status": "API online e CORS ativo ✅"}
 
 # ---------------------------
 # ROTA DE LOGIN
-# ---------------------------@app.post("/login")
+# ---------------------------
+@app.post("/login")
 async def login(req: Request):
     body = await req.json()
     email = body.get("email")
@@ -73,23 +54,13 @@ async def login(req: Request):
     if not user:
         raise HTTPException(status_code=401, detail="Usuário ou senha incorretos")
 
-    # 🔹 Busca dados adicionais (com verificação)
-    try:
-        empresa_res = supabase.from("empresas").select("*").eq("user_id", user.id).maybe_single().execute()
-        empresa = empresa_res.data if empresa_res and empresa_res.data else None
+    # 🔹 Busca dados adicionais
+    empresa = supabase.from_("empresas").select("*").eq("user_id", user.id).maybe_single().execute().data
+    usuario = supabase.from_("usuarios").select("*").eq("user_id", user.id).maybe_single().execute().data
 
-        usuario_res = supabase.from("usuarios").select("*").eq("user_id", user.id).maybe_single().execute()
-        usuario = usuario_res.data if usuario_res and usuario_res.data else None
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erro ao consultar os dados do usuário: {str(e)}")
-
-    # Se não encontrar dados na empresa nem no usuário, lançar erro
     dados = empresa or usuario
-    if not dados:
-        raise HTTPException(status_code=404, detail="Dados do usuário não encontrados")
-
     tipo = "empresa" if empresa else "usuario"
+
     sessao = {
         "user_id": user.id,
         "email": user.email,
@@ -98,7 +69,7 @@ async def login(req: Request):
     }
 
     # 🔹 Armazena no Redis com expiração (24h)
-    redis.setex(f"user:{user.id}", 60 * 60 * 24, json.dumps(sessao))
+    redis.setex(f"user:{user.id}", 60 * 60 * 24, str(sessao))
 
     return {"mensagem": "Login bem-sucedido", "user": sessao}
 
@@ -110,7 +81,7 @@ async def validar_sessao(user_id: str):
     dados = redis.get(f"user:{user_id}")
     if not dados:
         raise HTTPException(status_code=401, detail="Sessão expirada ou não encontrada")
-    return {"user": json.loads(dados)}
+    return {"user": eval(dados)}
 
 # ---------------------------
 # LOGOUT
