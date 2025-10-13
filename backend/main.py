@@ -57,8 +57,7 @@ def root():
 
 # ---------------------------
 # ROTA DE LOGIN
-# ---------------------------
-@app.post("/login")
+# ---------------------------@app.post("/login")
 async def login(req: Request):
     body = await req.json()
     email = body.get("email")
@@ -74,28 +73,23 @@ async def login(req: Request):
     if not user:
         raise HTTPException(status_code=401, detail="Usuário ou senha incorretos")
 
-    # 🔹 Busca dados adicionais
-    empresa = (
-        supabase.from_("empresas")
-        .select("empresa_id, user_id, nome, cnpj, email")
-        .eq("user_id", user.id)
-        .maybe_single()
-        .execute()
-        .data
-    )
+    # 🔹 Busca dados adicionais (com verificação)
+    try:
+        empresa_res = supabase.from("empresas").select("empresa_id, user_id, nome, cnpj, email").eq("user_id", user.id).maybe_single().execute()
+        empresa = empresa_res.data if empresa_res and empresa_res.data else None
 
-    usuario = (
-        supabase.from_("sessao_usuario_view")
-        .select("*")
-        .eq("user_id", user.id)
-        .maybe_single()
-        .execute()
-        .data
-    )
+        usuario_res = supabase.from("sessao_usuario_view").select("*").eq("user_id", user.id).maybe_single().execute()
+        usuario = usuario_res.data if usuario_res and usuario_res.data else None
 
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao consultar os dados do usuário: {str(e)}")
+
+    # Se não encontrar dados na empresa nem no usuário, lançar erro
     dados = empresa or usuario
-    tipo = "empresa" if empresa else "usuario"
+    if not dados:
+        raise HTTPException(status_code=404, detail="Dados do usuário não encontrados")
 
+    tipo = "empresa" if empresa else "usuario"
     sessao = {
         "user_id": user.id,
         "email": user.email,
