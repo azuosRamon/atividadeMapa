@@ -10,6 +10,7 @@ import SpamSublinhado from "../SubSpam";
 import cores from "../Cores";
 import { supabase } from "/supabaseClient";
 import { useAuth } from "../AuthProvider"
+import axios from "axios";
 
 const Title = styled.h2`
   margin: 0 0 20px;
@@ -45,11 +46,16 @@ function Login() {
     e.preventDefault();
     setLogando(true);
 
+    await axios.post('https://atividademapa.onrender.com', {
+      email,
+      password
+    });
+/*
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-
+*/
     setLogando(false);
 
     if (error) return alert("Erro ao fazer login: " + error.message);

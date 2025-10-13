@@ -3,6 +3,8 @@ from supabase import create_client, Client
 from redis import Redis
 from dotenv import load_dotenv
 import os
+from fastapi.middleware.cors import CORSMiddleware
+import json
 
 # 🔹 Carrega variáveis de ambiente
 load_dotenv()
@@ -15,7 +17,23 @@ UPSTASH_REDIS_URL = os.getenv("UPSTASH_REDIS_URL")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 redis = Redis.from_url(UPSTASH_REDIS_URL, decode_responses=True)
 
+
+
 app = FastAPI()
+
+origins = [
+    "http://localhost:5173",
+    "https://atividade-mapa.vercel.app/"  # (substitua se já tiver hospedado o front)
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # ---------------------------
 # ROTA DE LOGIN
@@ -37,8 +55,8 @@ async def login(req: Request):
         raise HTTPException(status_code=401, detail="Usuário ou senha incorretos")
 
     # 🔹 Busca dados adicionais
-    empresa = supabase.from_("empresas").select("*").eq("user_id", user.id).maybe_single().execute().data
-    usuario = supabase.from_("usuarios").select("*").eq("user_id", user.id).maybe_single().execute().data
+    empresa = supabase.from_("empresas").select("empresa_id, user_id, nome, cnpj, email").eq("user_id", user.id).maybe_single().execute().data
+    usuario = supabase.from_("sessao_usuario_view").select("*").eq("user_id", user.id).maybe_single().execute().data
 
     dados = empresa or usuario
     tipo = "empresa" if empresa else "usuario"
@@ -51,7 +69,8 @@ async def login(req: Request):
     }
 
     # 🔹 Armazena no Redis com expiração (24h)
-    redis.setex(f"user:{user.id}", 60 * 60 * 24, str(sessao))
+    redis.setex(f"user:{user.id}", 60 * 60 * 24, json.dumps(sessao))
+
 
     return {"mensagem": "Login bem-sucedido", "user": sessao}
 
@@ -63,7 +82,8 @@ async def validar_sessao(user_id: str):
     dados = redis.get(f"user:{user_id}")
     if not dados:
         raise HTTPException(status_code=401, detail="Sessão expirada ou não encontrada")
-    return {"user": eval(dados)}
+    return {"user": json.loads(dados)}
+
 
 # ---------------------------
 # LOGOUT

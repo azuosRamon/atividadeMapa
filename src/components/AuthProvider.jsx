@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "/supabaseClient";
+import axios from "axios";
+
 
 const AuthContext = createContext();
 
@@ -14,6 +16,15 @@ export function AuthProvider({ children }) {
 
       if (sessionUser) {
         await carregarDadosCompletos(sessionUser);
+        /*setUser(sessionUser);
+
+        try {
+          const { data: dados } = await axios.get('https://atividademapa.onrender.com/sessao/${sessionUser.id}');
+          setDados {
+        }*/
+
+
+
       } else {
         setUser(null);
       }
