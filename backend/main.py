@@ -75,10 +75,10 @@ async def login(req: Request):
 
     # 🔹 Busca dados adicionais (com verificação)
     try:
-        empresa_res = supabase.from("empresas").select("empresa_id, user_id, nome, cnpj, email").eq("user_id", user.id).maybe_single().execute()
+        empresa_res = supabase.from("empresas").select("*").eq("user_id", user.id).maybe_single().execute()
         empresa = empresa_res.data if empresa_res and empresa_res.data else None
 
-        usuario_res = supabase.from("sessao_usuario_view").select("*").eq("user_id", user.id).maybe_single().execute()
+        usuario_res = supabase.from("usuarios").select("*").eq("user_id", user.id).maybe_single().execute()
         usuario = usuario_res.data if usuario_res and usuario_res.data else None
 
     except Exception as e:
