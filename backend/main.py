@@ -23,19 +23,18 @@ app = FastAPI()
 # ----------------------------------
 # 🔹 Configuração CORS (ESSENCIAL)
 # ----------------------------------
-origins = [
-    "http://localhost:5173",                # desenvolvimento local
+origins = [            # desenvolvimento local
     "https://atividade-mapa.vercel.app",    # seu frontend hospedado
 ]
-"""
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins= origins,
     allow_credentials=True,
     allow_methods=["*"],  # inclui OPTIONS
     allow_headers=["*"],
 )
-"""
+
 
 # ----------------------------------
 # 🔹 Instancia clientes
