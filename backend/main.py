@@ -23,7 +23,7 @@ app = FastAPI()
 
 origins = [
     "http://localhost:5173",
-    "https://atividade-mapa.vercel.app/"  # (substitua se já tiver hospedado o front)
+    "https://atividade-mapa.vercel.app"  # (substitua se já tiver hospedado o front)
 ]
 
 app.add_middleware(
