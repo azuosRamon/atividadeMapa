@@ -1,5 +1,4 @@
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.middleware.cors import CORSMiddleware
 from supabase import create_client, Client
 from redis import Redis
 from dotenv import load_dotenv
@@ -17,23 +16,6 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 redis = Redis.from_url(UPSTASH_REDIS_URL, decode_responses=True)
 
 app = FastAPI()
-
-# ----------------------------------
-# 🔹 Configuração CORS (ESSENCIAL)
-# ----------------------------------
-origins = [            # desenvolvimento local
-    "https://atividade-mapa.vercel.app",    # seu frontend hospedado
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins= origins,
-    allow_credentials=True,
-    allow_methods=["*"],  # inclui OPTIONS
-    allow_headers=["*"],
-)
-
-
 
 # ---------------------------
 # ROTA DE LOGIN
@@ -55,8 +37,8 @@ async def login(req: Request):
         raise HTTPException(status_code=401, detail="Usuário ou senha incorretos")
 
     # 🔹 Busca dados adicionais
-    empresa = supabase.from("empresas").select("*").eq("user_id", user.id).maybe_single().execute().data
-    usuario = supabase.from("usuarios").select("*").eq("user_id", user.id).maybe_single().execute().data
+    empresa = supabase.from_("empresas").select("*").eq("user_id", user.id).maybe_single().execute().data
+    usuario = supabase.from_("usuarios").select("*").eq("user_id", user.id).maybe_single().execute().data
 
     dados = empresa or usuario
     tipo = "empresa" if empresa else "usuario"
