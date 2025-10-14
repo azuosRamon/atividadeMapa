@@ -1,8 +1,11 @@
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 from supabase import create_client, Client
 from redis import Redis
 from dotenv import load_dotenv
 import os
+import json
+
 
 # 🔹 Carrega variáveis de ambiente
 load_dotenv()
@@ -17,6 +20,17 @@ redis = Redis.from_url(UPSTASH_REDIS_URL, decode_responses=True)
 
 app = FastAPI()
 
+origins = [            # desenvolvimento local
+    "https://atividade-mapa.vercel.app",    # seu frontend hospedado
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins= origins,
+    allow_credentials=True,
+    allow_methods=["*"],  # inclui OPTIONS
+    allow_headers=["*"],
+)
 # ---------------------------
 # ROTA DE LOGIN
 # ---------------------------
@@ -51,7 +65,7 @@ async def login(req: Request):
     }
 
     # 🔹 Armazena no Redis com expiração (24h)
-    redis.setex(f"user:{user.id}", 60 * 60 * 24, str(sessao))
+    redis.setex(f"user:{user.id}", 60 * 60 * 24, json.dumps(sessao))
 
     return {"mensagem": "Login bem-sucedido", "user": sessao}
 
