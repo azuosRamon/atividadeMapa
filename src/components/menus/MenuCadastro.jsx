@@ -27,6 +27,13 @@ grid-template-areas:
         "operacao"
         "id"
         "nome"
+        "nascimento"
+        "cpf"
+        "telefone"
+        "email"
+        "visibilidade"
+        "rede_social"
+        "imagem"
         "reset"
         "botoes";
 }

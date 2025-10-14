@@ -27,6 +27,14 @@ grid-template-areas: /* VERIFICAR OS NOMES DAS AREAS NO ARQUIVO BdObjeto */
         "operacao"
         "id"
         "nome"
+        "empresa_id"
+        "valor"
+        "inicio"
+        "tempo_contrato_meses"
+        "renovacao"
+        "qtd_comodos"
+        "qtd_produtos"
+        "qtd_usuarios"
         "reset"
         "botoes";
 }

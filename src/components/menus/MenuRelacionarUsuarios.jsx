@@ -25,6 +25,11 @@ grid-template-areas:
         "operacao"
         "id"
         "nome"
+        "matricula"
+        "usuario_id"
+        "usuario_id"
+        "funcao_id"
+        "cargo_id"
         "reset"
         "botoes";
 }

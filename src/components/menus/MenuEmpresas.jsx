@@ -31,12 +31,12 @@ grid-template-areas:
         "nome"
         "cnpj"
         "telefone"
-        "email "
-        "exibirContatos"
-        "foto"
-        "senha"
-        "redeSocial1"
-        "redeSocial2"
+        "email"
+        "visibilidade"
+        "rede_social_1"
+        "rede_social_2"
+        "imagem"
+        "modelo_id"
         "reset"
         "botoes";
 }

@@ -15,10 +15,8 @@ grid-template-areas: /* VERIFICAR OS NOMES DAS AREAS NO ARQUIVO BdObjeto */
     "tabela tabela tabela"
     "operacao operacao id"
     "nome nome nome"
-    "imoveis imoveis ."
-    "comodos comodos ."
-    "categorias categorias ."
-    "produtos produtos ."
+    "imoveis imoveis comodos"
+    "categorias produtos produtos"
     ". reset botoes";
 
 @media (max-width: 768px) {
@@ -28,6 +26,10 @@ grid-template-areas: /* VERIFICAR OS NOMES DAS AREAS NO ARQUIVO BdObjeto */
         "operacao"
         "id"
         "nome"
+        "imoveis"
+        "comodos"
+        "categorias"
+        "produtos"
         "reset"
         "botoes";
 }
