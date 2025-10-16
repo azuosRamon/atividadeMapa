@@ -34,6 +34,7 @@ const Titulo3 = styled.h3`
     margin: 0 auto;
 `;
 
+
 const ParagrafoInformacao = styled.p`
 color: ${cores.corTexto};
 font-size: 12px;
@@ -79,7 +80,7 @@ const [usuario, setUsuario] = useState(capturarUsuarioLogadoLocalStorage());
                         <Titulo3>{usuario.nome}</Titulo3>
                     </DivContentInformacoes>
                     <DivContentInformacoes>
-                        <ParagrafoInformacao>{usuario.cargo}</ParagrafoInformacao>
+                        <ParagrafoInformacao>{usuario.funcao}</ParagrafoInformacao>
                     </DivContentInformacoes>
                 </DivContent>
                 
@@ -110,7 +111,7 @@ const [usuario, setUsuario] = useState(capturarUsuarioLogadoLocalStorage());
                             </Colapse>
                         </React.Fragment>
                     )}
-                    { (usuario.tipo.toLowerCase() === "moderador") && (
+                    { (usuario.tipo.toLowerCase() === "sakdnaskdja") && (
                         <React.Fragment>
                             <Button onClick={()=>{navegar('/dashboard')}} $bgcolor="rgb(38, 38, 38)">Início</Button>
                             <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>

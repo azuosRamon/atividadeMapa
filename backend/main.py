@@ -74,17 +74,12 @@ async def login(req: Request):
     dados = empresa or usuario
     tipo = "empresa" if empresa else "usuario"
 
-    sessao = {
-        "user_id": user.id,
-        "email": user.email,
-        "tipo": tipo,
-        "dados": dados,
-    }
+    dados.tipo = tipo
 
     # 🔹 Armazena no Redis com expiração (24h)
-    redis.setex(f"user:{user.id}", 60 * 60 * 24, json.dumps(sessao))
+    redis.setex(f"user:{user.id}", 60 * 60 * 24, json.dumps(dados))
 
-    return {"mensagem": "Login bem-sucedido", "user": sessao}
+    return {"mensagem": "Login bem-sucedido", "user": dados}
 
 # ---------------------------
 # ROTA DE VALIDAÇÃO

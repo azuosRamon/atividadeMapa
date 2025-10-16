@@ -7,7 +7,7 @@ import Usuario_logado from './pages/Usuario_logado';
 import Logo from './assets/Logo_2.png'
 import DivSeparador from './SubDivSeparador';
 import cores from "./Cores"
-import { supabase } from "/supabaseClient";
+import axios from "axios";
 
 const HeaderMenu = styled.header`
     background-color: ${cores.backgroundMenus};
@@ -138,10 +138,17 @@ function Header() {
     const navigate = useNavigate();
     const fazerLogout = async () => {
         if (status) {
-            localStorage.removeItem('usuario')
-            await supabase.auth.signOut()
+            const usuario = JSON.parse(localStorage.getItem('usuario') || "null");
+            if (usuario?.user_id) {
+                try {
+                    await axios.post(`https://atividademapa.onrender.com/logout/${usuario.user_id}`);
+                } catch (e) {
+                    // opcional: tratar erro de logout
+                }
+            }
+            localStorage.removeItem('usuario');
             setStatus(false);
-            navigate("/login")
+            navigate("/");
         }
     }
 
@@ -160,7 +167,7 @@ function Header() {
                     {status && (
                         <LiMenu><StyledLink to="/dashboard">Menu</StyledLink></LiMenu>
                     )}
-                    <LiMenu><StyledLink onClick={status ? fazerLogout : undefined}>{LogInOut}</StyledLink></LiMenu>
+                    <LiMenu><StyledLink onClick={status ? fazerLogout: navigate("/login")}>{LogInOut}</StyledLink></LiMenu>
                 </UlMenu>
 
                 <HamburgerIcon onClick={abrindoMenu} aria-label="Menu de navegação">

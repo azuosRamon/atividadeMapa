@@ -46,47 +46,27 @@ function Login() {
     e.preventDefault();
     setLogando(true);
 
-    await axios.post('https://atividademapa.onrender.com/login', {
-      email,
-      password
-    });
-/*
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-*/
-    setLogando(false);
+    try {
+      const response = await axios.post('https://atividademapa.onrender.com/login', {
+        email,
+        password
+      });
 
-    if (error) return alert("Erro ao fazer login: " + error.message);
+      const { user } = response.data;
 
-    const user = data.user;
+      if (!user || !user.user_id) {
+        alert("Erro ao fazer login: usuário não encontrado.");
+        setLogando(false);
+        return;
+      }
 
-    const { data: empresa } = await supabase
-      .from("empresas")
-      .select("*")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    const { data: usuario } = await supabase
-      .from("sessao_usuario_view")
-      .select("*")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    const dadosCompletos = empresa
-      ? { tipo: "empresa", ...empresa }
-      : usuario
-      ? { tipo: "usuario", ...usuario }
-      : null;
-
-    if (!dadosCompletos) {
-      alert("Usuário autenticado, mas sem dados cadastrados.");
-      return;
+      localStorage.setItem("usuario", JSON.stringify(user));
+      window.location.href = "/dashboard"; // força reload para AuthProvider atualizar
+    } catch (err) {
+      alert("Erro ao fazer login: " + (err.response?.data?.detail || err.message));
+    } finally {
+      setLogando(false);
     }
-
-    localStorage.setItem("usuario", JSON.stringify(dadosCompletos));
-    navigate("/dashboard", { replace: true });
   };
 
   if (loading) return <div>Carregando sessão...</div>;
