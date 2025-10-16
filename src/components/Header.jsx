@@ -8,6 +8,7 @@ import Logo from './assets/Logo_2.png'
 import DivSeparador from './SubDivSeparador';
 import cores from "./Cores"
 import axios from "axios";
+import { use } from 'react';
 
 const HeaderMenu = styled.header`
     background-color: ${cores.backgroundMenus};
@@ -148,7 +149,7 @@ function Header() {
             }
             localStorage.removeItem('usuario');
             setStatus(false);
-            navigate("/");
+            window.location.href = "/login";
         }
     }
 
@@ -167,7 +168,7 @@ function Header() {
                     {status && (
                         <LiMenu><StyledLink to="/dashboard">Menu</StyledLink></LiMenu>
                     )}
-                    <LiMenu><StyledLink onClick={status ? fazerLogout: navigate("/login")}>{LogInOut}</StyledLink></LiMenu>
+                    <LiMenu><StyledLink to={!status && "/login"}  onClick={status ? fazerLogout : undefined}>{LogInOut}</StyledLink></LiMenu>
                 </UlMenu>
 
                 <HamburgerIcon onClick={abrindoMenu} aria-label="Menu de navegação">

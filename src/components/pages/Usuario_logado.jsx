@@ -71,7 +71,7 @@ const [usuario, setUsuario] = useState(capturarUsuarioLogadoLocalStorage());
     return (
             <BoxEditada>
                 <DivContent>
-                    {usuario.imagem ? (
+                    {usuario?.imagem ? (
                         <Imagem src={usuario.imagem} alt={`${usuario.nome} - imagem`} />
                     ) : (
                         <CgProfile size={80} color="#999" />

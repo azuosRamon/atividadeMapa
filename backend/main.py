@@ -55,7 +55,7 @@ async def login(req: Request):
     # 🔹 Busca dados adicionais
     empresa_res = (
         supabase.from_("empresas")
-        .select("empresa_id, user_id, nome, cnpj, email")
+        .select("empresa_id, user_id, nome, cnpj, email, imagem")
         .eq("user_id", user.id)
         .maybe_single()
         .execute()
