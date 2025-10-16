@@ -74,7 +74,8 @@ async def login(req: Request):
     dados = empresa or usuario
     tipo = "empresa" if empresa else "usuario"
 
-    dados.tipo = tipo
+    dados['tipo'] = tipo
+
 
     # 🔹 Armazena no Redis com expiração (24h)
     redis.setex(f"user:{user.id}", 60 * 60 * 24, json.dumps(dados))
