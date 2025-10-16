@@ -21,6 +21,7 @@ redis = Redis.from_url(UPSTASH_REDIS_URL, decode_responses=True)
 app = FastAPI()
 
 origins = [            # desenvolvimento local
+    "localhost:5173"
     "https://atividade-mapa.vercel.app",    # seu frontend hospedado
 ]
 
@@ -45,14 +46,30 @@ async def login(req: Request):
 
     # 🔹 Login no Supabase
     res = supabase.auth.sign_in_with_password({"email": email, "password": password})
-    user = res.user
+    user = getattr(res, "user", None)
+    error = getattr(res, "error", None)
 
-    if not user:
+    if error or not user:
         raise HTTPException(status_code=401, detail="Usuário ou senha incorretos")
 
     # 🔹 Busca dados adicionais
-    empresa = supabase.from_("empresas").select("*").eq("user_id", user.id).maybe_single().execute().data
-    usuario = supabase.from_("usuarios").select("*").eq("user_id", user.id).maybe_single().execute().data
+    empresa_res = (
+        supabase.from_("empresas")
+        .select("empresa_id, user_id, nome, cnpj, email")
+        .eq("user_id", user.id)
+        .maybe_single()
+        .execute()
+    )
+    empresa = getattr(empresa_res, "data", None)
+
+    usuario_res = (
+        supabase.from_("sessao_usuario_view")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybe_single()
+        .execute()
+    )
+    usuario = getattr(usuario_res, "data", None)
 
     dados = empresa or usuario
     tipo = "empresa" if empresa else "usuario"

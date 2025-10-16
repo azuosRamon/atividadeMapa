@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaSearchLocation, FaBars, FaTimes } from "react-icons/fa";
 import { BsPersonFillGear } from "react-icons/bs";
 import Usuario_logado from './pages/Usuario_logado';
@@ -135,12 +135,13 @@ function Header() {
 
     const LogInOut = status ? "Logout" : <PessoaIcon />;
     const [abrirMenu, setAbrirMenu] = useState(false);
-
+    const navigate = useNavigate();
     const fazerLogout = async () => {
         if (status) {
             localStorage.removeItem('usuario')
             await supabase.auth.signOut()
             setStatus(false);
+            navigate("/login")
         }
     }
 
@@ -159,7 +160,7 @@ function Header() {
                     {status && (
                         <LiMenu><StyledLink to="/dashboard">Menu</StyledLink></LiMenu>
                     )}
-                    <LiMenu><StyledLink to="/login" onClick={status ? fazerLogout : undefined}>{LogInOut}</StyledLink></LiMenu>
+                    <LiMenu><StyledLink onClick={status ? fazerLogout : undefined}>{LogInOut}</StyledLink></LiMenu>
                 </UlMenu>
 
                 <HamburgerIcon onClick={abrindoMenu} aria-label="Menu de navegação">
