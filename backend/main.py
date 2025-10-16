@@ -21,8 +21,8 @@ redis = Redis.from_url(UPSTASH_REDIS_URL, decode_responses=True)
 app = FastAPI()
 
 origins = [            # desenvolvimento local
-    "localhost:5173"
-    "https://atividade-mapa.vercel.app",    # seu frontend hospedado
+    "http://localhost:5173",
+    "https://atividade-mapa.vercel.app"   # seu frontend hospedado
 ]
 
 app.add_middleware(
