@@ -27,6 +27,32 @@ const StyledLink = styled(Link)`
   font-size: 12px;
   cursor: pointer;
 `;
+async function RecuperarModelo(empresaId) {
+  try {
+    const { data: empresa, error: errorEmpresa } = await supabase
+      .from('empresas')
+      .select('modelo_id')
+      .eq('empresa_id', empresaId)
+      .single();
+
+    if (errorEmpresa) throw errorEmpresa;
+
+    const modeloId = empresa?.modelo_id;
+    if (!modeloId) return null;
+
+    const { data: modelo, error } = await supabase
+      .from('modelos')
+      .select('*')
+      .eq('modelo_id', modeloId)
+      .single();
+
+    if (error) throw error;
+    return modelo;
+  } catch (err) {
+    console.error("Erro ao recuperar modelo:", err);
+    return null;
+  }
+}
 
 function Login() {
   const { user, loading } = useAuth();
@@ -60,7 +86,12 @@ function Login() {
         return;
       }
 
+
+      const modelo = await RecuperarModelo(user.empresa_id);
+
+
       localStorage.setItem("usuario", JSON.stringify(user));
+      localStorage.setItem("modelo", JSON.stringify(modelo));
       window.location.href = "/dashboard"; // força reload para AuthProvider atualizar
     } catch (err) {
       alert("Erro ao fazer login: " + (err.response?.data?.detail || err.message));

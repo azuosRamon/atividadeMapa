@@ -59,10 +59,10 @@ function MenuDisciplinas() {
         campoId: "produtos_id",
         campoNome: "nome"
     });
-
+    const modelo = JSON.parse(localStorage.getItem("modelo")) || null;
     return(
             <Box>
-                <Title>Disciplinas</Title>
+                <Title>{modelo.produtos || "Produtos"}</Title>
                 <FormGrid onSubmit={fazerEnvio}>
                     <GridArea $area="tabela">
                         <DivSeparador></DivSeparador>

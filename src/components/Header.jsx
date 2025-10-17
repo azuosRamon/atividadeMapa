@@ -148,6 +148,7 @@ function Header() {
                 }
             }
             localStorage.removeItem('usuario');
+            localStorage.removeItem('modelo');
             setStatus(false);
             window.location.href = "/login";
         }

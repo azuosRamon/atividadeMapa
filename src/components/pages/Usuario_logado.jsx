@@ -62,7 +62,7 @@ function Usuario({ fecharMenu, mobile=false, logo=false }) {
         }
 
     const telaAtual = useNavigate();
-
+    const modelo = JSON.parse(localStorage.getItem("modelo")) || null;
 const [usuario, setUsuario] = useState(capturarUsuarioLogadoLocalStorage());
     const navegar = (rota) => {
         telaAtual(rota);
@@ -96,10 +96,10 @@ const [usuario, setUsuario] = useState(capturarUsuarioLogadoLocalStorage());
                             </Colapse>
                             <Colapse fontSize="1.2rem" nome = "Menu" estadoInicial={false}>
                                 <Button onClick={()=>{navegar('/edificio')}} $bgcolor="rgb(38, 38, 38)">Edifício</Button>
-                                <Button onClick={()=>{navegar('/periodoHorarios')}} $bgcolor="rgb(38, 38, 38)">Períodos e Horários</Button>
-                                <Button onClick={()=>{navegar('/categorias')}} $bgcolor="rgb(38, 38, 38)">Cursos</Button>
-                                <Button onClick={()=>{navegar('/produtos')}} $bgcolor="rgb(38, 38, 38)">Disciplinas</Button>
-                                <Button onClick={()=>{navegar('/quadroAulas')}} $bgcolor="rgb(38, 38, 38)">Quadro de aulas</Button>
+                                <Button onClick={()=>{navegar('/periodoHorarios')}} $bgcolor="rgb(38, 38, 38)">Horários</Button>
+                                <Button onClick={()=>{navegar('/categorias')}} $bgcolor="rgb(38, 38, 38)">{modelo.categorias || "Categorias"}</Button>
+                                <Button onClick={()=>{navegar('/produtos')}} $bgcolor="rgb(38, 38, 38)">{modelo.produtos || "Produtos"}</Button>
+                                <Button onClick={()=>{navegar('/quadroAulas')}} $bgcolor="rgb(38, 38, 38)">Quadro de funcionamento</Button>
                             </Colapse>
                             <Colapse fontSize="1.2rem" nome = "Adicionar" estadoInicial={false}>
                                 <Button onClick={()=>{navegar('/cadastroUsuario')}} $bgcolor="rgb(38, 38, 38)">Usuários</Button>

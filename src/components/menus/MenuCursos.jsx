@@ -55,10 +55,10 @@ function ConfigurarCursos() {
     });
 
   const idDesabilitado = !(operacao === "2" || operacao === "3");
-
+  const modelo = JSON.parse(localStorage.getItem("modelo")) || null;
   return (
     <Box>
-      <Title>Cursos</Title>
+      <Title>{modelo.categorias || "Categorias"}</Title>
 
       <FormGrid onSubmit={fazerEnvio}>
         <GridArea $area="tabela">

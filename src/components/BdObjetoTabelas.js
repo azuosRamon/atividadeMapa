@@ -245,6 +245,93 @@ const mapa = {
                 
 
             },
+        imoveis: {
+            tabela : {
+                nome: "imoveis", 
+                lista:["imovel_id", "nome"], 
+                camposPesquisa:false, 
+                mostrar: true
+            },
+            
+            operacao: 0,
+            
+            
+            campos: {
+                imovel_id: {
+                    valor: null, 
+                    tipo: "number", 
+                    campo:"input", 
+                    texto:"", 
+                    nome:"id"},
+                
+                nome: {
+                    valor: "", 
+                    tipo: "text", 
+                    campo:"input", 
+                    texto:"", 
+                    nome:"nome"},
+                
+                logradouro: {
+                    valor: null, 
+                    tipo: "text", 
+                    campo:"input", 
+                    texto:"", 
+                    nome:"logradouro"
+                },
+                
+                complemento: {
+                    valor: "", 
+                    tipo: "text", 
+                    campo:"input", 
+                    texto:"", 
+                    nome:"complemento"
+                },
+                
+                cep: {
+                    valor: null, 
+                    tipo: "text", 
+                    campo:"input",
+                    texto:"", 
+                    nome:"cep"
+                },
+                
+                empresa_id: {
+                    valor: null, 
+                    tipo: "text", 
+                    campo:"select", 
+                    texto:"Empresa", 
+                    nome:"empresa_id",
+                    tabela:"empresas", 
+                    lista:["empresa_id","nome"]
+                },
+
+                qtd_comodos: {
+                    valor: null, 
+                    tipo: "number", 
+                    campo:"input",
+                    texto:"Comodos", 
+                    nome:"qtd_comodos"
+                },
+
+                qtd_produtos: {
+                    valor: null, 
+                    tipo: "number", 
+                    campo:"input",
+                    texto:"Produtos", 
+                    nome:"qtd_produtos"
+                },
+
+                qtd_usuarios: {
+                    valor: null, 
+                    tipo: "number", 
+                    campo:"input",
+                    texto:"Usuarios", 
+                    nome:"qtd_usuarios"
+                }
+            },
+                
+
+            },
 }
 
 export default mapa

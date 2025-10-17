@@ -16,7 +16,7 @@ display: grid;
 box-sizing: border-box;
 grid-template-columns: 1fr 1fr 1fr;
 grid-template-areas: 
-    "campusId campusId campusId"
+    "imovelId imovelId imovelId"
     "operacao operacao blocosId"
     "nome nome nome"
     "reset . botoes";
@@ -24,7 +24,7 @@ grid-template-areas:
 @media (max-width: 768px) {
     grid-template-columns: 1fr;
     grid-template-areas: 
-        "campusId"
+        "imovelId"
         "operacao"
         "blocosId"
         "nome"
@@ -37,7 +37,7 @@ function BlocosOpcoes({ dados }) {
   const [objeto, setObjeto] = useState({
     bloco_id: "",
     nome: "",
-    campus_id: ""
+    imoveil_id: ""
   });
   const [operacao, setOperacao] = useState("1");
 
@@ -62,7 +62,7 @@ function BlocosOpcoes({ dados }) {
 
   useEffect(() => {
     SelectBancoDeDados({
-      nomeTabela: "campi",
+      nomeTabela: "imoveis",
       setData: setListaCampus,
       setLoading: setLoading
     });
@@ -89,17 +89,17 @@ function BlocosOpcoes({ dados }) {
         </Select>
       </GridArea>
 
-      <GridArea $area="campusId">
-        <Label htmlFor="campusId">Selecione o campus:</Label>
+      <GridArea $area="imovelId">
+        <Label htmlFor="imovelId">Selecione o campus:</Label>
         <Select
-          id="campusId"
-          name="campusId"
+          id="imovelId"
+          name="imovelId"
           required
-          onChange={(e) => alterarObjeto(e, "campus_id")}
+          onChange={(e) => alterarObjeto(e, "imoveil_id")}
         >
           {!loading &&
             listaCampus.map((campus) => (
-              <option key={campus.campus_id} value={campus.campus_id}>
+              <option key={campus.imoveil_id} value={campus.imoveil_id}>
                 {campus.nome + " - " + campus.cidade}
               </option>
             ))}

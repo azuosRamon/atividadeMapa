@@ -16,7 +16,7 @@ display: grid;
 box-sizing: border-box;
 grid-template-columns: 1fr 1fr 1fr;
 grid-template-areas: 
-    "campusId campusId campusId"
+    "imovelId imovelId imovelId"
     "blocoId blocoId blocoId"
     "operacao operacao pavimentosId"
     "nome nome imagem"
@@ -25,7 +25,7 @@ grid-template-areas:
 @media (max-width: 768px) {
     grid-template-columns: 1fr;
     grid-template-areas: 
-        "campusId"
+        "imovelId"
         "blocoId"
         "operacao"
         "pavimentosId"
@@ -68,7 +68,7 @@ function BlocosOpcoes({ dados }) {
     const [loadingCampus, setLoadingCampus] = useState(true)
     const [loadingBlocos, setLoadingBlocos] = useState(true)
     useEffect(() => {
-        SelectBancoDeDados({nomeTabela: 'campi', setData: setListaCampus, setLoading: setLoadingCampus })
+        SelectBancoDeDados({nomeTabela: 'edificios', setData: setListaCampus, setLoading: setLoadingCampus })
         SelectBancoDeDados({nomeTabela: 'blocos', setData: setListaBlocos, setLoading: setLoadingBlocos })
     }, [])
 
@@ -76,15 +76,15 @@ function BlocosOpcoes({ dados }) {
     return(
         
                     <FormGrid onSubmit={fazerEnvio}>
-                        <GridArea $area="campusId">
-                            <Label htmlFor="campusId">Selecione o campus:</Label>
-                                <Select autoFocus id="campusId" name="campusId" required onChange={(e) => {setCampusSelecionado(e.target.value); alterarObjeto(e, 'pavimento_id')}}>
+                        <GridArea $area="imovelId">
+                            <Label htmlFor="imovelId">Selecione o imoveis:</Label>
+                                <Select autoFocus id="imovelId" name="imovelId" required onChange={(e) => {setCampusSelecionado(e.target.value); alterarObjeto(e, 'pavimento_id')}}>
                                     <option value="0">Selecione o Campus</option>
                                 { loadingCampus ? 
                                         <option value={0} disabled> Carregando... </option>
                                         :                                         
-                                    listaCampus.map(campus => (
-                                        <option key={campus.campus_id} value={campus.campus_id}> {campus.nome + " - " + campus.cidade} </option>
+                                    listaCampus.map(imoveis => (
+                                        <option key={imoveis.imovel_id} value={imoveis.imovel_id}> {imoveis.nome + " - " + imoveis.cidade} </option>
                                     ))
                                 }
                                 </Select>
@@ -95,10 +95,10 @@ function BlocosOpcoes({ dados }) {
                                     <option value="0">Selecione o Bloco</option>
                                 {!loadingBlocos && 
                                     listaBlocos.filter(bloco => (
-                                        Number(bloco.campus_id) === Number(campusSelecionado)
+                                        Number(bloco.imovel_id) === Number(campusSelecionado)
                                     )).length > 0 ? (
                                         listaBlocos
-                                        .filter(bloco => Number(bloco.campus_id) === Number(campusSelecionado))
+                                        .filter(bloco => Number(bloco.imovel_id) === Number(campusSelecionado))
                                         .map(bloco => (
                                             <option key={bloco.bloco_id} value={Number(bloco.bloco_id)}>
                                             {`Bloco ${bloco.nome}`}
