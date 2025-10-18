@@ -24,7 +24,9 @@ const cores = {
     "backgroundColapse": "rgb(38,38,38)",
     "backgroundColapseInformacoes": "rgb(80,80,80)",
     "backgroundInput": "#333",
-    "corTabelaTitulos": "rgb(38,38,38)"
+    "corTabelaTitulos": "rgb(38,38,38)",
+    "corDeletar": "#ff4d4d",
+    "corEditar": "#f9ff4dff"
 }
 export default cores
 /* CORES ANTIGAS
