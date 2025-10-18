@@ -9,7 +9,6 @@ import PavimentosOpcoes from "./MenuEdificioPavimentos";
 import Colapse from "../SubColapse";
 import TabelaCompletaTeste from "../SubTabelaEditavel";
 import SalaOpcoes from "./MenuSalas";
-import LerDados from "../BdLerTabela";
 import { TbSettingsExclamation } from "react-icons/tb";
 import Button from "../SubButton";
 import cores from "../Cores.js"
@@ -27,69 +26,24 @@ const BoxContainer = styled(Box)`
 `;
 
 
-async function LerImoveis(empresaId) {
+async function LerDados(empresaId, tabela) {
     try {
     const { data, error } = await supabase
-    .from("imoveis")
+    .from(tabela)
     .select("*")
     .eq("empresa_id", empresaId);
     
     if (error) {
-      console.error("Erro ao ler imóvel:", error);
+      console.error("Erro ao ler dados na tabela:", tabela, error);
       return [];
     }
     
     return data || [];
 } catch (err) {
-    console.error("Erro inesperado ao ler imóvel:", err);
+    console.error("Erro inesperado ao ler dados de ", tabela, err);
     return [];
 }
 }
-async function LerBlocos(empresaId) {
-    try {
-    const { data, error } = await supabase
-    .from("blocos")
-    .select("*")
-    .eq("empresa_id", empresaId);
-    
-    if (error) {
-      console.error("Erro ao ler Blocos:", error);
-      return [];
-    }
-    
-    return data || [];
-} catch (err) {
-    console.error("Erro inesperado ao ler Blocos:", err);
-    return [];
-}
-}
-async function LerPavimentos(empresaId) {
-    try {
-    const { data, error } = await supabase
-    .from("pavimentos")
-    .select("*")
-    .eq("empresa_id", empresaId);
-    
-    if (error) {
-      console.error("Erro ao ler pavimentos:", error);
-      return [];
-    }
-    
-    return data || [];
-} catch (err) {
-    console.error("Erro inesperado ao ler pavimentos:", err);
-    return [];
-}
-}
-/*
-        async function LerComodos(pavimentoId) {
-            const { data, error } = await supabase.from("comodos").select("*").eq("pavimento_id", pavimentoId);
-            if (!data) {
-                console.error("Erro ao ler :", error);
-                return null;
-                }
-                return data;
-                }*/
 const Chave = styled.p`
     font-size: 1rem;
     color: gray;
@@ -176,6 +130,22 @@ const BoxImoveis = styled.div`
     max-height: 9em;
     grid-column: span 10;
 `;
+const BoxComodos = styled.div`
+    display: flex;
+    border: 1px solid ${cores.boxShadow};
+    grid-column: span 10;
+`;
+const BoxComodo = styled.div`
+    display: flex;
+    border: 1px solid black;
+    background-color: ${cores.backgroundBotaoSemFoco2};
+    width: 100%;
+    margin: 0 5px;
+`;
+const ListaSalas = styled.div`
+  display: flex;
+  flex-direction: column;  
+`;
 const BoxImovel = styled.div`
     display: flex;
     border: 1px solid black;
@@ -258,6 +228,7 @@ function CardPavimento({dados, blocoSelecionado}) {
             </DivInformacaoPavimentos>
             <ImagemPavimento src={terreo}></ImagemPavimento>
         </BoxPavimento>
+                <HorizontalBtn $bgcolor={cores.backgroundBotaoSemFoco} style={{width: "100%"}}>+ Adicionar pavimento</HorizontalBtn>
             </BoxPavimentos>
     )
 }
@@ -289,6 +260,7 @@ function CardBloco({dadosBlocos, imovelSelecionado}) {
             <HorizontalBtn $bgcolor={cores.corDeletar}>Excluir</HorizontalBtn>
             </DivInformacaoVertical>
         </BoxVertical>
+<HorizontalBtn $bgcolor={cores.backgroundBotaoSemFoco} style={{width: "100%"}}>+ Adicionar Bloco</HorizontalBtn>
             </BoxBlocos>
     )
 }
@@ -324,7 +296,46 @@ function CardImovel({dadosImovel}) {
             </BoxImoveis>
     )
 }
+function CardContrato({dados}){
+    const data = dados
+    return(
+        <>
+        <Chave>Imoveis</Chave><Valor>1/{dados.qtd_comodos}</Valor>
+        </>
+    )
+}
+function CardComodos({dados}){
+    const data = [12, 13, 14]
+    return(
+        <BoxComodos>
+        <TituloVertical>Salas</TituloVertical>
+        <ListaSalas>
+        {data.map((item)=>(
+            <BoxImovel>
+                <DivInformacao>
+                    <LinhaInformacao>
+                        <Chave>Sala:</Chave>
+                        <Valor>{item}</Valor>
+                        <Chave>Apelido:</Chave>
+                        <Valor>Elon</Valor>
+                    </LinhaInformacao>
+                    <LinhaInformacao>
+                        <Chave>Tipo:</Chave>
+                        <Valor>Sala de aula</Valor>
+                        <Chave>Lotação:</Chave>
+                        <Valor>60</Valor>
+                    </LinhaInformacao>
+                <HorizontalBtn $bgcolor={cores.backgroundBotaoSemFoco} style={{width: "100%"}}>+ Adicionar Croqui</HorizontalBtn>
+                </DivInformacao>
+                <HorizontalBtn $bgcolor={cores.backgroundBotaoSemFoco}>Atualizar</HorizontalBtn>
+                <HorizontalBtn $bgcolor={cores.corDeletar}>Excluir</HorizontalBtn>
+            </BoxImovel>
 
+        ))}
+        </ListaSalas>
+            </BoxComodos>
+    )
+}
 
 function ConfigurarEdificio() {
   const [imoveis, setImoveis] = useState([]);
@@ -332,6 +343,10 @@ function ConfigurarEdificio() {
   const [blocos, setBlocos] = useState([]);
   const [blocoSelecionado, setBlocoSelecionado] = useState(["0"]);
   const [pavimentos, setPavimentos] = useState(["0","1","2","3"]);
+  const [pavimentoSeleconado, setPavimentoSelecionado] = useState(["0"]);
+  const [comodos, setComodos] =useState([]);
+  const [comodosSelecionado, setComodosSelecionado] =useState([]);
+  const [contrato, setContrato] = useState([]);
   const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
@@ -343,12 +358,16 @@ function ConfigurarEdificio() {
         return;
       }
 
-      const listaImoveis = await LerImoveis(dadosUsuario.empresa_id);
-      const listaBlocos = await LerBlocos(dadosUsuario.empresa_id);
-      const listaPavimentos = await LerPavimentos(dadosUsuario.empresa_id);
+      const listaImoveis = await LerDados(dadosUsuario.empresa_id,"imoveis");
+      const listaBlocos = await LerDados(dadosUsuario.empresa_id,"blocos");
+      const listaPavimentos = await LerDados(dadosUsuario.empresa_id,"pavimentos");
+      const listaComodos = await LerDados(dadosUsuario.empresa_id,"comodos");
+      const dadosContrato =  await LerDados(dadosUsuario.empresa_id,"contratos_empresas");
       setImoveis(listaImoveis);
       setBlocos(listaBlocos);
       setPavimentos(listaPavimentos);
+      setContrato(dadosContrato);
+      setComodos(listaComodos);
       setCarregando(false);
     }
 
@@ -358,9 +377,12 @@ function ConfigurarEdificio() {
   if (carregando) return <Box><h3>Carregando imóveis...</h3></Box>;
     return(
             <BoxContainer>
+                {contrato.length === 0 && (<p>A empresa não possui um constrato ativo, por favor entre em contato para adquiri-lo</p>)}
+                {contrato.length > 0 && <CardContrato dados={contrato}/>}
                 {imoveis && <CardImovel dadosImovel={imoveis}/>}
                 {blocos && <CardBloco dadosBlocos={blocos} imovelSelecionado={imovelSelecionado} />}
                 {pavimentos && <CardPavimento dadosBlocos={pavimentos} imovelSelecionado={imovelSelecionado} />}
+                {comodos && <CardComodos dados={comodos}/>}
             </BoxContainer>
     )
 }
