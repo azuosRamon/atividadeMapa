@@ -17,6 +17,7 @@ import { use } from "react";
 import Slide from "../Slide.jsx";
 import terreo from "../..//components/Plantas/TERREO_PAVIMENTO.png";
 import { random } from "nanoid";
+import BussolaCarregando from "../BussolaLoading.jsx";
 
 const BoxContainer = styled(Box)`
   display: grid;
@@ -61,6 +62,12 @@ const DivInformacao = styled.div`
     margin: 10px 20px;
     width: 80%;
     `;
+const DivInformacaoComodos = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin: 10px 20px;
+    width: 80%;
+    `;
 const LinhaInformacao = styled.div`
     display: flex;
     flex-direction: row;
@@ -73,10 +80,11 @@ const LinhaInformacaoPavimentos = styled(LinhaInformacao)`
 `;
 
 const AdicionarBtn = styled(Button)`
+    min-height: 100px;
     height: 100%;
-    width: 10%;
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
+    width: 90%;
+    margin: 10px auto;
+    background-color: ${cores.cor3Transparente};
     `;
 const HorizontalBtn = styled(Button)`
     height: 3rem;
@@ -110,7 +118,7 @@ const BoxVertical = styled.div`
 const DivInformacaoVertical = styled.div`
     display: flex;
     flex-direction: column;
-    width: 80%;
+    width: 100%;
     height: 100%;
     margin: auto;
     justify-content: space-evenly;
@@ -134,17 +142,22 @@ const BoxComodos = styled.div`
     display: flex;
     border: 1px solid ${cores.boxShadow};
     grid-column: span 10;
-`;
+    `;
 const BoxComodo = styled.div`
     display: flex;
+    flex-direction: column;
     border: 1px solid black;
     background-color: ${cores.backgroundBotaoSemFoco2};
     width: 100%;
     margin: 0 5px;
+    grid-column: span 3;
 `;
 const ListaSalas = styled.div`
-  display: flex;
-  flex-direction: column;  
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap:10px;
+    margin: auto;
+    width:100%;
 `;
 const BoxImovel = styled.div`
     display: flex;
@@ -203,10 +216,12 @@ const TextoSelecione = styled(Chave)`
 
 
 function CardPavimento({dados, blocoSelecionado}) {
-    const pavimentos = ["0","1","2","3"]
+    const pavimentos = []
     return (
         <BoxPavimentos>
         <TituloHorizontal>Pavimentos</TituloHorizontal>
+        {pavimentos.length > 0 ? 
+        <>
         <BoxPavimento>
             <DivInformacaoPavimentos>
                 <TextoSelecione>Selecione:</TextoSelecione>   
@@ -229,15 +244,18 @@ function CardPavimento({dados, blocoSelecionado}) {
             <ImagemPavimento src={terreo}></ImagemPavimento>
         </BoxPavimento>
                 <HorizontalBtn $bgcolor={cores.backgroundBotaoSemFoco} style={{width: "100%"}}>+ Adicionar pavimento</HorizontalBtn>
+        </>
+    : <AdicionarBtn>+ Adicionar Pavimento</AdicionarBtn>}
             </BoxPavimentos>
     )
 }
 function CardBloco({dadosBlocos, imovelSelecionado}) {
-    const blocos = ["A", "B", "C"];
-    const numeros = [11,12,13,14]
+    const blocos = [];
     return (
         <BoxBlocos>
         <TituloHorizontal>Bloco</TituloHorizontal>
+        {blocos.length > 0 ? 
+        <>
         <BoxVertical>
             
             <DivInformacaoVertical>
@@ -260,15 +278,20 @@ function CardBloco({dadosBlocos, imovelSelecionado}) {
             <HorizontalBtn $bgcolor={cores.corDeletar}>Excluir</HorizontalBtn>
             </DivInformacaoVertical>
         </BoxVertical>
-<HorizontalBtn $bgcolor={cores.backgroundBotaoSemFoco} style={{width: "100%"}}>+ Adicionar Bloco</HorizontalBtn>
+<HorizontalBtn $bgcolor={cores.backgroundBotaoSemFoco} style={{width: "100%"}}>+ Adicionar Bloco</HorizontalBtn></>
+        : <AdicionarBtn>+ Adicionar  Bloco</AdicionarBtn>
+    
+    }
             </BoxBlocos>
     )
 }
 function CardImovel({dadosImovel}) {
+    const data = dadosImovel
     return (
         <BoxImoveis>
         <TituloVertical>Imovel</TituloVertical>
-        <BoxImovel>
+        {data.length > 0 ? 
+            <BoxImovel>
             <DivInformacao>
                 <LinhaInformacao>
                     <Valor>Campus II</Valor>
@@ -291,8 +314,9 @@ function CardImovel({dadosImovel}) {
             </DivInformacao>
             <VerticalBtn $bgcolor={cores.backgroundBotaoSemFoco}>Atualizar</VerticalBtn>
             <VerticalBtn $bgcolor={cores.corDeletar}>Excluir</VerticalBtn>
-        </BoxImovel>
             <VerticalBtn>Procurar</VerticalBtn>
+            </BoxImovel>
+        : <AdicionarBtn>Nenhum imóvel cadastrado, clique aqui para cadastrar um novo</AdicionarBtn>}
             </BoxImoveis>
     )
 }
@@ -305,49 +329,53 @@ function CardContrato({dados}){
     )
 }
 function CardComodos({dados}){
-    const data = [12, 13, 14]
+    const data = [1,2]
     return(
         <BoxComodos>
-        <TituloVertical>Salas</TituloVertical>
-        <ListaSalas>
-        {data.map((item)=>(
-            <BoxImovel>
-                <DivInformacao>
-                    <LinhaInformacao>
-                        <Chave>Sala:</Chave>
-                        <Valor>{item}</Valor>
-                        <Chave>Apelido:</Chave>
-                        <Valor>Elon</Valor>
-                    </LinhaInformacao>
-                    <LinhaInformacao>
-                        <Chave>Tipo:</Chave>
-                        <Valor>Sala de aula</Valor>
-                        <Chave>Lotação:</Chave>
-                        <Valor>60</Valor>
-                    </LinhaInformacao>
-                <HorizontalBtn $bgcolor={cores.backgroundBotaoSemFoco} style={{width: "100%"}}>+ Adicionar Croqui</HorizontalBtn>
-                </DivInformacao>
-                <HorizontalBtn $bgcolor={cores.backgroundBotaoSemFoco}>Atualizar</HorizontalBtn>
-                <HorizontalBtn $bgcolor={cores.corDeletar}>Excluir</HorizontalBtn>
-            </BoxImovel>
+            <TituloVertical>Salas</TituloVertical>
+            <ListaSalas>
+                <BoxComodo>
+                    <AdicionarBtn>+ Adicionar Novo</AdicionarBtn>
+                </BoxComodo>
+                {data.map((item)=>(
+                    <BoxComodo>
+                                <TituloHorizontal>Sala de aula</TituloHorizontal>
+                        <DivInformacao>
+                            <LinhaInformacao>
+                                <Chave>Número:</Chave>
+                                <Valor>{item}</Valor>
+                            </LinhaInformacao>
+                            <LinhaInformacao>
+                                <Chave>Nome:</Chave>
+                                <Valor>Elon</Valor>
+                            </LinhaInformacao>
+                            <LinhaInformacao>
+                                <Chave>Lotação:</Chave>
+                                <Valor>60</Valor>
+                            </LinhaInformacao>
+                        </DivInformacao>
+                        <HorizontalBtn $bgcolor={cores.backgroundBotaoSemFoco}>Atualizar</HorizontalBtn>
+                        <HorizontalBtn $bgcolor={cores.corDeletar}>Excluir</HorizontalBtn>
+                    </BoxComodo>
 
-        ))}
-        </ListaSalas>
-            </BoxComodos>
+                ))}
+            </ListaSalas>
+        </BoxComodos>
     )
 }
 
 function ConfigurarEdificio() {
   const [imoveis, setImoveis] = useState([]);
-  const [imovelSelecionado, setImovelSelecionado] = useState(["0"]);
+  const [imovelSelecionado, setImovelSelecionado] = useState(imoveis[0] ?? null);
   const [blocos, setBlocos] = useState([]);
-  const [blocoSelecionado, setBlocoSelecionado] = useState(["0"]);
-  const [pavimentos, setPavimentos] = useState(["0","1","2","3"]);
-  const [pavimentoSeleconado, setPavimentoSelecionado] = useState(["0"]);
+  const [blocoSelecionado, setBlocoSelecionado] = useState(null);
+  const [pavimentos, setPavimentos] = useState([]);
+  const [pavimentoSelecionado, setPavimentoSelecionado] = useState(null);
   const [comodos, setComodos] =useState([]);
-  const [comodosSelecionado, setComodosSelecionado] =useState([]);
+  const [comodosSelecionado, setComodosSelecionado] =useState(null);
   const [contrato, setContrato] = useState([]);
   const [carregando, setCarregando] = useState(true);
+
 
   useEffect(() => {
     async function carregar() {
@@ -373,16 +401,22 @@ function ConfigurarEdificio() {
 
     carregar();
   }, []);
+ 
+  useEffect(()=>{
+    const blocosDoImovelSelecionado = blocos.filter(item => item.imovel_id === imovelSelecionado.imovel_id);
+    setBlocoSelecionado(blocosDoImovelSelecionado[0])
+  }, imovelSelecionado);
 
-  if (carregando) return <Box><h3>Carregando imóveis...</h3></Box>;
+  if (carregando) return <Box><BussolaCarregando size="150px" ativo={true} /></Box>;
     return(
             <BoxContainer>
-                {contrato.length === 0 && (<p>A empresa não possui um constrato ativo, por favor entre em contato para adquiri-lo</p>)}
+                
+                {/*contrato.length === 0 && (<p>A empresa não possui um constrato ativo, por favor entre em contato para adquiri-lo</p>)*/}
                 {contrato.length > 0 && <CardContrato dados={contrato}/>}
                 {imoveis && <CardImovel dadosImovel={imoveis}/>}
-                {blocos && <CardBloco dadosBlocos={blocos} imovelSelecionado={imovelSelecionado} />}
-                {pavimentos && <CardPavimento dadosBlocos={pavimentos} imovelSelecionado={imovelSelecionado} />}
-                {comodos && <CardComodos dados={comodos}/>}
+                {imovelSelecionado && blocos && <CardBloco dadosBlocos={blocos} imovelSelecionado={imovelSelecionado} />}
+                {blocoSelecionado && pavimentos && <CardPavimento dadosBlocos={pavimentos} imovelSelecionado={imovelSelecionado} />}
+                {pavimentoSelecionado && comodos && <CardComodos dados={comodos}/>}
             </BoxContainer>
     )
 }

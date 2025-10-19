@@ -1,3 +1,5 @@
+
+
 -- NOME DA TABELA -> QUEM PODE EDITAR
 
 -- FUNCOES -> MAPA - OK

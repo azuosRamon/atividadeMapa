@@ -33,7 +33,11 @@ body {
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+    animation: App-logo-spin infinite 2s cubic-bezier(0, 0, 0.2, 1);
+    font-size: 120px;
+    color: #33cccc;
+    margin: 0;
+    padding: 0;
   }
 }
 
