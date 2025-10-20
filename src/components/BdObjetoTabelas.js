@@ -250,10 +250,10 @@ const mapa = {
                 nome: "imoveis", 
                 lista:["imovel_id", "nome"], 
                 camposPesquisa:false, 
-                mostrar: true
+                mostrar: false
             },
             
-            operacao: 0,
+            operacao: 1,
             
             
             campos: {
@@ -262,7 +262,9 @@ const mapa = {
                     tipo: "number", 
                     campo:"input", 
                     texto:"", 
-                    nome:"id"},
+                    nome:"id",
+                    mostrar: false
+                },
                 
                 nome: {
                     valor: "", 
@@ -330,7 +332,8 @@ const mapa = {
                     texto:"Empresa", 
                     nome:"empresa_id",
                     tabela:"empresas", 
-                    lista:["empresa_id","nome"]
+                    lista:["empresa_id","nome"],
+                    mostrar: false
                 }
 
             },

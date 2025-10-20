@@ -18,6 +18,8 @@ import Slide from "../Slide.jsx";
 import terreo from "../..//components/Plantas/TERREO_PAVIMENTO.png";
 import { random } from "nanoid";
 import BussolaCarregando from "../BussolaLoading.jsx";
+import Modal from "../SubModal.jsx";
+
 
 const BoxContainer = styled(Box)`
   display: grid;
@@ -215,6 +217,7 @@ const TextoSelecione = styled(Chave)`
 `;
 
 
+
 function CardPavimento({dados, blocoSelecionado}) {
     const pavimentos = []
     return (
@@ -285,23 +288,34 @@ function CardBloco({dadosBlocos, imovelSelecionado}) {
             </BoxBlocos>
     )
 }
-function CardImovel({dadosImovel}) {
-    const data = dadosImovel
+function CardImovel({dadosImovel, dadosUsuario, selecao, setSelecao }) {
+    const data = selecao;
+    const [operacao, setOperacao] = useState("1")
+    const [itemModificar, setItemModificar] = useState(null)
+    const [mostrarModal, setMostrarModal] = useState(false);
     return (
         <BoxImoveis>
-        <TituloVertical>Imovel</TituloVertical>
-        {data.length > 0 ? 
+        <Modal aberto={mostrarModal} onFechar={() => setMostrarModal(false)}>
+            <CampusOpcoes 
+                usuarioLogado={dadosUsuario} 
+                operacaoEnviada={operacao} 
+                item={itemModificar}>
+            </CampusOpcoes>
+
+        </Modal>
+        <TituloVertical>Imóveis</TituloVertical>
+        {dadosImovel.length > 0 ? 
             <BoxImovel>
             <DivInformacao>
                 <LinhaInformacao>
-                    <Valor>Campus II</Valor>
-                    <Valor>Maricá/RJ</Valor>
+                    <Valor>{data.nome}</Valor>
+                    <Valor>{data.cidade}/{data.estado}</Valor>
                 </LinhaInformacao>
                 <LinhaInformacao>
-                    <Valor>Avenida Roberto Silveira</Valor>
+                    <Valor>{data.logradouro}</Valor>
                 </LinhaInformacao>
                 <LinhaInformacao>
-                    <Valor>Próximo a quadra</Valor>
+                    <Valor>{data.complemento}</Valor>
                 </LinhaInformacao>
                 <LinhaInformacao>
                     <Chave>Blocos:</Chave>
@@ -312,11 +326,26 @@ function CardImovel({dadosImovel}) {
                     <Valor>1</Valor>
                 </LinhaInformacao>
             </DivInformacao>
-            <VerticalBtn $bgcolor={cores.backgroundBotaoSemFoco}>Atualizar</VerticalBtn>
-            <VerticalBtn $bgcolor={cores.corDeletar}>Excluir</VerticalBtn>
+            <VerticalBtn onClick={(e)=>{
+                e.preventDefault();
+                setItemModificar(selecao);
+                setOperacao("2");
+                setMostrarModal(true);
+            }} $bgcolor={cores.backgroundBotaoSemFoco}>Atualizar</VerticalBtn>
+            <VerticalBtn
+                onClick={(e)=>{
+                    e.preventDefault();
+                    setItemModificar(selecao);
+                    setOperacao("3");
+                    setMostrarModal(true);
+                }} 
+             $bgcolor={cores.corDeletar}>Excluir</VerticalBtn>
             <VerticalBtn>Procurar</VerticalBtn>
             </BoxImovel>
-        : <AdicionarBtn>Nenhum imóvel cadastrado, clique aqui para cadastrar um novo</AdicionarBtn>}
+        : <AdicionarBtn onClick={(e)=>{
+            e.preventDefault();
+            setMostrarModal(true)}
+        } >Nenhum imóvel cadastrado, clique aqui para cadastrar um novo</AdicionarBtn>}
             </BoxImoveis>
     )
 }
@@ -365,8 +394,9 @@ function CardComodos({dados}){
 }
 
 function ConfigurarEdificio() {
+  const [usuario, setUsuario] = useState([]);
   const [imoveis, setImoveis] = useState([]);
-  const [imovelSelecionado, setImovelSelecionado] = useState(imoveis[0] ?? null);
+  const [imovelSelecionado, setImovelSelecionado] = useState(null);
   const [blocos, setBlocos] = useState([]);
   const [blocoSelecionado, setBlocoSelecionado] = useState(null);
   const [pavimentos, setPavimentos] = useState([]);
@@ -376,6 +406,10 @@ function ConfigurarEdificio() {
   const [contrato, setContrato] = useState([]);
   const [carregando, setCarregando] = useState(true);
 
+  useEffect(()=>{
+    !imovelSelecionado &&
+    setImovelSelecionado(imoveis[0])
+  },[imoveis])
 
   useEffect(() => {
     async function carregar() {
@@ -385,17 +419,17 @@ function ConfigurarEdificio() {
         setCarregando(false);
         return;
       }
-
+      setUsuario(dadosUsuario);
       const listaImoveis = await LerDados(dadosUsuario.empresa_id,"imoveis");
-      const listaBlocos = await LerDados(dadosUsuario.empresa_id,"blocos");
-      const listaPavimentos = await LerDados(dadosUsuario.empresa_id,"pavimentos");
-      const listaComodos = await LerDados(dadosUsuario.empresa_id,"comodos");
-      const dadosContrato =  await LerDados(dadosUsuario.empresa_id,"contratos_empresas");
       setImoveis(listaImoveis);
+      const listaBlocos = await LerDados(dadosUsuario.empresa_id,"blocos");
       setBlocos(listaBlocos);
+      const listaPavimentos = await LerDados(dadosUsuario.empresa_id,"pavimentos");
       setPavimentos(listaPavimentos);
-      setContrato(dadosContrato);
+      const listaComodos = await LerDados(dadosUsuario.empresa_id,"comodos");
       setComodos(listaComodos);
+      const dadosContrato =  await LerDados(dadosUsuario.empresa_id,"contratos_empresas");
+      setContrato(dadosContrato);
       setCarregando(false);
     }
 
@@ -413,7 +447,7 @@ function ConfigurarEdificio() {
                 
                 {/*contrato.length === 0 && (<p>A empresa não possui um constrato ativo, por favor entre em contato para adquiri-lo</p>)*/}
                 {contrato.length > 0 && <CardContrato dados={contrato}/>}
-                {imoveis && <CardImovel dadosImovel={imoveis}/>}
+                {imoveis && <CardImovel selecao={imovelSelecionado} setSelecao={setImovelSelecionado} dadosImovel={imoveis} dadosUsuario={usuario}/>}
                 {imovelSelecionado && blocos && <CardBloco dadosBlocos={blocos} imovelSelecionado={imovelSelecionado} />}
                 {blocoSelecionado && pavimentos && <CardPavimento dadosBlocos={pavimentos} imovelSelecionado={imovelSelecionado} />}
                 {pavimentoSelecionado && comodos && <CardComodos dados={comodos}/>}

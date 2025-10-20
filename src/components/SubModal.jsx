@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import styled, { keyframes, css } from "styled-components";
+import Button from "./SubButton";
 
 // ===== ANIMAÇÕES =====
 const fadeIn = keyframes`
@@ -45,9 +46,9 @@ const Overlay = styled.div`
 const ModalBox = styled.div`
   position: relative;
   background: #222;
-  border-radius: 8px;
+  border-radius: 2px;
   padding: 30px;
-  max-width: 1600px;
+  max-width: 960px;
   width: 90%;
   max-height: 90%;
   overflow: auto;
@@ -65,6 +66,13 @@ const ModalBox = styled.div`
     `}
 `;
 
+const ButtonVoltar = styled(Button)`
+  height: 100%;
+  margin: 20px 0;
+  padding: 30px 0;
+`;
+
+
 // ===== COMPONENTE CONTROLADO =====
 function Modal({ aberto, onFechar, children }) {
   // fechar ao apertar ESC
@@ -80,6 +88,9 @@ function Modal({ aberto, onFechar, children }) {
     <Overlay $estado="aberto" onClick={onFechar}>
       <ModalBox $estado="aberto" onClick={(e) => e.stopPropagation()}>
         {children}
+        <ButtonVoltar $bgcolor="rgb(38, 38, 38)" onClick={() => onFechar()}>
+            Voltar
+        </ButtonVoltar>
       </ModalBox>
     </Overlay>
   );

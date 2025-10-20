@@ -126,6 +126,7 @@ function SalaOpcoes() {
     const [listaCampus, setListaCampus] = useState([])
     const [loadingCampus, setLoadingCampus] = useState(true)
     const [loadingBlocos, setLoadingBlocos] = useState(true)
+    
     const [mostrarModal, setMostrarModal] = useState(false);
 
     useEffect(() => {

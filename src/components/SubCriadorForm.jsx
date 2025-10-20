@@ -99,21 +99,23 @@ function CriarSelect({nomeCampo, campo, setFuncao, objeto}){
 
 function CriarCamposFormulario({item, setFuncao = ()=>{}, operacao, setOperacao, objeto}){
     const [btnSubmit, setBtnSubmit] = useState("");
+    const [backgroundBotao, setBackground] = useState(cores.backgroundBotaoSemFoco2);
     useEffect(()=>{
         switch(operacao){
             case "0":
                 setBtnSubmit("Selecione a operação");
                 break;
             case "1":
+                setBackground(cores.corAdicionar);
                 setBtnSubmit("Adicionar");
                 break;
             case "2":
-               console.log(objeto)
-                    
-                setBtnSubmit("Alterar");
+                setBackground(cores.corEditar);
+                setBtnSubmit("Atualizar");
                 break;
             case "3":
-                setBtnSubmit("Remover");
+                setBackground(cores.corDeletar);
+                setBtnSubmit("Excluir");
                 break;
         }
     }, [operacao])
@@ -124,8 +126,10 @@ function CriarCamposFormulario({item, setFuncao = ()=>{}, operacao, setOperacao,
             {(item.tabela?.mostrar ?? false) && (
                 <ExibirTabelaConsulta tabela={item.view ?? item.tabela} ></ExibirTabelaConsulta>
             )}
+            {(item?.operacao ===0  ?? true) && (
+                <DefinirOperacao operacao={operacao} setOperacao={setOperacao}/>
 
-            <DefinirOperacao operacao={operacao} setOperacao={setOperacao}/>
+            )}
 
             {Object.entries(item.campos).map(([nome, campo]) =>{
                     if ((campo.mostrar ?? true )&& campo.campo == "input"){
@@ -151,25 +155,10 @@ function CriarCamposFormulario({item, setFuncao = ()=>{}, operacao, setOperacao,
                         <Button $bgcolor={cores.backgroundBotaoSemFoco} type="reset">Limpar</Button>   
                     </GridArea>
                     <GridArea $area="botoes">
-                        <Button disabled={operacao=="0"} type="submit">{btnSubmit}</Button>   
+                        <Button disabled={operacao=="0"} $bgcolor={backgroundBotao} type="submit">{btnSubmit}</Button>   
                     </GridArea>
         </>
     )
-    
-
-    /*
-        if(item == "operacao"){
-        return(<DefinirOperacao />)
-        } 
-        if (item.campo == "input"){
-        return(<CriarInput campo={item.campo} setFuncao={setFuncao}/>)
-        } 
-        if (item.campo == "select"){
-            return(<CriarSelect campo={item.campo} setFuncao={setFuncao}  />)
-        } 
-
-        console.log("Item não reconhecido:", item);
-        return null;*/
     
 };
 

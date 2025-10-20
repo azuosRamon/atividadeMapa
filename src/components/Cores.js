@@ -26,7 +26,8 @@ const cores = {
     "backgroundInput": "#333",
     "corTabelaTitulos": "rgb(38,38,38)",
     "corDeletar": "#ff4d4d",
-    "corEditar": "#f9ff4dff"
+    "corEditar": "#7c5b08ff",
+    "corAdicionar": "#00a2a2"
 }
 export default cores
 /* CORES ANTIGAS
