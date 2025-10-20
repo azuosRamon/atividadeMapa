@@ -73,6 +73,7 @@ function CampusOpcoes({ usuarioLogado, operacaoEnviada, item = null }) {
         campoId: tabela.tabela.lista[0],
         campoNome: tabela.tabela.lista[1],
       });
+
    
     return(
             <div>

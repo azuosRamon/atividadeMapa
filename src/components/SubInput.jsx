@@ -1,7 +1,9 @@
 import styled from "styled-components";
 import cores from "./Cores";
+import InputMask from "react-input-mask";
 
-const Input = styled.input`
+
+const EstiloInput = styled.input`
 width: 100%;
 height: 40px;
 padding: 10px;
@@ -27,5 +29,21 @@ display: flex;
 }
 
 `;
+
+const Input = ({ mask, value, onChange, ...rest }) => {
+  if (mask) {
+    // ✅ Passa as props diretamente para InputMask
+    return (
+      <InputMask mask={mask} value={value} onChange={onChange} {...rest}>
+        {/* ❌ NÃO repassar props como disabled/value/onChange aqui */}
+        {(inputProps) => <EstiloInput {...inputProps} />}
+      </InputMask>
+    );
+  }
+
+  // Se não tiver máscara, usa o input normal
+  return <EstiloInput value={value} onChange={onChange} {...rest} />;
+};
+
 
 export default Input;
