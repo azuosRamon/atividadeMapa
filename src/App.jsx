@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import Login from "./components/pages/PaginaLogin";
 import Header from "./components/Header";
@@ -8,6 +10,7 @@ import LayoutLogado from "./LayoutLogado";
 import RotaProtegida from "./components/FcRotaProtegida";
 import './App.css'
 import RecuperarSenha from "./components/pages/PaginaRecuperarSenha";
+import RedefinirSenha from "./components/pages/PaginaRedefinirSenha";
 import Slide from "./components/Slide";
 import BotaoFlutuante from "./components/SubButtonFlutuante";
 import MenuCadastro from "./components/menus/MenuCadastro";
@@ -182,6 +185,22 @@ const dadosJson = {
 
 
 function App() {
+  // Componente interno para redirecionar quando o Supabase enviar tokens/erros para a raiz
+  function RootRedirector() {
+    const navigate = useNavigate();
+    useEffect(() => {
+      const search = window.location.search || '';
+      const hash = window.location.hash || '';
+      // se houver token, error ou otp_expired, encaminha para /redefinir-senha preservando query/hash
+      if (search.includes('token=') || hash.includes('access_token') || search.includes('error=') || hash.includes('error=')) {
+        const suffix = (search || hash) + '';
+        // navigate preservando o hash/query conforme recebido
+        const target = '/redefinir-senha' + suffix;
+        navigate(target, { replace: true });
+      }
+    }, [navigate]);
+    return null;
+  }
   const capturarUsuarioLogadoLocalStorage = () => {
         let usuario = localStorage.getItem("usuario");
         if (!usuario) return null;
@@ -201,6 +220,7 @@ function App() {
       <Routes>
         <Route path="/" element={
           <div className="corpo">
+            <RootRedirector />
             <Header/>
             <Pesquisa dados={dadosJson} key={1}/>
             <Slide
@@ -221,6 +241,13 @@ function App() {
           <div className="corpo">
             <Header/>
             <RecuperarSenha/>
+            <Footer/>
+          </div>
+        }/>
+        <Route path="/redefinir-senha" element={
+          <div className="corpo">
+            <Header/>
+            <RedefinirSenha/>
             <Footer/>
           </div>
         }/>
