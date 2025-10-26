@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
+import BussolaCarregando from "./BussolaLoading.jsx";
+import Modal from "./SubModal.jsx";
 
 const AuthContext = createContext();
 
@@ -26,8 +28,10 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
+
   return (
     <AuthContext.Provider value={{ user, loading }}>
+        <BussolaCarregando aberto={loading} onFechar={() => setLoading(false)}>Loading...</BussolaCarregando>
       {children}
     </AuthContext.Provider>
   );

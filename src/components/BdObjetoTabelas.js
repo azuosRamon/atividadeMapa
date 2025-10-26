@@ -341,13 +341,13 @@ const mapa = {
 
             },
             blocos: {
-        tabela: { nome: "blocos", lista: ["bloco_id", "nome"], camposPesquisa: false, mostrar: true },
-        operacao: 0,
+        tabela: { nome: "blocos", lista: ["bloco_id", "nome"], camposPesquisa: false, mostrar: false },
+        operacao: 1,
         campos: {
-            bloco_id: { valor: null, tipo: "number", campo: "input", texto: "Id", nome: "id" },
+            bloco_id: { valor: null, tipo: "number", campo: "input", texto: "Id", nome: "id", mostrar: false},
             nome: { valor: "", tipo: "text", campo: "input", texto: "Nome", nome: "nome", required: true },
-            imovel_id: { valor: null, tipo: "text", campo: "select", texto: "Imóvel", nome: "imovel_id", tabela: "imoveis", lista: ["imovel_id", "nome"] },
-            empresa_id: { valor: null, tipo: "text", campo: "select", texto: "Empresa", nome: "empresa_id", tabela: "empresas", lista: ["empresa_id", "nome"] }
+            imovel_id: { valor: null, tipo: "text", campo: "select", texto: "Imóvel", nome: "imovel_id", tabela: "imoveis", lista: ["imovel_id", "nome"], mostrar: false },
+            empresa_id: { valor: null, tipo: "text", campo: "select", texto: "Empresa", nome: "empresa_id", tabela: "empresas", lista: ["empresa_id", "nome"], mostrar: false }
         }
     },
 
@@ -408,14 +408,14 @@ const mapa = {
 
     // 🧭 PAVIMENTOS
     pavimentos: {
-        tabela: { nome: "pavimentos", lista: ["pavimento_id", "numero"], camposPesquisa: false, mostrar: true },
-        operacao: 0,
+        tabela: { nome: "pavimentos", lista: ["pavimento_id", "numero"], camposPesquisa: false, mostrar: false },
+        operacao: 1,
         campos: {
-            pavimento_id: { valor: null, tipo: "number", campo: "input", texto: "Id", nome: "id" },
+            pavimento_id: { valor: null, tipo: "number", campo: "input", texto: "Id", nome: "id", mostrar:false },
             numero: { valor: "", tipo: "number", campo: "input", texto: "Número", nome: "numero" },
-            bloco_id: { valor: null, tipo: "text", campo: "select", texto: "Bloco", nome: "bloco_id", tabela: "blocos", lista: ["bloco_id", "nome"] },
+            bloco_id: { mostrar:false, valor: null, tipo: "text", campo: "select", texto: "Bloco", nome: "bloco_id", tabela: "blocos", lista: ["bloco_id", "nome"] },
             imagem: { valor: "", tipo: "file", campo: "input", texto: "Imagem", nome: "imagem" },
-            empresa_id: { valor: null, tipo: "text", campo: "select", texto: "Empresa", nome: "empresa_id", tabela: "empresas", lista: ["empresa_id", "nome"] }
+            empresa_id: { mostrar:false, valor: null, tipo: "text", campo: "select", texto: "Empresa", nome: "empresa_id", tabela: "empresas", lista: ["empresa_id", "nome"] }
         }
     },
 

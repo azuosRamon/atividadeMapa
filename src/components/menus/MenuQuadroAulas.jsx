@@ -49,30 +49,9 @@ const FormGrid = styled.form`
     }
 ;
     
-    
-
 @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    grid-template-areas: 
-    "ano"
-    "semestre"
-    "dia"
-    "tabela"
-    "operacao"
-    "id"
-    "inicio"
-    "termino"
-    "qtdAlunos"
-    "campus"
-    "blocos"
-    "pavimentos"
-    "salas"
-    "separar"
-    "cursos"
-    "professores"
-    "disciplinas"
-    "reset"
-    "botoes";
+    display: flex;
+    flex-direction: column;
 }
 `;
 

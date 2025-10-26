@@ -272,7 +272,7 @@
                 {(item.tabela?.mostrar ?? false) && (
                     <ExibirTabelaConsulta tabela={item.view ?? item.tabela} ></ExibirTabelaConsulta>
                 )}
-                {(item?.operacao ===0  ?? true) && (
+                {(item?.operacao === 0) && (
                     <DefinirOperacao operacao={operacao} setOperacao={setOperacao}/>
 
                 )}
@@ -284,29 +284,33 @@
                                     return(
                                         <CriarInput key={nome} nomeCampo={nome} campo={campo} objeto={objeto}
                                         setFuncao={async (e, nomeCampo) => {
-                    // Atualiza o valor do campo CEP normalmente
-                    setFuncao(e, nomeCampo);
-                    
-                    const valorCep = e.target.value.replace(/\D/g, "");
-                    if (valorCep.length === 8) {
-                        try {
-                            const resp = await fetch(`https://viacep.com.br/ws/${valorCep}/json/`);
-                            const dados = await resp.json();
-                            if (!dados.erro) {
-                                // Preenche automaticamente os campos relacionados
-                                setFuncao({ target: { name: "logradouro", value: dados.logradouro } }, "logradouro");
-                                setFuncao({ target: { name: "cidade", value: dados.localidade } }, "cidade");
-                                setFuncao({ target: { name: "estado", value: dados.uf } }, "estado");
-                            }
-                        } catch (err) {
-                            console.error("Erro ao buscar CEP:", err);
-                        }
-                    }
-                }}
+                                            // Atualiza o valor do campo CEP normalmente
+                                            setFuncao(e, nomeCampo);
+                                            
+                                            const valorCep = e.target.value.replace(/\D/g, "");
+                                            if (valorCep.length === 8) {
+                                                try {
+                                                    const resp = await fetch(`https://viacep.com.br/ws/${valorCep}/json/`);
+                                                    const dados = await resp.json();
+                                                    if (!dados.erro) {
+                                                        // Preenche automaticamente os campos relacionados
+                                                        setFuncao({ target: { name: "logradouro", value: dados.logradouro } }, "logradouro");
+                                                        setFuncao({ target: { name: "cidade", value: dados.localidade } }, "cidade");
+                                                        setFuncao({ target: { name: "estado", value: dados.uf } }, "estado");
+                                                    }
+                                                } catch (err) {
+                                                    console.error("Erro ao buscar CEP:", err);
+                                                }
+                                            }
+                                        }}
                                         operacao={operacao}
                                         />
                                     )
                                                                 
+                                    case 'nome':
+                                        return(
+                                            <CriarInput autoFocus key={nome} nomeCampo={nome} campo={campo} objeto={objeto} setFuncao={setFuncao} operacao={operacao} />        
+                                        )
                             }
                             return (
                                 <CriarInput key={nome} nomeCampo={nome} campo={campo} objeto={objeto} setFuncao={setFuncao} operacao={operacao} />

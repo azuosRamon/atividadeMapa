@@ -1,15 +1,14 @@
-import React, { useState, useEffect} from "react";
+import { useState} from "react";
 import styled from "styled-components";
-import Select from "../SubSelect";
-import Input from "../SubInput";
-import Label from "../SubLabel";
-import Button from "../SubButton";
-import GridArea from "../SubGridArea";
-import cores from "../Cores"
 import useBancoDeDados from "../BdSupabase";
 import CriarCamposFormulario from "../SubCriadorForm";
 import mapa from "../BdObjetoTabelas"
 import Title from "../SubTitleH2";
+import Box from "../SubBox";
+import Button from "../SubButton";
+import cores from "../Cores.js"
+import Modal from "../SubModal.jsx";
+
 
 const FormGrid = styled.form`
 gap: 10px;
@@ -25,25 +24,14 @@ grid-template-areas:
     "reset . botoes";
 
 @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-           "operacao"
-           "idCampus"
-            "nome"
-            "cep"
-            "cidade"
-            "estado"
-            "logradouro"
-            "complemento"
-            "latitude"
-            "longitude"
-            "reset"
-            "botoes";
+    display: flex;
+    flex-direction: column;
 }
 `;
 
 const TitleSublinhado = styled(Title)`
     border-bottom: 2px solid;
+    margin-bottom: 20px;
 `
 
 function CampusOpcoes({ usuarioLogado, operacaoEnviada, item = null }) {
@@ -91,4 +79,143 @@ function CampusOpcoes({ usuarioLogado, operacaoEnviada, item = null }) {
     )
 }
 
-export default CampusOpcoes;
+function CardImovel({dadosImovel, dadosUsuario, selecao, setSelecao }) {
+    const [operacao, setOperacao] = useState("1")
+    const [itemModificar, setItemModificar] = useState(null)
+    const [mostrarModal, setMostrarModal] = useState(false);
+
+    const data = selecao;
+    console.log(data.blocos?.reduce((acc, pav) => acc + (pav.pavimentos?.length || 0), 0))
+
+    return (
+        <BoxImoveis>
+        <Modal aberto={mostrarModal} onFechar={() => setMostrarModal(false)}>
+            <CampusOpcoes 
+                usuarioLogado={dadosUsuario} 
+                operacaoEnviada={operacao} 
+                item={itemModificar}>
+            </CampusOpcoes>
+
+        </Modal>
+        <TituloVertical>Imóveis</TituloVertical>
+        {dadosImovel.length > 0 ? 
+            <BoxImovel>
+            <DivInformacao>
+                <LinhaInformacao>
+                    <Valor>{data.nome}</Valor>
+                    <Valor>{data.cidade}/{data.estado}</Valor>
+                </LinhaInformacao>
+                <LinhaInformacao>
+                    <Valor>{data.logradouro}</Valor>
+                </LinhaInformacao>
+                <LinhaInformacao>
+                    <Valor>{data.complemento}</Valor>
+                </LinhaInformacao>
+                <LinhaInformacao>
+                    <Chave>Blocos:</Chave>
+                    <Valor>{data?.blocos?.length || 0}</Valor>
+                    <Chave>Pavimentos:</Chave>
+                    <Valor>{data?.blocos?.reduce((acc, bloco) => acc + (bloco.pavimentos?.length || 0), 0) || 0}</Valor>
+                    <Chave>Salas:</Chave>
+                    <Valor>{data?.blocos?.pavimentos?.reduce((acc, pavimento) => acc + (pavimento.comodos?.length || 0),0) || 0}</Valor>
+                </LinhaInformacao>
+            </DivInformacao>
+            <VerticalBtn onClick={(e)=>{
+                e.preventDefault();
+                setItemModificar(selecao);
+                setOperacao("2");
+                setMostrarModal(true);
+            }} $bgcolor={cores.backgroundBotaoSemFoco}>Atualizar</VerticalBtn>
+            <VerticalBtn
+                onClick={(e)=>{
+                    e.preventDefault();
+                    setItemModificar(selecao);
+                    setOperacao("3");
+                    setMostrarModal(true);
+                }} 
+             $bgcolor={cores.corDeletar}>Excluir</VerticalBtn>
+            <VerticalBtn>Procurar</VerticalBtn>
+            </BoxImovel>
+        : <AdicionarBtn onClick={(e)=>{
+            e.preventDefault();
+            setMostrarModal(true)}
+        } >Nenhum imóvel cadastrado, clique aqui para cadastrar um novo</AdicionarBtn>}
+            </BoxImoveis>
+    )
+}
+
+export default CardImovel;
+
+// ESTILOS
+
+const BoxContainer = styled(Box)`
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  align-items: flex-start;
+  gap: 10px;
+`;
+
+
+const Chave = styled.p`
+    font-size: 1rem;
+    color: gray;
+    font-weight: bold;  
+    margin: 0;
+    `;
+const Valor = styled.p`
+    font-size: 1rem;
+    color: gray;
+    margin: 0;
+    `;
+const DivInformacao = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin: 10px 20px;
+    width: 80%;
+    `;
+const LinhaInformacao = styled.div`
+    display: flex;
+    flex-direction: row;
+    margin: 5px 0;
+    gap: 10px;
+    justify-content: space-between;
+    `;
+
+
+const AdicionarBtn = styled(Button)`
+    min-height: 100px;
+    height: 100%;
+    width: 90%;
+    margin: 10px auto;
+    background-color: ${cores.cor3Transparente};
+    `;
+
+const TituloVertical = styled.h3`
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    color: ${cores.corTextoClaro};
+    background-color: ${cores.cor3};
+    padding: 10px;
+    margin: 0;
+    `;
+
+const VerticalBtn = styled(Button)`
+    height: 90%;
+    width: 10%;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    margin: auto 5px;
+    `;
+const BoxImoveis = styled.div`
+    display: flex;
+    border: 1px solid ${cores.boxShadow};
+    max-height: 9em;
+    grid-column: span 10;
+`;
+const BoxImovel = styled.div`
+    display: flex;
+    border: 1px solid black;
+    background-color: ${cores.backgroundBotaoSemFoco2};
+    width: 100%;
+    margin: 0 5px;
+    `;

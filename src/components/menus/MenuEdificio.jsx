@@ -1,25 +1,239 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Box from "../SubBox";
-import Label from "../SubLabel";
-import TabelaCompleta from "../SubTabela";
-import CampusOpcoes from "./MenuEdificioCampus";
-import BlocosOpcoes from "./MenuEdificioBlocos";
-import PavimentosOpcoes from "./MenuEdificioPavimentos";
-import Colapse from "../SubColapse";
-import TabelaCompletaTeste from "../SubTabelaEditavel";
+import CardImovel from "./MenuEdificioCampus";
+import CardBloco from "./MenuEdificioBlocos";
+import CardPavimento from "./MenuEdificioPavimentos";
 import SalaOpcoes from "./MenuSalas";
-import { TbSettingsExclamation } from "react-icons/tb";
 import Button from "../SubButton";
 import cores from "../Cores.js"
-import { supabase } from "/supabaseClient";
-import { use } from "react";
-import Slide from "../Slide.jsx";
 import terreo from "../..//components/Plantas/TERREO_PAVIMENTO.png";
-import { random } from "nanoid";
 import BussolaCarregando from "../BussolaLoading.jsx";
 import Modal from "../SubModal.jsx";
+import { supabase } from "/supabaseClient";
 
+
+
+async function LerDadosImoveis(empresaId) {
+    //informar uma lista composta de ['coluna', valorProcurado] para utilizar a condicao
+    let query = supabase
+    .from('imoveis')
+    .select(`
+            *,
+            blocos(
+                *,
+                pavimentos(
+                    *,
+                    comodos(*)
+                    ))
+        `)
+    .eq("empresa_id", empresaId)
+    .order('nome', {ascending:true})
+    .order('nome', {foreignTable: 'blocos', ascending: true})
+    .order('numero', {foreignTable: 'blocos.pavimentos', ascending: true})
+    .order('numero', {foreignTable: 'blocos.pavimentos.comodos', ascending: true})
+    ;
+
+    try {
+    const { data, error } = await query;
+    
+    if (error) {
+      console.error("Erro ao ler dados na tabela:", error);
+      return [];
+    }
+    
+    return data || [];
+} catch (err) {
+    console.error("Erro inesperado ao ler dados de ", err);
+    return [];
+}
+}
+
+
+/*
+function CardImovel({dadosImovel, dadosUsuario, selecao, setSelecao }) {
+    const [operacao, setOperacao] = useState("1")
+    const [itemModificar, setItemModificar] = useState(null)
+    const [mostrarModal, setMostrarModal] = useState(false);
+
+    const data = selecao;
+
+
+    return (
+        <BoxImoveis>
+        <Modal aberto={mostrarModal} onFechar={() => setMostrarModal(false)}>
+            <CampusOpcoes 
+                usuarioLogado={dadosUsuario} 
+                operacaoEnviada={operacao} 
+                item={itemModificar}>
+            </CampusOpcoes>
+
+        </Modal>
+        <TituloVertical>Imóveis</TituloVertical>
+        {dadosImovel.length > 0 ? 
+            <BoxImovel>
+            <DivInformacao>
+                <LinhaInformacao>
+                    <Valor>{data.nome}</Valor>
+                    <Valor>{data.cidade}/{data.estado}</Valor>
+                </LinhaInformacao>
+                <LinhaInformacao>
+                    <Valor>{data.logradouro}</Valor>
+                </LinhaInformacao>
+                <LinhaInformacao>
+                    <Valor>{data.complemento}</Valor>
+                </LinhaInformacao>
+                <LinhaInformacao>
+                    <Chave>Blocos:</Chave>
+                    <Valor>{data?.blocos?.length || 0}</Valor>
+                    <Chave>Pavimentos:</Chave>
+                    <Valor>{data?.blocos?.pavimentos?.length || 0}</Valor>
+                    <Chave>Salas:</Chave>
+                    <Valor>{data?.blocos?.pavimentos?.comodos?.length || 0}</Valor>
+                </LinhaInformacao>
+            </DivInformacao>
+            <VerticalBtn onClick={(e)=>{
+                e.preventDefault();
+                setItemModificar(selecao);
+                setOperacao("2");
+                setMostrarModal(true);
+            }} $bgcolor={cores.backgroundBotaoSemFoco}>Atualizar</VerticalBtn>
+            <VerticalBtn
+                onClick={(e)=>{
+                    e.preventDefault();
+                    setItemModificar(selecao);
+                    setOperacao("3");
+                    setMostrarModal(true);
+                }} 
+             $bgcolor={cores.corDeletar}>Excluir</VerticalBtn>
+            <VerticalBtn>Procurar</VerticalBtn>
+            </BoxImovel>
+        : <AdicionarBtn onClick={(e)=>{
+            e.preventDefault();
+            setMostrarModal(true)}
+        } >Nenhum imóvel cadastrado, clique aqui para cadastrar um novo</AdicionarBtn>}
+            </BoxImoveis>
+    )
+}*/
+function CardContrato({dados}){
+    const data = dados
+    return(
+        <>
+        <Chave>Imoveis</Chave><Valor>1/{dados.qtd_comodos}</Valor>
+        </>
+    )
+}
+function CardComodos({dados}){
+    const data = [1,2]
+    return(
+        <BoxComodos>
+            <TituloVertical>Salas</TituloVertical>
+            <ListaSalas>
+                <BoxComodo>
+                    <AdicionarBtn>+ Adicionar Novo</AdicionarBtn>
+                </BoxComodo>
+                {data.map((item)=>(
+                    <BoxComodo>
+                                <TituloHorizontal>Sala de aula</TituloHorizontal>
+                        <DivInformacao>
+                            <LinhaInformacao>
+                                <Chave>Número:</Chave>
+                                <Valor>{item}</Valor>
+                            </LinhaInformacao>
+                            <LinhaInformacao>
+                                <Chave>Nome:</Chave>
+                                <Valor>Elon</Valor>
+                            </LinhaInformacao>
+                            <LinhaInformacao>
+                                <Chave>Lotação:</Chave>
+                                <Valor>60</Valor>
+                            </LinhaInformacao>
+                        </DivInformacao>
+                        <HorizontalBtn $bgcolor={cores.backgroundBotaoSemFoco}>Atualizar</HorizontalBtn>
+                        <HorizontalBtn $bgcolor={cores.corDeletar}>Excluir</HorizontalBtn>
+                    </BoxComodo>
+
+                ))}
+            </ListaSalas>
+        </BoxComodos>
+    )
+}
+
+function ConfigurarEdificio() {
+  const [usuario, setUsuario] = useState([]);
+  const [imoveis, setImoveis] = useState([]);
+  const [imovelSelecionado, setImovelSelecionado] = useState(null);
+  const [blocoSelecionado, setBlocoSelecionado] = useState(null);
+  const [pavimentoSelecionado, setPavimentoSelecionado] = useState(null);
+  const [comodosSelecionado, setComodosSelecionado] =useState(null);
+  const [contrato, setContrato] = useState([]);
+  const [carregando, setCarregando] = useState(true);
+  
+    
+    useEffect(() => {
+        async function carregar() {
+            const dadosUsuario = JSON.parse(localStorage.getItem("usuario"));
+            if (!dadosUsuario?.empresa_id) {
+                console.warn("Usuário não encontrado no localStorage.");
+                setCarregando(false);
+                return;
+            }
+            setUsuario(dadosUsuario);
+            
+            const dadosImoveisCompleto = await LerDadosImoveis(dadosUsuario.empresa_id);
+
+            setImoveis(dadosImoveisCompleto);
+            if (!imovelSelecionado && dadosImoveisCompleto.length > 0) {
+                const primeiroImovel = dadosImoveisCompleto[0];
+                const primeiroBloco = primeiroImovel.blocos?.[0] || null;
+                setImovelSelecionado(primeiroImovel);
+                if (primeiroBloco) setBlocoSelecionado(primeiroBloco);
+                }
+                setPavimentoSelecionado(blocoSelecionado?.pavimentos?.[0] || null)
+
+
+              setCarregando(false);
+            }
+            
+            carregar();
+        }, []);
+
+
+  if (carregando) return <BussolaCarregando aberto={carregando} onFechar={() => setCarregando(false)}>Buscando imóveis</BussolaCarregando>;
+    return(
+            <BoxContainer>
+                
+                {/*contrato.length === 0 && (<p>A empresa não possui um constrato ativo, por favor entre em contato para adquiri-lo</p>)*/}
+                {contrato.length > 0 && <CardContrato dados={contrato}/>}
+                {imoveis && <CardImovel 
+                selecao={imovelSelecionado} 
+                setSelecao={setImovelSelecionado} 
+                dadosImovel={imoveis} 
+                dadosUsuario={usuario}/>}
+
+                {imovelSelecionado && <CardBloco 
+                dadosBlocos={imovelSelecionado} 
+                selecao={blocoSelecionado} 
+                setSelecao={setBlocoSelecionado} 
+                dadosUsuario={usuario}
+                />}
+
+                {blocoSelecionado && <CardPavimento 
+                key={blocoSelecionado.bloco_id}
+                dadosPavimentos={blocoSelecionado} 
+                selecao={pavimentoSelecionado} 
+                setSelecao={setPavimentoSelecionado} 
+                dadosUsuario={usuario}
+                blocoId={blocoSelecionado.bloco_id}
+                />}
+                {/*pavimentoSelecionado && comodos && <CardComodos dados={comodos}/>*/}
+            </BoxContainer>
+    )
+}
+
+export default ConfigurarEdificio;
+
+// ESTILOS
 
 const BoxContainer = styled(Box)`
   display: grid;
@@ -29,24 +243,6 @@ const BoxContainer = styled(Box)`
 `;
 
 
-async function LerDados(empresaId, tabela) {
-    try {
-    const { data, error } = await supabase
-    .from(tabela)
-    .select("*")
-    .eq("empresa_id", empresaId);
-    
-    if (error) {
-      console.error("Erro ao ler dados na tabela:", tabela, error);
-      return [];
-    }
-    
-    return data || [];
-} catch (err) {
-    console.error("Erro inesperado ao ler dados de ", tabela, err);
-    return [];
-}
-}
 const Chave = styled.p`
     font-size: 1rem;
     color: gray;
@@ -215,244 +411,3 @@ const TextoSelecione = styled(Chave)`
  text-align: left;
  margin: 0 10%;
 `;
-
-
-
-function CardPavimento({dados, blocoSelecionado}) {
-    const pavimentos = []
-    return (
-        <BoxPavimentos>
-        <TituloHorizontal>Pavimentos</TituloHorizontal>
-        {pavimentos.length > 0 ? 
-        <>
-        <BoxPavimento>
-            <DivInformacaoPavimentos>
-                <TextoSelecione>Selecione:</TextoSelecione>   
-                <Select>
-                    {pavimentos.map((item)=>(
-                        
-                        <option value={item}><Nome>{(Number(item)===0 ? "Térreo" : item + "º")}</Nome></option>
-                    ))}
-                </Select>
-                <LinhaInformacaoPavimentos>
-                    <Chave>Salas:</Chave>
-                    <Valor>1</Valor>
-                </LinhaInformacaoPavimentos>
-                <LinhaInformacaoPavimentos>
-                    <Valor style={{color: cores.backgroundBotaoSemFoco2}}>|</Valor>
-                </LinhaInformacaoPavimentos>
-                <HorizontalBtn $bgcolor={cores.backgroundBotaoSemFoco}>Atualizar</HorizontalBtn>
-                <HorizontalBtn $bgcolor={cores.corDeletar}>Excluir</HorizontalBtn>
-            </DivInformacaoPavimentos>
-            <ImagemPavimento src={terreo}></ImagemPavimento>
-        </BoxPavimento>
-                <HorizontalBtn $bgcolor={cores.backgroundBotaoSemFoco} style={{width: "100%"}}>+ Adicionar pavimento</HorizontalBtn>
-        </>
-    : <AdicionarBtn>+ Adicionar Pavimento</AdicionarBtn>}
-            </BoxPavimentos>
-    )
-}
-function CardBloco({dadosBlocos, imovelSelecionado}) {
-    const blocos = [];
-    return (
-        <BoxBlocos>
-        <TituloHorizontal>Bloco</TituloHorizontal>
-        {blocos.length > 0 ? 
-        <>
-        <BoxVertical>
-            
-            <DivInformacaoVertical>
-            <TextoSelecione>Selecione:</TextoSelecione>
-            <Select>
-                {blocos.map((item)=>(
-                    
-                    <option key={item} value={0}><Nome>{item}</Nome></option>
-                ))}
-            </Select>
-                <LinhaInformacao>
-                    <Chave>Pavimentos:</Chave>
-                    <Valor>1</Valor>
-                </LinhaInformacao>
-                <LinhaInformacao>
-                    <Chave>Salas:</Chave>
-                    <Valor>1</Valor>
-                </LinhaInformacao>
-            <HorizontalBtn $bgcolor={cores.backgroundBotaoSemFoco}>Atualizar</HorizontalBtn>
-            <HorizontalBtn $bgcolor={cores.corDeletar}>Excluir</HorizontalBtn>
-            </DivInformacaoVertical>
-        </BoxVertical>
-<HorizontalBtn $bgcolor={cores.backgroundBotaoSemFoco} style={{width: "100%"}}>+ Adicionar Bloco</HorizontalBtn></>
-        : <AdicionarBtn>+ Adicionar  Bloco</AdicionarBtn>
-    
-    }
-            </BoxBlocos>
-    )
-}
-function CardImovel({dadosImovel, dadosUsuario, selecao, setSelecao }) {
-    const data = selecao;
-    const [operacao, setOperacao] = useState("1")
-    const [itemModificar, setItemModificar] = useState(null)
-    const [mostrarModal, setMostrarModal] = useState(false);
-    return (
-        <BoxImoveis>
-        <Modal aberto={mostrarModal} onFechar={() => setMostrarModal(false)}>
-            <CampusOpcoes 
-                usuarioLogado={dadosUsuario} 
-                operacaoEnviada={operacao} 
-                item={itemModificar}>
-            </CampusOpcoes>
-
-        </Modal>
-        <TituloVertical>Imóveis</TituloVertical>
-        {dadosImovel.length > 0 ? 
-            <BoxImovel>
-            <DivInformacao>
-                <LinhaInformacao>
-                    <Valor>{data.nome}</Valor>
-                    <Valor>{data.cidade}/{data.estado}</Valor>
-                </LinhaInformacao>
-                <LinhaInformacao>
-                    <Valor>{data.logradouro}</Valor>
-                </LinhaInformacao>
-                <LinhaInformacao>
-                    <Valor>{data.complemento}</Valor>
-                </LinhaInformacao>
-                <LinhaInformacao>
-                    <Chave>Blocos:</Chave>
-                    <Valor>1</Valor>
-                    <Chave>Pavimentos:</Chave>
-                    <Valor>1</Valor>
-                    <Chave>Salas:</Chave>
-                    <Valor>1</Valor>
-                </LinhaInformacao>
-            </DivInformacao>
-            <VerticalBtn onClick={(e)=>{
-                e.preventDefault();
-                setItemModificar(selecao);
-                setOperacao("2");
-                setMostrarModal(true);
-            }} $bgcolor={cores.backgroundBotaoSemFoco}>Atualizar</VerticalBtn>
-            <VerticalBtn
-                onClick={(e)=>{
-                    e.preventDefault();
-                    setItemModificar(selecao);
-                    setOperacao("3");
-                    setMostrarModal(true);
-                }} 
-             $bgcolor={cores.corDeletar}>Excluir</VerticalBtn>
-            <VerticalBtn>Procurar</VerticalBtn>
-            </BoxImovel>
-        : <AdicionarBtn onClick={(e)=>{
-            e.preventDefault();
-            setMostrarModal(true)}
-        } >Nenhum imóvel cadastrado, clique aqui para cadastrar um novo</AdicionarBtn>}
-            </BoxImoveis>
-    )
-}
-function CardContrato({dados}){
-    const data = dados
-    return(
-        <>
-        <Chave>Imoveis</Chave><Valor>1/{dados.qtd_comodos}</Valor>
-        </>
-    )
-}
-function CardComodos({dados}){
-    const data = [1,2]
-    return(
-        <BoxComodos>
-            <TituloVertical>Salas</TituloVertical>
-            <ListaSalas>
-                <BoxComodo>
-                    <AdicionarBtn>+ Adicionar Novo</AdicionarBtn>
-                </BoxComodo>
-                {data.map((item)=>(
-                    <BoxComodo>
-                                <TituloHorizontal>Sala de aula</TituloHorizontal>
-                        <DivInformacao>
-                            <LinhaInformacao>
-                                <Chave>Número:</Chave>
-                                <Valor>{item}</Valor>
-                            </LinhaInformacao>
-                            <LinhaInformacao>
-                                <Chave>Nome:</Chave>
-                                <Valor>Elon</Valor>
-                            </LinhaInformacao>
-                            <LinhaInformacao>
-                                <Chave>Lotação:</Chave>
-                                <Valor>60</Valor>
-                            </LinhaInformacao>
-                        </DivInformacao>
-                        <HorizontalBtn $bgcolor={cores.backgroundBotaoSemFoco}>Atualizar</HorizontalBtn>
-                        <HorizontalBtn $bgcolor={cores.corDeletar}>Excluir</HorizontalBtn>
-                    </BoxComodo>
-
-                ))}
-            </ListaSalas>
-        </BoxComodos>
-    )
-}
-
-function ConfigurarEdificio() {
-  const [usuario, setUsuario] = useState([]);
-  const [imoveis, setImoveis] = useState([]);
-  const [imovelSelecionado, setImovelSelecionado] = useState(null);
-  const [blocos, setBlocos] = useState([]);
-  const [blocoSelecionado, setBlocoSelecionado] = useState(null);
-  const [pavimentos, setPavimentos] = useState([]);
-  const [pavimentoSelecionado, setPavimentoSelecionado] = useState(null);
-  const [comodos, setComodos] =useState([]);
-  const [comodosSelecionado, setComodosSelecionado] =useState(null);
-  const [contrato, setContrato] = useState([]);
-  const [carregando, setCarregando] = useState(true);
-
-  useEffect(()=>{
-    !imovelSelecionado &&
-    setImovelSelecionado(imoveis[0])
-  },[imoveis])
-
-  useEffect(() => {
-    async function carregar() {
-      const dadosUsuario = JSON.parse(localStorage.getItem("usuario"));
-      if (!dadosUsuario?.empresa_id) {
-        console.warn("Usuário não encontrado no localStorage.");
-        setCarregando(false);
-        return;
-      }
-      setUsuario(dadosUsuario);
-      const listaImoveis = await LerDados(dadosUsuario.empresa_id,"imoveis");
-      setImoveis(listaImoveis);
-      const listaBlocos = await LerDados(dadosUsuario.empresa_id,"blocos");
-      setBlocos(listaBlocos);
-      const listaPavimentos = await LerDados(dadosUsuario.empresa_id,"pavimentos");
-      setPavimentos(listaPavimentos);
-      const listaComodos = await LerDados(dadosUsuario.empresa_id,"comodos");
-      setComodos(listaComodos);
-      const dadosContrato =  await LerDados(dadosUsuario.empresa_id,"contratos_empresas");
-      setContrato(dadosContrato);
-      setCarregando(false);
-    }
-
-    carregar();
-  }, []);
- 
-  useEffect(()=>{
-    const blocosDoImovelSelecionado = blocos.filter(item => item.imovel_id === imovelSelecionado.imovel_id);
-    setBlocoSelecionado(blocosDoImovelSelecionado[0])
-  }, imovelSelecionado);
-
-  if (carregando) return <Box><BussolaCarregando size="150px" ativo={true} /></Box>;
-    return(
-            <BoxContainer>
-                
-                {/*contrato.length === 0 && (<p>A empresa não possui um constrato ativo, por favor entre em contato para adquiri-lo</p>)*/}
-                {contrato.length > 0 && <CardContrato dados={contrato}/>}
-                {imoveis && <CardImovel selecao={imovelSelecionado} setSelecao={setImovelSelecionado} dadosImovel={imoveis} dadosUsuario={usuario}/>}
-                {imovelSelecionado && blocos && <CardBloco dadosBlocos={blocos} imovelSelecionado={imovelSelecionado} />}
-                {blocoSelecionado && pavimentos && <CardPavimento dadosBlocos={pavimentos} imovelSelecionado={imovelSelecionado} />}
-                {pavimentoSelecionado && comodos && <CardComodos dados={comodos}/>}
-            </BoxContainer>
-    )
-}
-
-export default ConfigurarEdificio;

@@ -74,7 +74,6 @@ function Footer(){
                     <LiMenu>Daniel Augusto Ribeiro de Oliveira / 202322047</LiMenu>
                     <LiMenu>Erika Sebould Gomes Pereira / 202322086</LiMenu>
                     <LiMenu>Vitória Alves Pinheiro / 202322091</LiMenu>
-                    <LiMenu>Thiago marinho da Silva / 202322140</LiMenu>
                 </UlMenu>
             </Content>
         </FooterMenu>
