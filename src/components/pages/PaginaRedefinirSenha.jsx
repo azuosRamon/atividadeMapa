@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Container from "../SubContainer";
 import Box from "../SubBox";
@@ -10,190 +10,275 @@ import SpamSublinhado from "../SubSpam";
 import cores from "../Cores";
 import { supabase } from "../../../supabaseClient";
 
-// Componente para o Título (manter o nome original para consistência com o arquivo original)
+// Componente de título (mantido com o mesmo nome original)
 const Title = styled.h2`
-margin: 0 0 20px;
-color: ${cores.corTexto};
+  margin: 0 0 20px;
+  color: ${cores.corTexto};
 `;
 
-// Estilização para o indicador de força da senha
-const ForcaSenhaIndicador = styled.div`
-    margin-bottom: 15px;
-    font-size: 0.9em;
-    color: ${props => props.$color};
-    font-weight: bold;
+const TooltipContainer = styled.div`
+  position: relative;
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-size: 0.9em;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  text-align: left;
+`;
+
+const RequisitoSenhaItem = styled.li`
+  list-style: none;
+  color: ${(props) => (props.$valido ? "#4CAF50" : "#FF4D4D")};
+  font-weight: bold;
+  transition: color 0.3s ease;
 `;
 
 /**
- * Função para verificar a força da senha.
+ * Função para verificar os requisitos da senha.
  * @param {string} senha - A senha a ser verificada.
- * @returns {{text: string, color: string}} - Objeto com o texto e a cor indicativa.
+ * @returns {object} - Objeto com o status de cada requisito.
  */
-const verificarForcaSenha = (senha) => {
-    if (senha.length < 6) return { text: "Mínimo 6 caracteres", color: cores.corTexto }; // Cor padrão
+const verificarRequisitosSenha = (senha) => {
+  const requisitos = {
+    comprimento: senha.length >= 6,
+    maiuscula: /[A-Z]/.test(senha),
+    minuscula: /[a-z]/.test(senha),
+    numero: /\d/.test(senha),
+    especial: /[^a-zA-Z0-9]/.test(senha),
+  };
+  const todosValidos = Object.values(requisitos).every(Boolean);
+  return { ...requisitos, todosValidos };
+};
 
-    let pontuacao = 0;
-    if (senha.length >= 8) pontuacao++;
-    if (/[a-z]/.test(senha) && /[A-Z]/.test(senha)) pontuacao++; // Letras maiúsculas e minúsculas
-    if (/\d/.test(senha)) pontuacao++; // Números
-    if (/[^a-zA-Z0-9]/.test(senha)) pontuacao++; // Caracteres especiais
+function PaginaRedefinirSenha() {
+  const [senha, setSenha] = useState("");
+  const [confirmacao, setConfirmacao] = useState("");
+  const [isInputFocused, setIsInputFocused] = useState(false);
+  const [requestState, setRequestState] = useState({
+    status: "idle",
+    error: null,
+  });
 
-    if (pontuacao < 2) return { text: "Fraca", color: '#FF4D4D' }; // Vermelho
-    if (pontuacao < 4) return { text: "Média", color: '#FFB84D' }; // Laranja
-    return { text: "Forte", color: '#4CAF50' }; // Verde
-}
+  const navegar = useNavigate();
 
-function PaginaRedefinirSenha(){
-    // Estados
-    const [senha, setSenha] = useState("");
-    const [confirmacao, setConfirmacao] = useState("");
-    const [status, setStatus] = useState(null); // null | 'loading' | 'ready' | 'sent' | 'error'
-    const [mensagemErro, setMensagemErro] = useState("");
-    const navegar = useNavigate(); // Hook renomeado para "navegar"
+  const requisitosSenha = useMemo(() => {
+    const resultados = verificarRequisitosSenha(senha);
+    console.log("Status da Senha:", resultados);
+    return resultados;
+  }, [senha]);
 
-    // Calcula a força da senha a cada mudança
-    const forca = useMemo(() => verificarForcaSenha(senha), [senha]);
+  useEffect(() => {
+    if (requestState.error) {
+      setRequestState((prevState) => ({ ...prevState, error: null }));
+    }
+  }, [senha, confirmacao]);
 
-    // Efeito para validar o token da URL
-    useEffect(() => {
-        const tentarConfigurarSessaoDaUrl = async () => {
-            setStatus('loading');
+  useEffect(() => {
+    const tentarConfigurarSessaoDaUrl = async () => {
+      setRequestState({ status: "loading", error: null });
 
-            // O Supabase costuma enviar os tokens no hash (ex: #access_token=...)
-            const parametrosBusca = new URLSearchParams(window.location.search);
-            const hash = window.location.hash ? window.location.hash.replace('#', '?') : '';
-            const parametrosHash = new URLSearchParams(hash);
+      const params = new URLSearchParams(
+        window.location.search + window.location.hash.replace("#", "&")
+      );
 
-            // Extração de tokens (mantendo nomes originais por serem parte da API Supabase)
-            const access_token = parametrosBusca.get('access_token') || parametrosHash.get('access_token') || parametrosBusca.get('token') || parametrosHash.get('token');
-            const refresh_token = parametrosBusca.get('refresh_token') || parametrosHash.get('refresh_token');
+      const access_token = params.get("access_token") || params.get("token");
+      const refresh_token = params.get("refresh_token");
 
-            // Verificação de erro na URL
-            const erroDaUrl = parametrosBusca.get('error') || parametrosHash.get('error');
-            const descricaoErro = parametrosBusca.get('error_description') || parametrosHash.get('error_description');
-            if (erroDaUrl) {
-                setMensagemErro(decodeURIComponent(descricaoErro || erroDaUrl));
-                setStatus('error');
-                return;
-            }
+      const erroDaUrl = params.get("error");
+      const descricaoErro = params.get("error_description");
 
-            if (!access_token) {
-                // Sem token: Mensagem de erro para o usuário
-                setMensagemErro("Link de recuperação inválido ou expirado. Tente novamente a recuperação de senha.");
-                setStatus('error');
-                return;
-            }
+      if (erroDaUrl) {
+        setRequestState({
+          status: "error",
+          error: decodeURIComponent(descricaoErro || erroDaUrl),
+        });
+        return;
+      }
 
-            try{
-                // Seta a sessão no cliente (necessário para chamar updateUser em seguida)
-                const { data, error } = await supabase.auth.setSession({ access_token, refresh_token });
-                if (error) {
-                    setMensagemErro(error.message || 'Erro ao validar token.');
-                    setStatus('error');
-                    return;
-                }
+      if (!access_token) {
+        setRequestState({
+          status: "error",
+          error:
+            "Link de recuperação inválido ou expirado. Tente novamente a recuperação de senha.",
+        });
+        return;
+      }
 
-                // Limpa tokens da URL
-                try {
-                    const caminhoLimpo = window.location.pathname;
-                    window.history.replaceState({}, document.title, caminhoLimpo);
-                } catch (e) {
-                    console.warn('Não foi possível limpar tokens da URL', e);
-                }
+      try {
+        const { data, error } = await supabase.auth.setSession({
+          access_token,
+          refresh_token,
+        });
 
-                // Agora o usuário pode informar a nova senha
-                setStatus('ready');
-            }catch(err){
-                setMensagemErro(err.message || 'Erro inesperado.');
-                setStatus('error');
-            }
-        }
-        tentarConfigurarSessaoDaUrl();
-    }, []);
+        if (error) {
+          setRequestState({
+            status: "error",
+            error: error.message || "Erro ao validar token.",
+          });
+          return;
+        }
 
-    /**
-     * Envia a nova senha para o Supabase
-     * @param {Event} e - Evento de submissão do formulário.
-     */
-    const enviarNovaSenha = async (e) => {
-        e.preventDefault();
-        setMensagemErro("");
-        
-        if (forca.text === "Mínimo 6 caracteres" || forca.text === "Fraca"){
-            setMensagemErro('A senha é muito fraca ou não atende aos requisitos mínimos.');
-            return;
-        }
-        if (senha !== confirmacao){
-            setMensagemErro('As senhas não coincidem.');
-            return;
-        }
-        setStatus('loading');
-        try{
-            // O cliente supabase está autenticado, então updateUser funciona
-            const { data, error } = await supabase.auth.updateUser({ password: senha }); // Usamos 'password' pois é a propriedade da API
-            if (error){
-                setMensagemErro(error.message || 'Erro ao atualizar senha.');
-                setStatus('error');
-                return;
-            }
-            setStatus('sent');
-        }catch(err){
-            setMensagemErro(err.message || 'Erro inesperado.');
-            setStatus('error');
-        }
-    }
+        try {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        } catch (e) {
+          console.warn("Não foi possível limpar tokens da URL", e);
+        }
 
-    return (
-        <Container>
-            <Box>
-                <Title>Redefinir senha</Title>
+        setRequestState({ status: "ready", error: null });
+      } catch (err) {
+        setRequestState({
+          status: "error",
+          error: err.message || "Erro inesperado.",
+        });
+      }
+    };
 
-                {status === null && (
-                    <ParagrafoInformacao>Aguardando a validação do link de recuperação. Certifique-se de ter chegado a esta página através do link enviado ao seu e‑mail.</ParagrafoInformacao>
-                )}
+    if (window.location.search || window.location.hash) {
+      tentarConfigurarSessaoDaUrl();
+    } else {
+      setRequestState({
+        status: "error",
+        error:
+          "Link de recuperação inválido ou expirado. Tente novamente a recuperação de senha.",
+      });
+    }
+  }, []);
 
-                {status === 'loading' && <ParagrafoInformacao>Validando token...</ParagrafoInformacao>}
+  const enviarNovaSenha = async (e) => {
+    e.preventDefault();
+    setRequestState({ status: "loading", error: null });
 
-                {status === 'ready' && (
-                    <form onSubmit={enviarNovaSenha}>
-                        <Input 
-                            type="password" 
-                            value={senha} 
-                            onChange={(e) => setSenha(e.target.value)} 
-                            placeholder="Nova senha" 
-                            required 
-                            minLength={6} 
-                        />
-                        <ForcaSenhaIndicador $color={forca.color}>
-                            {forca.text}
-                        </ForcaSenhaIndicador>
-                        <Input 
-                            type="password" 
-                            value={confirmacao} 
-                            onChange={(e) => setConfirmacao(e.target.value)} 
-                            placeholder="Confirme a nova senha" 
-                            required 
-                        />
-                        <Button type="submit" disabled={status === 'loading'}>Atualizar senha</Button>
-                    </form>
-                )}
+    if (!requisitosSenha.todosValidos) {
+      setRequestState({
+        status: "ready",
+        error: "A senha não atende a todos os requisitos.",
+      });
+      return;
+    }
 
-                {status === 'sent' && (
-                    <>
-                        <ParagrafoInformacao>Senha atualizada com sucesso.</ParagrafoInformacao>
-                        <Button onClick={() => navegar('/login')}>Ir para Login</Button>
-                    </>
-                )}
-                
-                {status === 'error' && (
-                    <>
-                        <ParagrafoInformacao style={{color: 'red'}}>{mensagemErro}</ParagrafoInformacao>
-                        <Button onClick={() => navegar('/RecuperarSenha')}>Tentar Recuperar Senha Novamente</Button>
-                    </>
-                )}
-            </Box>
-        </Container>
-    )
+    if (senha !== confirmacao) {
+      setRequestState({
+        status: "ready",
+        error: "As senhas não coincidem.",
+      });
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.auth.updateUser({ password: senha });
+
+      if (error) {
+        setRequestState({
+          status: "ready",
+          error: error.message || "Erro ao atualizar senha.",
+        });
+        return;
+      }
+
+      setRequestState({ status: "sent", error: null });
+    } catch (err) {
+      setRequestState({
+        status: "error",
+        error: err.message || "Erro inesperado.",
+      });
+    }
+  };
+
+  return (
+    <Container>
+      <Box>
+        <Title>Redefinir senha</Title>
+
+        {requestState.status === "idle" && (
+          <ParagrafoInformacao>
+            Aguardando a validação do link de recuperação. Certifique-se de ter
+            chegado a esta página através do link enviado ao seu e-mail.
+          </ParagrafoInformacao>
+        )}
+
+        {requestState.status === "loading" && (
+          <ParagrafoInformacao>Aguarde...</ParagrafoInformacao>
+        )}
+
+        {requestState.status === "ready" && (
+          <form onSubmit={enviarNovaSenha}>
+            <Input
+              type="password"
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+              onFocus={() => setIsInputFocused(true)}
+              onBlur={() => setIsInputFocused(false)}
+              placeholder="Nova senha"
+              required
+              minLength={6}
+            />
+
+            {isInputFocused && (
+              <TooltipContainer>
+                <ul>
+                  <RequisitoSenhaItem $valido={requisitosSenha.comprimento}>
+                    Pelo menos 6 caracteres
+                  </RequisitoSenhaItem>
+                  <RequisitoSenhaItem $valido={requisitosSenha.maiuscula}>
+                    Uma letra maiúscula
+                  </RequisitoSenhaItem>
+                  <RequisitoSenhaItem $valido={requisitosSenha.minuscula}>
+                    Uma letra minúscula
+                  </RequisitoSenhaItem>
+                  <RequisitoSenhaItem $valido={requisitosSenha.numero}>
+                    Um número
+                  </RequisitoSenhaItem>
+                  <RequisitoSenhaItem $valido={requisitosSenha.especial}>
+                    Um caractere especial
+                  </RequisitoSenhaItem>
+                </ul>
+              </TooltipContainer>
+            )}
+
+            <Input
+              type="password"
+              value={confirmacao}
+              onChange={(e) => setConfirmacao(e.target.value)}
+              placeholder="Confirme a nova senha"
+              required
+            />
+
+            <Button type="submit" disabled={requestState.status === "loading"}>
+              Atualizar senha
+            </Button>
+
+            {requestState.error && (
+              <ParagrafoInformacao style={{ color: "red", marginTop: "10px" }}>
+                {requestState.error}
+              </ParagrafoInformacao>
+            )}
+          </form>
+        )}
+
+        {requestState.status === "sent" && (
+          <>
+            <ParagrafoInformacao>
+              Senha atualizada com sucesso.
+            </ParagrafoInformacao>
+            <Button onClick={() => navegar("/login")}>Ir para Login</Button>
+          </>
+        )}
+
+        {requestState.status === "error" && (
+          <>
+            <ParagrafoInformacao style={{ color: "red" }}>
+              {requestState.error}
+            </ParagrafoInformacao>
+            <Button onClick={() => navegar("/RecuperarSenha")}>
+              Tentar Recuperar Senha Novamente
+            </Button>
+          </>
+        )}
+      </Box>
+    </Container>
+  );
 }
 
 export default PaginaRedefinirSenha;
