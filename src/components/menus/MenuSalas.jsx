@@ -15,6 +15,43 @@ import terreo from "../Plantas/TERREO_PAVIMENTO.png";
 import primeiro_pavimento from "../Plantas/PRIMEIRO_PAVIMENTO.png";
 import segundo_pavimento from "../Plantas/SEGUNDO_PAVIMENTO.png";
 import terceiro_pavimento from "../Plantas/TERCEIRO_PAVIMENTO.png";
+import CriarCamposFormulario from "../SubCriadorForm";
+
+import mapa from "../BdObjetoTabelas";
+//import terreo from "../..//components/Plantas/TERREO_PAVIMENTO.png";
+import BussolaCarregando from "../BussolaLoading.jsx";
+import { supabase } from "/supabaseClient";
+import Title from "../SubTitleH2";
+import { use } from "react";
+
+async function LerNovosDados(empresaId, pavimentoId) {
+    //informar uma lista composta de ['coluna', valorProcurado] para utilizar a condicao
+    let query = supabase
+    .from('comodos')
+    .select(`*,
+                    tipos_areas(nome)
+        `)
+    .eq("empresa_id", empresaId)
+    .eq('pavimento_id', pavimentoId)
+    .order('numero')
+    ;
+
+    try {
+    const { data, error } = await query;
+    
+    if (error) {
+      console.error("Erro ao ler dados na tabela:", error);
+      return [];
+    }
+    
+    return data || [];
+} catch (err) {
+    console.error("Erro inesperado ao ler dados de ", err);
+    return [];
+}
+}
+
+
 
 const imagens = [terreo, primeiro_pavimento, segundo_pavimento, terceiro_pavimento];
 
@@ -25,29 +62,14 @@ display: grid;
 box-sizing: border-box;
 grid-template-columns: 1fr 1fr 1fr;
 grid-template-areas: 
-    "operacao operacao idSala"
-    "campusId campusId lotacao"
-    "blocoId blocoId pavimento"
     "numero apelido apelido"
-    "tipoArea tipoArea croqui"
+    "tipoArea lotacao croqui"
     "reset . botoes";
 
+
 @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-        "operacao"
-        "idSala"
-        "campusId"
-        "tipoArea"
-        "lotacao"
-        "blocoId" 
-        "pavimento"
-        "numero" 
-        "apelido"
-        "imagem"
-        "croqui"
-        "reset"
-        "botoes";
+    display: flex;
+    flex-direction: column;
 }
 `;
 const ButtonVoltar = styled(Button)`
@@ -80,188 +102,105 @@ const FecharBotao = styled.button`
     border-radius: 50%;
 `;
 
+const TitleSublinhado = styled(Title)`
+    border-bottom: 2px solid;
+    margin-bottom: 20px;
+`
 
-function SalaOpcoes() {
+
+function SalaOpcoes({ usuarioLogado, operacaoEnviada, item = null, pavimentoId=null, onAtualizar }) {
+    const tabela = mapa.comodos;
     const [pontos, setPontos] = useState("[]");
-    const [objeto, setObjeto] = useState({
-        sala_id: "",
-        numero: "",
-        apelido: "",
-        tipo_area_id: 1,
-        lotacao: 0,
-        pavimento_id: "",
-        lista_coordenadas: pontos,
-    });
-    const [operacao, setOperacao] = useState("1");
+    const [objeto, setObjeto] = useState(
+            Object.fromEntries(
+                !item ?
+                Object.entries(tabela.campos).map(([k, v]) => ([k, k=="empresa_id" ? 
+                    usuarioLogado.empresa_id: k == "pavimento_id" ? pavimentoId : v.valor]))
+                :
+                Object.entries(item)
+    
+            )
+        );
+
+    const [operacao, setOperacao] = useState(operacaoEnviada || "1");
 
     useEffect(() => {
         setObjeto(prev => ({ ...prev, ["lista_coordenadas"]: pontos }));
     }, [pontos])
 
     
-    const {
+     const {
         data,
         pesquisa,
         loading,
         fazerEnvio,
         alterarObjeto
-    } = useBancoDeDados({
-        nomeTabela: "comodos",
+      } = useBancoDeDados({
+        nomeTabela: tabela.tabela.nome,
         objeto,
         setObjeto,
         operacao,
-        campoId: "comodo_id",
-        campoNome: "numero"
-    });
+        campoId: tabela.tabela.lista[0],
+        campoNome: tabela.tabela.lista[1],
+      });
 
-    const [campusSelecionado, setCampusSelecionado] = useState(0)
-    const [blocoSelecionado, setBlocoSelecionado] = useState(0)
+      const atualizarDados = async (e)=>{
+        e.preventDefault();
+        try {
+            await fazerEnvio(e);
+            if (onAtualizar) await onAtualizar(); // 🔹 atualiza lista e fecha modal
+        }
+        catch(error){
+            console.error("erro ao cadastrar salas", err.message);
+        }
+      }
 
-    const [listaSalas, setListaSalas] = useState([])
-    const [loadingSalas, setLoadingSalas] = useState(true)
-
-    const [listaPavimentos, setListaPavimentos] = useState([])
-    const [loadingPavimentos, setLoadingPavimentos] = useState(true)
-    const [listaBlocos, setListaBlocos] = useState([])
-    const [listaCampus, setListaCampus] = useState([])
-    const [loadingCampus, setLoadingCampus] = useState(true)
-    const [loadingBlocos, setLoadingBlocos] = useState(true)
     
     const [mostrarModal, setMostrarModal] = useState(false);
+    const [mostrarMapa, setMostrarMapa] = useState(false)
 
     useEffect(() => {
-        setCampusSelecionado(objeto.campus_id);
-        setBlocoSelecionado(objeto.bloco_id);
-        console.log(objeto)
-    }, [objeto,campusSelecionado])
-    
-    useEffect(() => {
-        SelectBancoDeDados({nomeTabela: 'campi', setData: setListaCampus, setLoading: setLoadingCampus })
-        SelectBancoDeDados({nomeTabela: 'blocos', setData: setListaBlocos, setLoading: setLoadingBlocos })
-        SelectBancoDeDados({nomeTabela: 'pavimentos', setData: setListaPavimentos, setLoading: setLoadingPavimentos })
-        SelectBancoDeDados({nomeTabela: 'salas', setData: setListaSalas, setLoading: setLoadingSalas })
-    }, [])
+        setMostrarMapa(false);
+    }, [pontos]);
 
-       const [mostrarMapa, setMostrarMapa] = useState(false)
-       const abrirImagem = () => {
-           setMostrarMapa(true)
-       }
-   
-       const fecharImagem = () => {
-           setMostrarMapa(false)
-       }
-       
-       const retirarCampusId = (e)=>{
-        const { [campus_id]: _, ...objetoSemCampus} = objeto;
-        fazerEnvio(e)
-    }
-    
+
 
     return(
             <div>
-                <FormGrid onSubmit={retirarCampusId}>
-                    <GridArea $area="operacao">
-                        <Label htmlFor="operacao">Operacao:</Label>
-                            <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(e.target.value)}}>
-                            <option value="0">Selecione a operação</option>
-                            <option value="1">Adicionar</option>
-                            <option value="2">Alterar</option>
-                           <option value="3">Deletar</option>
-                            </Select>
-                    </GridArea>
-                    <GridArea $area="idSala">
-                        <Label htmlFor="idSala">ID:</Label>
-                        <Input type="number" id="idSala" name="idSala" disabled={!operacao || Number(operacao)<=1} onChange={(e) => alterarObjeto(e, 'sala_id')}/>
-                    </GridArea>
-                    <GridArea $area="numero">
-                        <Label htmlFor="numero">Numero:</Label>
-                        <Input type="number" id="numero" value={objeto.numero} name="numero" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'numero')} required/>
-                    </GridArea>
-                    <GridArea $area="apelido">
-                        <Label htmlFor="apelido">Apelido:</Label>
-                        <Input type="text" id="apelido" value={objeto.apelido} name="apelido" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'apelido')} required/>
-                    </GridArea>
-                    <GridArea $area="tipoArea">
-                        <Label htmlFor="tipoArea">Tipo de área:</Label>
-                        <SelectComDados id="tipoArea" name="tipoArea" tabela="tipos_areas" listaColunas={["tipo_area_id", "nome"]} itemValue={objeto.tipo_area_id} change={setObjeto} required></SelectComDados>
-                    </GridArea>
-                    <GridArea $area="lotacao">
-                        <Label htmlFor="lotacao">Lotação:</Label>
-                        <Input type="text" id="lotacao" value={objeto.lotacao} name="tipoArea" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'lotacao')} required/>
-                    </GridArea>
-                            <GridArea $area="campusId">
-                            <Label htmlFor="campusId">Selecione o campus:</Label>
-                            <SelectComDados id="campusId" name="campusId" tabela="campi" campoDesejado={["nome","cidade"]} listaColunas={["campus_id", "nome", "cidade"]} itemValue={objeto.campoId} change={setObjeto}  required></SelectComDados>
-                        </GridArea>
-                        <GridArea $area="blocoId">
-                            <Label htmlFor="blocoId">Selecione o bloco:</Label>
-                                <Select id="blocoId" type='number' name="blocoId" required onChange={(e) => { setBlocoSelecionado(e.target.value)}}>
-                                    <option value="0">Selecione o Bloco</option>
-                                {!loadingBlocos && 
-                                    listaBlocos.filter(bloco => (
-                                        Number(bloco.campus_id) === Number(campusSelecionado)
-                                    )).length > 0 ? (
-                                        listaBlocos
-                                        .filter(bloco => Number(bloco.campus_id) === Number(campusSelecionado))
-                                        .map(bloco => (
-                                            <option key={bloco.bloco_id} value={Number(bloco.bloco_id)}>
-                                            {`Bloco ${bloco.nome}`}
-                                            </option>
-                                        ))
-                                    ) : (
-                                        <option value="0" disabled>Nenhum bloco encontrado</option>
-                                    )
-                                    }
-                                </Select>
-                        </GridArea>
-                    <GridArea $area="pavimento">
-                        <Label htmlFor="pavimento">Pavimento:</Label>
-                                <Select id="pavimento" type='number' name="pavimento" required onChange={(e) => { alterarObjeto(e, 'pavimento_id')}}>
-                                    <option value="0">Selecione o Pavimento</option>
-                                {!loadingPavimentos && 
-                                    listaPavimentos.filter(pavimento => (
-                                        Number(pavimento.bloco_id) === Number(blocoSelecionado)
-                                    )).length > 0 ? (
-                                        listaPavimentos
-                                        .filter(pavimento => Number(pavimento.bloco_id) === Number(blocoSelecionado))
-                                        .map(pavimento => (
-                                            <option key={pavimento.pavimento_id} value={Number(pavimento.pavimento_id)}>
-                                            {`${pavimento.numero}º - Pavimento`}
-                                            </option>
-                                        ))
-                                    ) : (
-                                        <option value="0" disabled>Nenhum pavimento encontrado</option>
-                                    )
-                                    }
-                                </Select>
-                    </GridArea>
+                <TitleSublinhado>SALA</TitleSublinhado>
+                <FormGrid onSubmit={atualizarDados}>
+                    <CriarCamposFormulario 
+                                        item={tabela}
+                                        setFuncao={alterarObjeto}
+                                        operacao={operacao}
+                                        setOperacao={setOperacao}
+                                        objeto ={objeto}
+                                        >
+
                     <GridArea $area="croqui">
                         <Label htmlFor="croqui">Croqui:</Label>
                         <Button onClick={(e) => {
                             e.preventDefault();
-                            setMostrarModal(true);
+                            setMostrarMapa(true);
                         }}>Editar sala</Button>
-                        <Modal aberto={mostrarModal} onFechar={() => setMostrarModal(false)}>
+                        <Modal aberto={mostrarMapa} onFechar={() => setMostrarMapa(false)}>
+                            <TitleSublinhado>Croqui</TitleSublinhado>
                             <Slide
                                 lista_imagens={[terreo]}
                                 pagina_inicio={0}
                                 capturarCoordenadas = {true}
                                 setPontosArea={setPontos}
                                 />
-                            <ButtonVoltar $bgcolor="rgb(38, 38, 38)" onClick={() => setMostrarModal(false)}>
-                                Voltar
+                            <ButtonVoltar $bgcolor="rgb(38, 38, 38)" onClick={() => setMostrarMapa(false)}>
+                                Fechar Croqui
                             </ButtonVoltar>
                         </Modal>
                         
                     </GridArea>
 
+                                        </CriarCamposFormulario>
+                        
 
-                    <GridArea $area="reset">
-                        <Button $bgcolor={cores.backgroundBotaoSemFoco} type="reset">Limpar</Button>   
-                    </GridArea>
-                    <GridArea $area="botoes">
-                        <Button type="submit">Salvar</Button>   
-                    </GridArea>
 
                 </FormGrid>
 
@@ -269,4 +208,161 @@ function SalaOpcoes() {
     )
 }
 
-export default SalaOpcoes;
+
+function CardComodos({key, dados, dadosUsuario, pavimentoId = null}){
+        const [operacao, setOperacao] = useState("1")
+        const [itemModificar, setItemModificar] = useState(null)
+        const [mostrarModal, setMostrarModal] = useState(false);
+        const [comodos, setComodos] = useState(dados.comodos || []);
+
+        const atualizarLista = async () => {
+            const novosDados = await LerNovosDados(dadosUsuario.empresa_id, pavimentoId);
+            if (novosDados.length > 0) {
+            setComodos(novosDados || []);
+            }
+
+        };
+
+         useEffect(() => {
+                setComodos(dados?.comodos || []);
+                }, [dados]);
+            
+    return(
+        <BoxComodos>
+            <Modal aberto={mostrarModal} onFechar={() => setMostrarModal(false)}>
+                        <SalaOpcoes 
+                            usuarioLogado={dadosUsuario} 
+                            operacaoEnviada={operacao} 
+                            item={itemModificar}
+                            pavimentoId={pavimentoId || null}
+                            onAtualizar={async () => {
+                                await atualizarLista();
+                                setMostrarModal(false);
+                        }}>
+                        </SalaOpcoes>
+            
+                    </Modal>
+            <TituloVertical>Salas</TituloVertical>
+            <ListaSalas>
+                <BoxComodo>
+                    <AdicionarBtn  onClick={(e)=>{
+                        e.preventDefault();
+                        setOperacao("1");
+                        setMostrarModal(true)}}>+ Nova Sala</AdicionarBtn>
+                </BoxComodo>
+                {comodos.map((item)=>(
+                    <BoxComodo>
+                                <TituloHorizontal>{item.tipos_areas.nome}</TituloHorizontal>
+                        <DivInformacao>
+                                <Chave>{item.apelido || "Informaçoes"}</Chave>
+                            <LinhaInformacao>
+                                <Chave>Número:</Chave>
+                                <Valor>{item.numero}</Valor>
+                            </LinhaInformacao>
+                            <LinhaInformacao>
+                                <Chave>Lotação:</Chave>
+                                <Valor>{item.lotacao}</Valor>
+                            </LinhaInformacao>
+                        </DivInformacao>
+                        <HorizontalBtn 
+                          onClick={(e)=>{
+                                e.preventDefault();
+                                setItemModificar(item);
+                                setOperacao("2");
+                                setMostrarModal(true);
+                            }}
+                        $bgcolor={cores.backgroundBotaoSemFoco}>Atualizar</HorizontalBtn>
+                        <HorizontalBtn 
+                        onClick={(e)=>{
+                            e.preventDefault();
+                            setItemModificar(item);
+                            setOperacao("3");
+                            setMostrarModal(true);
+                        }}
+                        $bgcolor={cores.corDeletar}>Excluir</HorizontalBtn>
+                    </BoxComodo>
+
+                ))}
+            </ListaSalas>
+        </BoxComodos>
+    )
+}
+
+export default CardComodos;
+
+// ESTILOS
+
+
+const Chave = styled.p`
+    font-size: 1rem;
+    color: gray;
+    font-weight: bold;  
+    margin: 0;
+    `;
+const Valor = styled.p`
+    font-size: 1rem;
+    color: gray;
+    margin: 0;
+    `;
+const DivInformacao = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin: 10px 20px;
+    width: 80%;
+    `;
+const LinhaInformacao = styled.div`
+    display: flex;
+    flex-direction: row;
+    margin: 5px 0;
+    gap: 10px;
+    justify-content: space-between;
+    `;
+
+const AdicionarBtn = styled(Button)`
+    min-height: 100px;
+    height: 100%;
+    width: 90%;
+    margin: 10px auto;
+    background-color: ${cores.cor3Transparente};
+    `;
+const HorizontalBtn = styled(Button)`
+    height: 3rem;
+    width: 80%;
+    margin: 5px auto;
+    `;
+const TituloHorizontal = styled.h3`
+    color: ${cores.corTextoClaro};
+    background-color: ${cores.cor3};
+    width: 100%;
+    padding: 10px 0;
+    margin: 0;
+    `;
+const TituloVertical = styled.h3`
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    color: ${cores.corTextoClaro};
+    background-color: ${cores.cor3};
+    padding: 10px;
+    margin: 0;
+    `;
+const BoxComodos = styled.div`
+    display: flex;
+    border: 1px solid ${cores.boxShadow};
+    grid-column: span 10;
+    `;
+const BoxComodo = styled.div`
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+    background-color: ${cores.backgroundBotaoSemFoco2};
+    width: 100%;
+    margin: 0 5px;
+    grid-column: span 3;
+`;
+const ListaSalas = styled.div`
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);
+    gap:10px;
+    margin: auto;
+    width:100%;
+`;

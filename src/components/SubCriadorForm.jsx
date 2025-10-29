@@ -218,7 +218,7 @@
         )
     };
 
-    function CriarCamposFormulario({item, setFuncao = ()=>{}, operacao, setOperacao, objeto}){
+    function CriarCamposFormulario({item, setFuncao = ()=>{}, operacao, setOperacao, objeto, children}) {
         const [btnSubmit, setBtnSubmit] = useState("");
         const [backgroundBotao, setBackground] = useState(cores.backgroundBotaoSemFoco2);
         useEffect(()=>{
@@ -328,7 +328,8 @@
                         }
                         return null;
                     })
-                }
+                }       
+                    {children}
                         <GridArea $area="reset">
                             <Button $bgcolor={cores.backgroundBotaoSemFoco} type="reset">Limpar</Button>   
                         </GridArea>

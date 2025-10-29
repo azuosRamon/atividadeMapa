@@ -79,27 +79,39 @@ function CampusOpcoes({ usuarioLogado, operacaoEnviada, item = null }) {
     )
 }
 
-function CardImovel({dadosImovel, dadosUsuario, selecao, setSelecao }) {
+function CardImovel({onClick, dadosImovel=null, dadosUsuario, selecao = null, indice}) {
     const [operacao, setOperacao] = useState("1")
     const [itemModificar, setItemModificar] = useState(null)
     const [mostrarModal, setMostrarModal] = useState(false);
+    
 
-    const data = selecao;
-    console.log(data.blocos?.reduce((acc, pav) => acc + (pav.pavimentos?.length || 0), 0))
+    const data = selecao || dadosImovel;
 
     return (
-        <BoxImoveis>
+        <>
+        {!selecao && indice === 0 &&
+        <>
+            <AdicionarBtn onClick={(e)=>{
+                e.preventDefault();
+                setOperacao("1");
+                setMostrarModal(true)}
+            } >Cadastrar Novo Imóvel</AdicionarBtn>
+                    
+            <TitleSublinhado>Selecione um imóvel</TitleSublinhado>
+            </>
+                    }
+        <BoxImoveis $dadosImovel={dadosImovel ? true : false}>
         <Modal aberto={mostrarModal} onFechar={() => setMostrarModal(false)}>
-            <CampusOpcoes 
+            <CampusOpcoes tabindex="0"
                 usuarioLogado={dadosUsuario} 
                 operacaoEnviada={operacao} 
                 item={itemModificar}>
             </CampusOpcoes>
 
         </Modal>
-        <TituloVertical>Imóveis</TituloVertical>
-        {dadosImovel.length > 0 ? 
-            <BoxImovel>
+        <TituloVertical>{dadosImovel ? (` #${indice+1}`): "Imovel"}</TituloVertical>
+        {data &&
+            <BoxImovel onClick={onClick}>
             <DivInformacao>
                 <LinhaInformacao>
                     <Valor>{data.nome}</Valor>
@@ -117,30 +129,31 @@ function CardImovel({dadosImovel, dadosUsuario, selecao, setSelecao }) {
                     <Chave>Pavimentos:</Chave>
                     <Valor>{data?.blocos?.reduce((acc, bloco) => acc + (bloco.pavimentos?.length || 0), 0) || 0}</Valor>
                     <Chave>Salas:</Chave>
-                    <Valor>{data?.blocos?.pavimentos?.reduce((acc, pavimento) => acc + (pavimento.comodos?.length || 0),0) || 0}</Valor>
+                    <Valor>{data?.blocos?.reduce((acc, bloco) => acc + (bloco.pavimentos?.reduce((acc, pavimento) => acc + (pavimento.comodos.length || 0), 0) || 0),0) || 0}</Valor>
                 </LinhaInformacao>
             </DivInformacao>
+            {selecao && 
             <VerticalBtn onClick={(e)=>{
                 e.preventDefault();
                 setItemModificar(selecao);
                 setOperacao("2");
                 setMostrarModal(true);
-            }} $bgcolor={cores.backgroundBotaoSemFoco}>Atualizar</VerticalBtn>
+            }} $bgcolor={cores.backgroundBotaoSemFoco}>Atualizar</VerticalBtn>}
+        {selecao &&
             <VerticalBtn
-                onClick={(e)=>{
-                    e.preventDefault();
-                    setItemModificar(selecao);
-                    setOperacao("3");
-                    setMostrarModal(true);
-                }} 
-             $bgcolor={cores.corDeletar}>Excluir</VerticalBtn>
-            <VerticalBtn>Procurar</VerticalBtn>
+            onClick={(e)=>{
+                e.preventDefault();
+                setItemModificar(selecao);
+                setOperacao("3");
+                setMostrarModal(true);
+            }} 
+            $bgcolor={cores.corDeletar}>Excluir</VerticalBtn>
+        }
             </BoxImovel>
-        : <AdicionarBtn onClick={(e)=>{
-            e.preventDefault();
-            setMostrarModal(true)}
-        } >Nenhum imóvel cadastrado, clique aqui para cadastrar um novo</AdicionarBtn>}
+}
             </BoxImoveis>
+        
+            </>
     )
 }
 
@@ -183,9 +196,9 @@ const LinhaInformacao = styled.div`
 
 
 const AdicionarBtn = styled(Button)`
-    min-height: 100px;
+    min-height: 50px;
     height: 100%;
-    width: 90%;
+    width: 100%;
     margin: 10px auto;
     background-color: ${cores.cor3Transparente};
     `;
@@ -210,7 +223,9 @@ const BoxImoveis = styled.div`
     display: flex;
     border: 1px solid ${cores.boxShadow};
     max-height: 9em;
-    grid-column: span 10;
+    grid-column: span 9;
+    cursor: ${(props) => (props.$dadosImovel ? "pointer" : "default")};
+    margin-bottom: 20px;
 `;
 const BoxImovel = styled.div`
     display: flex;

@@ -1,20 +1,13 @@
 import React, { useState, useEffect } from "react";
+import cores from "../Cores";
+import mapa from "../BdObjetoTabelas";
 import styled from "styled-components";
-import Input from "../SubInput";
-import Label from "../SubLabel";
 import Button from "../SubButton";
-import GridArea from "../SubGridArea";
-import cores from "../Cores"
-import { use } from "react";
 import useBancoDeDados from "../BdSupabase";
-import SelectBancoDeDados from "../BdSelectBusca";
-import mapa from "../BdObjetoTabelas"
 import Title from "../SubTitleH2";
 import CriarCamposFormulario from "../SubCriadorForm";
 
-import Box from "../SubBox";
 import terreo from "../..//components/Plantas/TERREO_PAVIMENTO.png";
-import BussolaCarregando from "../BussolaLoading.jsx";
 import Modal from "../SubModal.jsx";
 import { supabase } from "/supabaseClient";
 
@@ -143,6 +136,8 @@ function CardPavimento({key, dadosPavimentos, dadosUsuario, selecao, setSelecao,
     const [mostrarModal, setMostrarModal] = useState(false);
     const [pavimentos, setPavimentos] = useState(dadosPavimentos.pavimentos || []);
 
+    /** Atualiza a lista de objetos quando ocorrer um crud */
+
     const atualizarLista = async () => {
         const novosDados = await LerNovosDados(dadosUsuario.empresa_id, blocoId);
         if (novosDados.length > 0) {
@@ -151,12 +146,13 @@ function CardPavimento({key, dadosPavimentos, dadosUsuario, selecao, setSelecao,
 
       };
 
-
+      /** quando iniciar selecionar o primeiro objeto */
     useEffect(() => {
     if (!itemModificar && pavimentos.length > 0) {
         setItemModificar(pavimentos[0]);
     }
     }, [pavimentos]);
+
 
     useEffect(() => {
         setPavimentos(dadosPavimentos?.pavimentos || []);
@@ -209,11 +205,11 @@ function CardPavimento({key, dadosPavimentos, dadosUsuario, selecao, setSelecao,
                 </LinhaInformacaoPavimentos>
                 <HorizontalBtn
                     onClick={(e)=>{
-                    e.preventDefault();
-                    setItemModificar(selecao);
-                    setOperacao("2");
-                    setMostrarModal(true);
-                }}
+                        e.preventDefault();
+                        setItemModificar(selecao);
+                        setOperacao("2");
+                        setMostrarModal(true);
+                    }}
                 $bgcolor={cores.backgroundBotaoSemFoco}>Atualizar</HorizontalBtn>
                 <HorizontalBtn
                 onClick={(e)=>{

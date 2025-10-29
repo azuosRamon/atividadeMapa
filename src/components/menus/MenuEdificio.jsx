@@ -4,7 +4,7 @@ import Box from "../SubBox";
 import CardImovel from "./MenuEdificioCampus";
 import CardBloco from "./MenuEdificioBlocos";
 import CardPavimento from "./MenuEdificioPavimentos";
-import SalaOpcoes from "./MenuSalas";
+import CardComodos from "./MenuSalas";
 import Button from "../SubButton";
 import cores from "../Cores.js"
 import terreo from "../..//components/Plantas/TERREO_PAVIMENTO.png";
@@ -24,7 +24,10 @@ async function LerDadosImoveis(empresaId) {
                 *,
                 pavimentos(
                     *,
-                    comodos(*)
+                    comodos(
+                    *,
+                    tipos_areas(nome)
+                    )
                     ))
         `)
     .eq("empresa_id", empresaId)
@@ -49,6 +52,12 @@ async function LerDadosImoveis(empresaId) {
 }
 }
 
+
+const TitleSublinhado = styled.h2`
+    border-bottom: 2px solid;
+    margin-bottom: 0 0 20px 0;
+    color: ${cores.corTexto};
+`
 
 /*
 function CardImovel({dadosImovel, dadosUsuario, selecao, setSelecao }) {
@@ -123,41 +132,6 @@ function CardContrato({dados}){
         </>
     )
 }
-function CardComodos({dados}){
-    const data = [1,2]
-    return(
-        <BoxComodos>
-            <TituloVertical>Salas</TituloVertical>
-            <ListaSalas>
-                <BoxComodo>
-                    <AdicionarBtn>+ Adicionar Novo</AdicionarBtn>
-                </BoxComodo>
-                {data.map((item)=>(
-                    <BoxComodo>
-                                <TituloHorizontal>Sala de aula</TituloHorizontal>
-                        <DivInformacao>
-                            <LinhaInformacao>
-                                <Chave>Número:</Chave>
-                                <Valor>{item}</Valor>
-                            </LinhaInformacao>
-                            <LinhaInformacao>
-                                <Chave>Nome:</Chave>
-                                <Valor>Elon</Valor>
-                            </LinhaInformacao>
-                            <LinhaInformacao>
-                                <Chave>Lotação:</Chave>
-                                <Valor>60</Valor>
-                            </LinhaInformacao>
-                        </DivInformacao>
-                        <HorizontalBtn $bgcolor={cores.backgroundBotaoSemFoco}>Atualizar</HorizontalBtn>
-                        <HorizontalBtn $bgcolor={cores.corDeletar}>Excluir</HorizontalBtn>
-                    </BoxComodo>
-
-                ))}
-            </ListaSalas>
-        </BoxComodos>
-    )
-}
 
 function ConfigurarEdificio() {
   const [usuario, setUsuario] = useState([]);
@@ -165,10 +139,25 @@ function ConfigurarEdificio() {
   const [imovelSelecionado, setImovelSelecionado] = useState(null);
   const [blocoSelecionado, setBlocoSelecionado] = useState(null);
   const [pavimentoSelecionado, setPavimentoSelecionado] = useState(null);
-  const [comodosSelecionado, setComodosSelecionado] =useState(null);
+  const [comodoSelecionado, setComodoSelecionado] =useState(null);
   const [contrato, setContrato] = useState([]);
   const [carregando, setCarregando] = useState(true);
   
+  const handleCardClick = (imovel) => (e) => {
+    e.preventDefault();
+    console.log("Imóvel selecionado:", imovel);
+
+    setImovelSelecionado(imovel);
+    
+    // Definição de defaults (com optional chaining para segurança)
+    const primeiroBloco = imovel.blocos?.[0];
+    const primeiroPavimento = primeiroBloco?.pavimentos?.[0];
+    
+    setBlocoSelecionado(primeiroBloco || null);
+    setPavimentoSelecionado(primeiroPavimento || null);
+    
+    setMostrarModalSelecao(false);
+};
     
     useEffect(() => {
         async function carregar() {
@@ -181,7 +170,7 @@ function ConfigurarEdificio() {
             setUsuario(dadosUsuario);
             
             const dadosImoveisCompleto = await LerDadosImoveis(dadosUsuario.empresa_id);
-
+            console.log("Dados dos imóveis carregados:", dadosImoveisCompleto);
             setImoveis(dadosImoveisCompleto);
             if (!imovelSelecionado && dadosImoveisCompleto.length > 0) {
                 const primeiroImovel = dadosImoveisCompleto[0];
@@ -198,20 +187,41 @@ function ConfigurarEdificio() {
             carregar();
         }, []);
 
-
+        const [mostrarModalSelecao, setMostrarModalSelecao] = useState(false);
   if (carregando) return <BussolaCarregando aberto={carregando} onFechar={() => setCarregando(false)}>Buscando imóveis</BussolaCarregando>;
     return(
             <BoxContainer>
+                <Modal aberto={mostrarModalSelecao} onFechar={() => setMostrarModalSelecao(false)}>
+                    {imoveis.map((item, indice) =>{
+                        console.log("Imovel na modal de seleção:", item);
+                        return(
+                            <CardImovel 
+                            onClick={handleCardClick(item)}
+                                key={item.imovel_id}
+                                dadosImovel={item}
+                                setSelecao={setImovelSelecionado} 
+                                dadosUsuario={usuario}
+                                indice={indice}/>
+                        )
+
+                    })}
+                </Modal>
                 
                 {/*contrato.length === 0 && (<p>A empresa não possui um constrato ativo, por favor entre em contato para adquiri-lo</p>)*/}
                 {contrato.length > 0 && <CardContrato dados={contrato}/>}
                 {imoveis && <CardImovel 
                 selecao={imovelSelecionado} 
-                setSelecao={setImovelSelecionado} 
-                dadosImovel={imoveis} 
+                setSelecao={setImovelSelecionado}  
                 dadosUsuario={usuario}/>}
+                            <VerticalBtn
+             onClick={(e)=>{
+                    e.preventDefault();
+                    setMostrarModalSelecao(true);
+                }} >Trocar</VerticalBtn>
+
 
                 {imovelSelecionado && <CardBloco 
+                key={imovelSelecionado.imovel_id}
                 dadosBlocos={imovelSelecionado} 
                 selecao={blocoSelecionado} 
                 setSelecao={setBlocoSelecionado} 
@@ -226,7 +236,11 @@ function ConfigurarEdificio() {
                 dadosUsuario={usuario}
                 blocoId={blocoSelecionado.bloco_id}
                 />}
-                {/*pavimentoSelecionado && comodos && <CardComodos dados={comodos}/>*/}
+                {pavimentoSelecionado && <CardComodos 
+                key={pavimentoSelecionado.pavimento_id}
+                dadosUsuario={usuario}
+                pavimentoId={pavimentoSelecionado.pavimento_id}
+                dados={pavimentoSelecionado}/>}
             </BoxContainer>
     )
 }
@@ -325,10 +339,11 @@ const DivInformacaoPavimentos = styled(DivInformacaoVertical)`
     `;
 const VerticalBtn = styled(Button)`
     height: 90%;
-    width: 10%;
+    width: 100%;
     writing-mode: vertical-rl;
     transform: rotate(180deg);
-    margin: auto 5px;
+    margin: 0 auto;
+    grid-column: span 1;
     `;
 const BoxImoveis = styled.div`
     display: flex;

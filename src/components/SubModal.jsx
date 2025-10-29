@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import styled, { keyframes, css } from "styled-components";
 import Button from "./SubButton";
+import cores from "./Cores";
 
 // ===== ANIMAÇÕES =====
 const fadeIn = keyframes`
@@ -67,11 +68,14 @@ const ModalBox = styled.div`
 `;
 
 const ButtonVoltar = styled(Button)`
-  height: 100%;
-  margin: 20px 0;
-  padding: 30px 0;
+  height: 30px;
+    width: 100px;
+    padding: 30px 0;
+    position: relative;
+    left: 90%;
+    font-size: 2rem;
+    font-weight: 400;
 `;
-
 
 // ===== COMPONENTE CONTROLADO =====
 function Modal({ aberto, onFechar, children }) {
@@ -87,10 +91,10 @@ function Modal({ aberto, onFechar, children }) {
   const modalContent = (
     <Overlay $estado="aberto" onClick={onFechar}>
       <ModalBox $estado="aberto" onClick={(e) => e.stopPropagation()}>
-        {children}
         <ButtonVoltar $bgcolor="rgb(38, 38, 38)" onClick={() => onFechar()}>
-            Voltar
+            X
         </ButtonVoltar>
+        {children}
       </ModalBox>
     </Overlay>
   );

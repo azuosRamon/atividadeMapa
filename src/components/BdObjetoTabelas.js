@@ -272,23 +272,6 @@ const mapa = {
                     campo:"input", 
                     texto:"", 
                     nome:"nome"},
-                
-                logradouro: {
-                    valor: null, 
-                    tipo: "text", 
-                    campo:"input", 
-                    texto:"", 
-                    nome:"logradouro"
-                },
-                
-                complemento: {
-                    valor: "", 
-                    tipo: "text", 
-                    campo:"input", 
-                    texto:"", 
-                    nome:"complemento"
-                },
-                
                 cep: {
                     valor: null, 
                     tipo: "text", 
@@ -310,6 +293,23 @@ const mapa = {
                     texto:"", 
                     nome:"estado"
                 },
+                
+                logradouro: {
+                    valor: null, 
+                    tipo: "text", 
+                    campo:"input", 
+                    texto:"", 
+                    nome:"logradouro"
+                },
+                
+                complemento: {
+                    valor: "", 
+                    tipo: "text", 
+                    campo:"input", 
+                    texto:"", 
+                    nome:"complemento"
+                },
+                
                 latitude: {
                     valor: null, 
                     tipo: "text", 
@@ -365,17 +365,17 @@ const mapa = {
 
     // 🏠 CÔMODO
     comodos: {
-        tabela: { nome: "comodos", lista: ["comodo_id", "apelido"], camposPesquisa: false, mostrar: true },
-        operacao: 0,
+        tabela: { nome: "comodos", lista: ["comodo_id", "apelido"], camposPesquisa: false, mostrar: false},
+        operacao: 1,
         campos: {
-            comodo_id: { valor: null, tipo: "number", campo: "input", texto: "Id", nome: "id" },
+            comodo_id: { mostrar: false, valor: null, tipo: "number", campo: "input", texto: "Id", nome: "id" },
             numero: { valor: "", tipo: "number", campo: "input", texto: "Número", nome: "numero" },
             apelido: { valor: "", tipo: "text", campo: "input", texto: "Apelido", nome: "apelido" },
-            tipo_area_id: { valor: null, tipo: "text", campo: "select", texto: "Tipo de Área", nome: "tipo_area_id", tabela: "tipos_areas", lista: ["tipo_area_id", "nome"] },
-            pavimento_id: { valor: null, tipo: "text", campo: "select", texto: "Pavimento", nome: "pavimento_id", tabela: "pavimentos", lista: ["pavimento_id", "numero"] },
+            tipo_area_id: { valor: null, tipo: "text", campo: "select", texto: "Tipo de Área", nome: "tipoArea", tabela: "tipos_areas", lista: ["tipo_area_id", "nome"] },
+            pavimento_id: { mostrar: false, valor: null, tipo: "text", campo: "select", texto: "Pavimento", nome: "pavimento_id", tabela: "pavimentos", lista: ["pavimento_id", "numero"] },
             lotacao: { valor: "", tipo: "number", campo: "input", texto: "Lotação", nome: "lotacao" },
             lista_coordenadas: { valor: "", tipo: "text", campo: "textarea", texto: "Coordenadas", nome: "lista_coordenadas" },
-            empresa_id: { valor: null, tipo: "text", campo: "select", texto: "Empresa", nome: "empresa_id", tabela: "empresas", lista: ["empresa_id", "nome"] }
+            empresa_id: {mostrar: false, valor: null, tipo: "text", campo: "select", texto: "Empresa", nome: "empresa_id", tabela: "empresas", lista: ["empresa_id", "nome"] }
         }
     },
 
