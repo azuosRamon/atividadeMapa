@@ -104,7 +104,7 @@ function BlocosOpcoes({ usuarioLogado, operacaoEnviada, item = null,imovelId=nul
             if (onAtualizar) await onAtualizar(); // 🔹 atualiza lista e fecha modal
         }
         catch(error){
-            console.error("erro ao cadastrar bloco", err.message);
+            console.error("erro ao cadastrar bloco", error.message);
         }
       }
 
@@ -132,7 +132,7 @@ function BlocosOpcoes({ usuarioLogado, operacaoEnviada, item = null,imovelId=nul
  * @param selecao utilizado para guardar o objeto selecionado
  * @param setSelecao deve receber o setBlocoSelecionado
  */
-function CardBloco({dadosBlocos, dadosUsuario, selecao, setSelecao}) {
+function CardBloco({dadosBlocos, dadosUsuario, selecao, setSelecao, onAtualizar}) {
     const [operacao, setOperacao] = useState("1")
     const [itemModificar, setItemModificar] = useState(null)
     const [mostrarModal, setMostrarModal] = useState(false);
@@ -164,13 +164,16 @@ function CardBloco({dadosBlocos, dadosUsuario, selecao, setSelecao}) {
                 imovelId={dadosBlocos?.imovel_id || null}
                 onAtualizar={async () => {
                     await atualizarLista();
+                    await onAtualizar();
+                    setSelecao(null);
                     setMostrarModal(false);
+
             }}>
             </BlocosOpcoes>
 
         </Modal>
         <TituloHorizontal>Blocos</TituloHorizontal>
-        {blocos.length > 0 ? 
+        {selecao ? 
         <>
         <BoxVertical>
             
@@ -196,7 +199,7 @@ function CardBloco({dadosBlocos, dadosUsuario, selecao, setSelecao}) {
                 </LinhaInformacao>
                 <LinhaInformacao>
                     <Chave>Salas:</Chave>
-                    <Valor>{selecao?.pavimentos?.comodos?.length || 0}</Valor>
+                    <Valor>{selecao?.pavimentos?.reduce((acc, pavimento) => acc + (pavimento.comodos.length || 0),0) || 0}</Valor>
                 </LinhaInformacao>
             <HorizontalBtn onClick={(e)=>{
                 e.preventDefault();
@@ -216,11 +219,13 @@ function CardBloco({dadosBlocos, dadosUsuario, selecao, setSelecao}) {
         </BoxVertical>
 <HorizontalBtn onClick={(e)=>{
             e.preventDefault();
+            setItemModificar(null)
             setOperacao("1")
             setMostrarModal(true)}
         } $bgcolor={cores.backgroundBotaoSemFoco} style={{width: "100%"}}>+ Adicionar Bloco</HorizontalBtn></>
         : <AdicionarBtn onClick={(e)=>{
             e.preventDefault();
+            setItemModificar(null)
             setOperacao("1")
             setMostrarModal(true)}
         }>+ Adicionar  Bloco</AdicionarBtn>
@@ -300,6 +305,11 @@ const BoxBlocos = styled.div`
     border: 1px solid ${cores.boxShadow};
     grid-column: span 3;
     height: 100%;
+    
+    @media (max-width: 768px) {
+        grid-column: span 1;
+}
+    
     `;
 const Nome = styled.h1`
   background-color: ${cores.cor5}  ;

@@ -28,7 +28,7 @@ const Bussola = styled.span`
 
 `
 const P = styled.p`
-  font-size: 2rem; 
+  font-size: 1.5rem; 
   margin: 10px; 
   color: white;
 `;
@@ -61,7 +61,11 @@ const Overlay = styled.div`
   justify-content: center;
   z-index: 9999;
   background-color: rgba(0, 0, 0, 0.8);
-
+  
+  @media (max-width: 768px) {
+    align-items: flex-start;
+    padding-top: 25%; 
+  }
   ${(props) =>
     props.$estado === "aberto" &&
     css`
@@ -83,10 +87,17 @@ const ModalBox = styled.div`
   max-height: 90%;
   overflow: auto;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
-display: flex;
-flex-direction: column;
-align-items: center;
-max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 300px;
+  text-align: center;
+
+    @media (max-width: 768px) {
+      padding: 20px 0;
+      width: 70%;
+    }
+
 
   ${(props) =>
     props.$estado === "aberto" &&
@@ -122,7 +133,7 @@ function BussolaCarregando({ aberto, onFechar, children }) {
     <Overlay $estado="aberto" onClick={onFechar}>
       <ModalBox $estado="aberto" onClick={(e) => e.stopPropagation()}>
         <BiCompass className="App-logo" />
-        <P>{children}</P>
+        <P>{children}<span className="dot-1">.</span><span className="dot-2">.</span><span className="dot-3">.</span></P>
       </ModalBox>
     </Overlay>
   );

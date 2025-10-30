@@ -31,7 +31,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{ user, loading }}>
-        <BussolaCarregando aberto={loading} onFechar={() => setLoading(false)}>Loading...</BussolaCarregando>
+        <BussolaCarregando aberto={loading} onFechar={() => setLoading(false)}>Carregando</BussolaCarregando>
       {children}
     </AuthContext.Provider>
   );

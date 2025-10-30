@@ -209,7 +209,7 @@ function SalaOpcoes({ usuarioLogado, operacaoEnviada, item = null, pavimentoId=n
 }
 
 
-function CardComodos({key, dados, dadosUsuario, pavimentoId = null}){
+function CardComodos({key, dados, dadosUsuario, pavimentoId = null, onAtualizar}){
         const [operacao, setOperacao] = useState("1")
         const [itemModificar, setItemModificar] = useState(null)
         const [mostrarModal, setMostrarModal] = useState(false);
@@ -237,6 +237,7 @@ function CardComodos({key, dados, dadosUsuario, pavimentoId = null}){
                             pavimentoId={pavimentoId || null}
                             onAtualizar={async () => {
                                 await atualizarLista();
+                                await onAtualizar();
                                 setMostrarModal(false);
                         }}>
                         </SalaOpcoes>
@@ -247,6 +248,7 @@ function CardComodos({key, dados, dadosUsuario, pavimentoId = null}){
                 <BoxComodo>
                     <AdicionarBtn  onClick={(e)=>{
                         e.preventDefault();
+                        setItemModificar(null);
                         setOperacao("1");
                         setMostrarModal(true)}}>+ Nova Sala</AdicionarBtn>
                 </BoxComodo>
@@ -344,11 +346,21 @@ const TituloVertical = styled.h3`
     background-color: ${cores.cor3};
     padding: 10px;
     margin: 0;
+    
+    @media (max-width: 768px) {
+        writing-mode: horizontal-tb;
+        transform: none;
+}
+
     `;
 const BoxComodos = styled.div`
     display: flex;
     border: 1px solid ${cores.boxShadow};
     grid-column: span 10;
+          @media (max-width: 768px) {
+        grid-column: span 1;
+        flex-direction: column;
+}
     `;
 const BoxComodo = styled.div`
     display: flex;
@@ -358,6 +370,11 @@ const BoxComodo = styled.div`
     width: 100%;
     margin: 0 5px;
     grid-column: span 3;
+
+       @media (max-width: 768px) {
+        grid-column: span 1;
+        width: auto;
+}
 `;
 const ListaSalas = styled.div`
     display: grid;
@@ -365,4 +382,8 @@ const ListaSalas = styled.div`
     gap:10px;
     margin: auto;
     width:100%;
+    
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+}
 `;

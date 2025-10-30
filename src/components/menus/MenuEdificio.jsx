@@ -11,8 +11,15 @@ import terreo from "../..//components/Plantas/TERREO_PAVIMENTO.png";
 import BussolaCarregando from "../BussolaLoading.jsx";
 import Modal from "../SubModal.jsx";
 import { supabase } from "/supabaseClient";
+import DivSeparador from "../SubDivSeparador";
+import { use } from "react";
 
-
+const DivSeparadorAjuste = styled(DivSeparador)`
+    display: none;
+   @media (max-width: 768px) {
+    display: block;
+   }
+`;
 
 async function LerDadosImoveis(empresaId) {
     //informar uma lista composta de ['coluna', valorProcurado] para utilizar a condicao
@@ -53,77 +60,12 @@ async function LerDadosImoveis(empresaId) {
 }
 
 
+
 const TitleSublinhado = styled.h2`
     border-bottom: 2px solid;
     margin-bottom: 0 0 20px 0;
     color: ${cores.corTexto};
 `
-
-/*
-function CardImovel({dadosImovel, dadosUsuario, selecao, setSelecao }) {
-    const [operacao, setOperacao] = useState("1")
-    const [itemModificar, setItemModificar] = useState(null)
-    const [mostrarModal, setMostrarModal] = useState(false);
-
-    const data = selecao;
-
-
-    return (
-        <BoxImoveis>
-        <Modal aberto={mostrarModal} onFechar={() => setMostrarModal(false)}>
-            <CampusOpcoes 
-                usuarioLogado={dadosUsuario} 
-                operacaoEnviada={operacao} 
-                item={itemModificar}>
-            </CampusOpcoes>
-
-        </Modal>
-        <TituloVertical>Imóveis</TituloVertical>
-        {dadosImovel.length > 0 ? 
-            <BoxImovel>
-            <DivInformacao>
-                <LinhaInformacao>
-                    <Valor>{data.nome}</Valor>
-                    <Valor>{data.cidade}/{data.estado}</Valor>
-                </LinhaInformacao>
-                <LinhaInformacao>
-                    <Valor>{data.logradouro}</Valor>
-                </LinhaInformacao>
-                <LinhaInformacao>
-                    <Valor>{data.complemento}</Valor>
-                </LinhaInformacao>
-                <LinhaInformacao>
-                    <Chave>Blocos:</Chave>
-                    <Valor>{data?.blocos?.length || 0}</Valor>
-                    <Chave>Pavimentos:</Chave>
-                    <Valor>{data?.blocos?.pavimentos?.length || 0}</Valor>
-                    <Chave>Salas:</Chave>
-                    <Valor>{data?.blocos?.pavimentos?.comodos?.length || 0}</Valor>
-                </LinhaInformacao>
-            </DivInformacao>
-            <VerticalBtn onClick={(e)=>{
-                e.preventDefault();
-                setItemModificar(selecao);
-                setOperacao("2");
-                setMostrarModal(true);
-            }} $bgcolor={cores.backgroundBotaoSemFoco}>Atualizar</VerticalBtn>
-            <VerticalBtn
-                onClick={(e)=>{
-                    e.preventDefault();
-                    setItemModificar(selecao);
-                    setOperacao("3");
-                    setMostrarModal(true);
-                }} 
-             $bgcolor={cores.corDeletar}>Excluir</VerticalBtn>
-            <VerticalBtn>Procurar</VerticalBtn>
-            </BoxImovel>
-        : <AdicionarBtn onClick={(e)=>{
-            e.preventDefault();
-            setMostrarModal(true)}
-        } >Nenhum imóvel cadastrado, clique aqui para cadastrar um novo</AdicionarBtn>}
-            </BoxImoveis>
-    )
-}*/
 function CardContrato({dados}){
     const data = dados
     return(
@@ -139,10 +81,46 @@ function ConfigurarEdificio() {
   const [imovelSelecionado, setImovelSelecionado] = useState(null);
   const [blocoSelecionado, setBlocoSelecionado] = useState(null);
   const [pavimentoSelecionado, setPavimentoSelecionado] = useState(null);
-  const [comodoSelecionado, setComodoSelecionado] =useState(null);
   const [contrato, setContrato] = useState([]);
   const [carregando, setCarregando] = useState(true);
-  
+  const [contador,  setContador] = useState(0);
+    
+    const atualizarDados = async ()=>{
+    try {
+        const dadosImovelSelecionado = await LerDadosImoveis(usuario.empresa_id);// 🔹 atualiza lista e fecha modal
+        setImoveis(dadosImovelSelecionado);
+        setImovelSelecionado(dadosImovelSelecionado.find(imovel => imovel.imovel_id === imovelSelecionado.imovel_id));
+        setContador(contador + 1);
+    }
+    catch(error){
+        console.error("erro ao atualizar", error.message);
+    }
+    }
+
+    useEffect(() => {
+        let blocoAtualizado = imovelSelecionado?.blocos?.find(bloco => bloco.bloco_id === blocoSelecionado?.bloco_id) || null;
+        if (!blocoAtualizado) {
+            blocoAtualizado = imovelSelecionado?.blocos?.[0] || null;
+        }
+        let pavimentoAtualizado = blocoAtualizado?.pavimentos?.find(pavimento => pavimento.pavimento_id === pavimentoSelecionado?.pavimento_id) || null;
+        if (!pavimentoAtualizado) {
+            pavimentoAtualizado = blocoAtualizado?.pavimentos?.[0] || null;
+        }
+        if (blocoAtualizado) setBlocoSelecionado(blocoAtualizado);
+        if (pavimentoAtualizado) setPavimentoSelecionado(pavimentoAtualizado)
+        console.log("Imóvel selecionado atualizado:", imovelSelecionado);
+        console.log("Bloco selecionado atualizado:", blocoSelecionado);
+        console.log("Pavimento selecionado atualizado:", pavimentoAtualizado);
+    }, [imovelSelecionado, contador]);
+    useEffect(() => {
+        let pavimentoAtualizado = blocoSelecionado?.pavimentos?.find(pavimento => pavimento.pavimento_id === pavimentoSelecionado?.pavimento_id) || null;
+        if (!pavimentoAtualizado) {
+            pavimentoAtualizado = blocoSelecionado?.pavimentos?.[0] || null;
+        }
+        setPavimentoSelecionado(pavimentoAtualizado)
+        console.log("Pavimento selecionado atualizado:", pavimentoAtualizado);
+    }, [blocoSelecionado]);
+
   const handleCardClick = (imovel) => (e) => {
     e.preventDefault();
     console.log("Imóvel selecionado:", imovel);
@@ -158,10 +136,8 @@ function ConfigurarEdificio() {
     
     setMostrarModalSelecao(false);
 };
-    
-    useEffect(() => {
-        async function carregar() {
-            const dadosUsuario = JSON.parse(localStorage.getItem("usuario"));
+    const carregar = async () => {
+        const dadosUsuario = JSON.parse(localStorage.getItem("usuario"));
             if (!dadosUsuario?.empresa_id) {
                 console.warn("Usuário não encontrado no localStorage.");
                 setCarregando(false);
@@ -175,15 +151,16 @@ function ConfigurarEdificio() {
             if (!imovelSelecionado && dadosImoveisCompleto.length > 0) {
                 const primeiroImovel = dadosImoveisCompleto[0];
                 const primeiroBloco = primeiroImovel.blocos?.[0] || null;
+                const primeiroPavimento = primeiroBloco?.pavimentos?.[0] || null;
                 setImovelSelecionado(primeiroImovel);
                 if (primeiroBloco) setBlocoSelecionado(primeiroBloco);
+                if (primeiroPavimento) setPavimentoSelecionado(primeiroPavimento)
                 }
-                setPavimentoSelecionado(blocoSelecionado?.pavimentos?.[0] || null)
 
 
               setCarregando(false);
-            }
-            
+    }
+    useEffect(() => {
             carregar();
         }, []);
 
@@ -193,7 +170,6 @@ function ConfigurarEdificio() {
             <BoxContainer>
                 <Modal aberto={mostrarModalSelecao} onFechar={() => setMostrarModalSelecao(false)}>
                     {imoveis.map((item, indice) =>{
-                        console.log("Imovel na modal de seleção:", item);
                         return(
                             <CardImovel 
                             onClick={handleCardClick(item)}
@@ -217,15 +193,19 @@ function ConfigurarEdificio() {
              onClick={(e)=>{
                     e.preventDefault();
                     setMostrarModalSelecao(true);
-                }} >Trocar</VerticalBtn>
-
+                }} >Trocar Imóvel</VerticalBtn>
+                <DivSeparadorAjuste></DivSeparadorAjuste>
 
                 {imovelSelecionado && <CardBloco 
-                key={imovelSelecionado.imovel_id}
+                key={imovelSelecionado.imovel_id+contador}
                 dadosBlocos={imovelSelecionado} 
                 selecao={blocoSelecionado} 
                 setSelecao={setBlocoSelecionado} 
                 dadosUsuario={usuario}
+                onAtualizar={async () => {
+                    console.log("Atualizando dados após modificação de bloco...");
+                    await atualizarDados();
+                }}
                 />}
 
                 {blocoSelecionado && <CardPavimento 
@@ -235,11 +215,20 @@ function ConfigurarEdificio() {
                 setSelecao={setPavimentoSelecionado} 
                 dadosUsuario={usuario}
                 blocoId={blocoSelecionado.bloco_id}
+                onAtualizar={async () => {
+                    console.log("Atualizando dados após modificação de pavimento...");
+                    await atualizarDados();
+                }}
                 />}
+                <DivSeparador></DivSeparador>
                 {pavimentoSelecionado && <CardComodos 
                 key={pavimentoSelecionado.pavimento_id}
                 dadosUsuario={usuario}
                 pavimentoId={pavimentoSelecionado.pavimento_id}
+                onAtualizar={async () => {
+                    console.log("Atualizando dados após modificação de Salas...");
+                    await atualizarDados();
+                }}
                 dados={pavimentoSelecionado}/>}
             </BoxContainer>
     )
@@ -254,6 +243,10 @@ const BoxContainer = styled(Box)`
   grid-template-columns: repeat(10, 1fr);
   align-items: flex-start;
   gap: 10px;
+
+     @media (max-width: 768px) {
+        grid-template-columns: repeat(1, 1fr);
+}
 `;
 
 
@@ -286,6 +279,14 @@ const LinhaInformacao = styled.div`
     margin: 5px 0;
     gap: 10px;
     justify-content: space-between;
+
+       @media (max-width: 768px) {
+        writing-mode: horizontal-tb;
+        transform: none;
+        width: 90%;
+        margin: 5px auto;
+        
+}
     `;
 const LinhaInformacaoPavimentos = styled(LinhaInformacao)`
     margin: 0 10%;
@@ -344,6 +345,14 @@ const VerticalBtn = styled(Button)`
     transform: rotate(180deg);
     margin: 0 auto;
     grid-column: span 1;
+
+
+       @media (max-width: 768px) {
+        writing-mode: horizontal-tb;
+        transform: none;
+        margin: 5px auto;
+        
+}
     `;
 const BoxImoveis = styled.div`
     display: flex;

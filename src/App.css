@@ -50,3 +50,46 @@ body {
     transform: rotate(360deg);
   }
 }
+
+
+
+.dots::after {
+    content: "";
+    /* O "content" vazio é o estado inicial */
+    animation: loading 1.5s infinite; /* A animação dura 1.5s e se repete infinitamente */
+}
+
+/* Define os quadros-chave da animação */
+@keyframes loading {
+    0% {
+        content: "";
+    }
+    33% {
+        content: ".";
+    }
+    80% {
+        content: "..";
+    }
+    100% {
+        content: "...";
+    }
+}
+
+.dot-1, .dot-2, .dot-3 {
+    animation: blink 1.4s infinite;
+    opacity: 0;
+}
+
+.dot-2 {
+    animation-delay: 0.2s;
+}
+
+.dot-3 {
+    animation-delay: 0.4s;
+}
+
+@keyframes blink {
+    0% { opacity: 0; }
+    33% { opacity: 1; }
+    80% { opacity: 0; }
+}

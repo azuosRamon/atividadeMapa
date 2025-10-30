@@ -161,14 +161,6 @@ export default CardImovel;
 
 // ESTILOS
 
-const BoxContainer = styled(Box)`
-  display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  align-items: flex-start;
-  gap: 10px;
-`;
-
-
 const Chave = styled.p`
     font-size: 1rem;
     color: gray;
@@ -180,18 +172,16 @@ const Valor = styled.p`
     color: gray;
     margin: 0;
     `;
-const DivInformacao = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin: 10px 20px;
-    width: 80%;
-    `;
+
+
 const LinhaInformacao = styled.div`
     display: flex;
     flex-direction: row;
     margin: 5px 0;
     gap: 10px;
     justify-content: space-between;
+
+    
     `;
 
 
@@ -210,6 +200,13 @@ const TituloVertical = styled.h3`
     background-color: ${cores.cor3};
     padding: 10px;
     margin: 0;
+
+    @media (max-width: 768px) {
+        writing-mode: horizontal-tb;
+        transform: none;
+}
+
+
     `;
 
 const VerticalBtn = styled(Button)`
@@ -218,6 +215,15 @@ const VerticalBtn = styled(Button)`
     writing-mode: vertical-rl;
     transform: rotate(180deg);
     margin: auto 5px;
+    
+    @media (max-width: 768px) {
+        writing-mode: horizontal-tb;
+        transform: none;
+        width: 90%;
+        margin: 5px auto;
+        
+}
+
     `;
 const BoxImoveis = styled.div`
     display: flex;
@@ -226,6 +232,13 @@ const BoxImoveis = styled.div`
     grid-column: span 9;
     cursor: ${(props) => (props.$dadosImovel ? "pointer" : "default")};
     margin-bottom: 20px;
+
+    @media (max-width: 768px) {
+    flex-direction: column;
+    grid-column: span 1;
+    max-height: none;
+    margin-bottom: 10px;
+}
 `;
 const BoxImovel = styled.div`
     display: flex;
@@ -233,4 +246,21 @@ const BoxImovel = styled.div`
     background-color: ${cores.backgroundBotaoSemFoco2};
     width: 100%;
     margin: 0 5px;
+
+    @media (max-width: 768px) {
+    flex-direction: column;
+    //grid-column: span 10;
+    width: auto;
+}
+    `;
+const DivInformacao = styled.div`
+    display: flex;
+    flex-direction: column;
+    margin: 10px 20px;
+    width: 80%;
+    
+    @media (max-width: 768px) {
+       width: 90%;
+}
+
     `;

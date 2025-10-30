@@ -72,9 +72,10 @@ const ButtonVoltar = styled(Button)`
     width: 100px;
     padding: 30px 0;
     position: relative;
-    left: 90%;
+    left: calc(100% - 100px);
     font-size: 2rem;
     font-weight: 400;
+
 `;
 
 // ===== COMPONENTE CONTROLADO =====

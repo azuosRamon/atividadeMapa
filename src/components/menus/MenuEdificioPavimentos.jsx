@@ -99,7 +99,7 @@ function PavimentosOpcoes({ usuarioLogado, operacaoEnviada, item = null, blocoId
             if (onAtualizar) await onAtualizar(); // 🔹 atualiza lista e fecha modal
         }
         catch(error){
-            console.error("erro ao cadastrar pavimentos", err.message);
+            console.error("erro ao cadastrar pavimentos", error.message);
         }
       }
 
@@ -130,7 +130,7 @@ function PavimentosOpcoes({ usuarioLogado, operacaoEnviada, item = null, blocoId
  * @returns 
  */
 
-function CardPavimento({key, dadosPavimentos, dadosUsuario, selecao, setSelecao, blocoId = null}) {
+function CardPavimento({dadosPavimentos, dadosUsuario, selecao, setSelecao, blocoId = null, onAtualizar}) {
     const [operacao, setOperacao] = useState("1")
     const [itemModificar, setItemModificar] = useState(null)
     const [mostrarModal, setMostrarModal] = useState(false);
@@ -169,13 +169,15 @@ function CardPavimento({key, dadosPavimentos, dadosUsuario, selecao, setSelecao,
                 blocoId={blocoId || null}
                 onAtualizar={async () => {
                     await atualizarLista();
+                    await onAtualizar();
+                    setSelecao(null);
                     setMostrarModal(false);
             }}>
             </PavimentosOpcoes>
 
         </Modal>
         <TituloHorizontal>Pavimentos</TituloHorizontal>
-        {pavimentos.length > 0 ? 
+        {selecao ? 
         <>
         <BoxPavimento>
             <DivInformacaoPavimentos>
@@ -198,7 +200,7 @@ function CardPavimento({key, dadosPavimentos, dadosUsuario, selecao, setSelecao,
                     </Select>
                 <LinhaInformacaoPavimentos>
                     <Chave>Salas:</Chave>
-                        <Valor>{pavimentos?.comodos?.length || 0}</Valor>
+                        <Valor>{selecao?.comodos?.length || 0}</Valor>
                 </LinhaInformacaoPavimentos>
                 <LinhaInformacaoPavimentos>
                     <Valor style={{color: cores.backgroundBotaoSemFoco2}}>|</Valor>
@@ -232,6 +234,7 @@ function CardPavimento({key, dadosPavimentos, dadosUsuario, selecao, setSelecao,
         </>
     : <AdicionarBtn onClick={(e)=>{
             e.preventDefault();
+            setItemModificar(null)
             setOperacao("1");
             setMostrarModal(true)}}>+ Adicionar Pavimento</AdicionarBtn>}
             </BoxPavimentos>
@@ -306,7 +309,12 @@ const BoxPavimentos = styled.div`
     border: 1px solid ${cores.boxShadow};
     grid-column: span 7;
     height:100%;
-    `;
+ 
+    @media (max-width: 768px) {
+        grid-column: span 1;
+}
+
+`;
 const BoxPavimento = styled.div`
     display: flex;
     flex-direction: row;
@@ -315,6 +323,11 @@ const BoxPavimento = styled.div`
     width: 100%;
     margin: 5px 0;
     height: inherit;
+    
+    
+    @media (max-width: 768px) {
+        flex-direction: column-reverse;
+    }
     `;
 const Nome = styled.h1`
   background-color: ${cores.cor5}  ;
