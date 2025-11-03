@@ -12,6 +12,8 @@
     import SelectComDados from "./BdSelectComDados";
     import LerDados from "./BdLerTabela";
     import { data } from "react-router-dom";
+    import { supabase } from "../../supabaseClient";
+    import CriarInputImagemCrop from "./SubCriarImputImagem";
 
     function DefinirOperacao({operacao, setOperacao}){
         return (
@@ -162,45 +164,14 @@
         />
         {erro && (
             <span style={{ color: "red", fontSize: "13px" }}>
-            ⚠️ {erro}
+             {erro}
             </span>
         )}
         </GridArea>
     );
     }
 
-    /*
-    function CriarInput({nomeCampo, campo, setFuncao, operacao, objeto}){
-        const input = <Input 
-        required={campo.required ?? false} 
-        disabled={nomeCampo.includes('_id') && Number(operacao) <= 1} 
-        value={(nomeCampo.includes('_id') && (typeof objeto?.[nomeCampo] != 'string')) ? (objeto?.[nomeCampo] ?? "") : String(objeto?.[nomeCampo] ?? "").toUpperCase()} 
-        type={campo.tipo} 
-        id={campo.nome} 
-        name={campo.nome} 
-        onChange={(e) => setFuncao(e, nomeCampo)}/>;
-        switch(campo.tipo){
-            case "text":
-                break;
-            case "number":
-                break;
-            case "email":
-                break;
-            case "date":
-                break;
-            case "checkbox":
-                break;
 
-        }
-        return(
-
-                <GridArea $area={campo.nome}>
-                    <Label htmlFor={campo.nome}>{campo.texto != "" ? campo.texto : campo.nome}:</Label>
-                    {input}
-                </GridArea>
-            
-        )
-    }*/
     function CriarSelect({nomeCampo, campo, setFuncao, objeto}){
         return(
                 <GridArea $area={campo.nome}>
@@ -221,6 +192,7 @@
     function CriarCamposFormulario({item, setFuncao = ()=>{}, operacao, setOperacao, objeto, children}) {
         const [btnSubmit, setBtnSubmit] = useState("");
         const [backgroundBotao, setBackground] = useState(cores.backgroundBotaoSemFoco2);
+        console.log("to aqui", objeto)
         useEffect(()=>{
             switch(operacao){
                 case "0":
@@ -307,10 +279,22 @@
                                         />
                                     )
                                                                 
-                                    case 'nome':
-                                        return(
-                                            <CriarInput autoFocus key={nome} nomeCampo={nome} campo={campo} objeto={objeto} setFuncao={setFuncao} operacao={operacao} />        
-                                        )
+                                case 'nome':
+                                    return(
+                                        <CriarInput autoFocus key={nome} nomeCampo={nome} campo={campo} objeto={objeto} setFuncao={setFuncao} operacao={operacao} />        
+                                    )
+                                
+                                case 'imagem':
+                                    return (
+                                    <CriarInputImagemCrop
+                                        key={nome}
+                                        nomeCampo={nome}
+                                        campo={campo}
+                                        objeto={objeto}
+                                        setFuncao={setFuncao}
+                                    />
+                                    );
+
                             }
                             return (
                                 <CriarInput key={nome} nomeCampo={nome} campo={campo} objeto={objeto} setFuncao={setFuncao} operacao={operacao} />
@@ -334,7 +318,7 @@
                             <Button $bgcolor={cores.backgroundBotaoSemFoco} type="reset">Limpar</Button>   
                         </GridArea>
                         <GridArea $area="botoes">
-                            <Button disabled={operacao=="0"} $bgcolor={backgroundBotao} type="submit">{btnSubmit}</Button>   
+                            <Button disabled={operacao=="0"} $bgcolor={backgroundBotao}>{btnSubmit}</Button>   
                         </GridArea>
             </>
         )

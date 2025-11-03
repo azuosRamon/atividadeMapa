@@ -2,6 +2,24 @@ import { useState, useEffect, useMemo } from "react"
 import { supabase } from "../../supabaseClient" // importa o cliente já configurado
 import AbrirModalSubmit from "./SubModalSubmit"
 
+// 🔧 Função auxiliar para extrair path de URL pública
+function extractPathFromUrl(publicUrl, bucketName = "imagens") {
+  if (!publicUrl) return null;
+  try {
+    const urlPart = `/public/${bucketName}/`;
+    const pathIndex = publicUrl.indexOf(urlPart);
+    if (pathIndex > -1) {
+      return publicUrl.substring(pathIndex + urlPart.length);
+    }
+    return null;
+  } catch (e) {
+    console.error("Erro ao extrair path da URL:", e);
+    return null;
+  }
+}
+
+
+
 function useBancoDeDados({
   nomeTabela,
   objeto,
@@ -50,12 +68,36 @@ function useBancoDeDados({
     // remove o campo de id do objeto
     const { [campoId]: _, ...semId } = dadosAtualizados
 
+      // 🔹 Remove qualquer campo temporário (por exemplo, "_imagem_anterior")
+    const camposValidos = Object.fromEntries(
+      Object.entries(semId).filter(([chave]) => !chave.startsWith("_"))
+    );
+
     const { error } = await supabase
         .from(nomeTabela)
-        .update(semId) // agora sem o campo id
+        .update(camposValidos) // agora sem o campo id e sem campos temporários
         .eq(campoId, id)
 
     if (error) throw error
+
+      // 🔹 Após atualizar o banco, deletar imagens antigas marcadas
+    const camposAntigos = Object.keys(dadosAtualizados).filter(
+      (k) => k.startsWith("_") && k.endsWith("_anterior")
+    );
+    for (const campo of camposAntigos) {
+      const urlAntiga = dadosAtualizados[campo];
+      if (!urlAntiga) continue;
+
+      const path = extractPathFromUrl(urlAntiga, "imagens");
+      if (path) {
+        const { error: removeError } = await supabase.storage
+          .from("imagens")
+          .remove([path]);
+        if (removeError)
+          console.warn("Erro ao deletar imagem antiga:", removeError.message);
+      }
+    }
+
     atualizarLista()
     }
 
@@ -99,7 +141,7 @@ function useBancoDeDados({
   // 🔹 Dispara operação CRUD
   const fazerEnvio = async (event) => {
     event.preventDefault()
-    
+    console.log("fazerEnvio chamado com operacao:", operacao, "e objeto:", objeto)
     try {
       if (operacao === "1") {
         await criar(objeto)

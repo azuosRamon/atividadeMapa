@@ -209,7 +209,7 @@ function SalaOpcoes({ usuarioLogado, operacaoEnviada, item = null, pavimentoId=n
 }
 
 
-function CardComodos({key, dados, dadosUsuario, pavimentoId = null, onAtualizar}){
+function CardComodos({dados, dadosUsuario, pavimentoId = null, onAtualizar}){
         const [operacao, setOperacao] = useState("1")
         const [itemModificar, setItemModificar] = useState(null)
         const [mostrarModal, setMostrarModal] = useState(false);
@@ -253,7 +253,7 @@ function CardComodos({key, dados, dadosUsuario, pavimentoId = null, onAtualizar}
                         setMostrarModal(true)}}>+ Nova Sala</AdicionarBtn>
                 </BoxComodo>
                 {comodos.map((item)=>(
-                    <BoxComodo>
+                    <BoxComodo key={item.comodo_id}>
                                 <TituloHorizontal>{item.tipos_areas.nome}</TituloHorizontal>
                         <DivInformacao>
                                 <Chave>{item.apelido || "Informaçoes"}</Chave>

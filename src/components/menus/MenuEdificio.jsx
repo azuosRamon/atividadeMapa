@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Box from "../SubBox";
 import CardImovel from "./MenuEdificioCampus";
@@ -7,12 +7,10 @@ import CardPavimento from "./MenuEdificioPavimentos";
 import CardComodos from "./MenuSalas";
 import Button from "../SubButton";
 import cores from "../Cores.js"
-import terreo from "../..//components/Plantas/TERREO_PAVIMENTO.png";
 import BussolaCarregando from "../BussolaLoading.jsx";
 import Modal from "../SubModal.jsx";
 import { supabase } from "/supabaseClient";
 import DivSeparador from "../SubDivSeparador";
-import { use } from "react";
 
 const DivSeparadorAjuste = styled(DivSeparador)`
     display: none;
@@ -108,9 +106,6 @@ function ConfigurarEdificio() {
         }
         if (blocoAtualizado) setBlocoSelecionado(blocoAtualizado);
         if (pavimentoAtualizado) setPavimentoSelecionado(pavimentoAtualizado)
-        console.log("Imóvel selecionado atualizado:", imovelSelecionado);
-        console.log("Bloco selecionado atualizado:", blocoSelecionado);
-        console.log("Pavimento selecionado atualizado:", pavimentoAtualizado);
     }, [imovelSelecionado, contador]);
     useEffect(() => {
         let pavimentoAtualizado = blocoSelecionado?.pavimentos?.find(pavimento => pavimento.pavimento_id === pavimentoSelecionado?.pavimento_id) || null;
@@ -118,12 +113,10 @@ function ConfigurarEdificio() {
             pavimentoAtualizado = blocoSelecionado?.pavimentos?.[0] || null;
         }
         setPavimentoSelecionado(pavimentoAtualizado)
-        console.log("Pavimento selecionado atualizado:", pavimentoAtualizado);
     }, [blocoSelecionado]);
 
   const handleCardClick = (imovel) => (e) => {
     e.preventDefault();
-    console.log("Imóvel selecionado:", imovel);
 
     setImovelSelecionado(imovel);
     
@@ -146,7 +139,6 @@ function ConfigurarEdificio() {
             setUsuario(dadosUsuario);
             
             const dadosImoveisCompleto = await LerDadosImoveis(dadosUsuario.empresa_id);
-            console.log("Dados dos imóveis carregados:", dadosImoveisCompleto);
             setImoveis(dadosImoveisCompleto);
             if (!imovelSelecionado && dadosImoveisCompleto.length > 0) {
                 const primeiroImovel = dadosImoveisCompleto[0];
@@ -203,7 +195,6 @@ function ConfigurarEdificio() {
                 setSelecao={setBlocoSelecionado} 
                 dadosUsuario={usuario}
                 onAtualizar={async () => {
-                    console.log("Atualizando dados após modificação de bloco...");
                     await atualizarDados();
                 }}
                 />}
@@ -216,17 +207,15 @@ function ConfigurarEdificio() {
                 dadosUsuario={usuario}
                 blocoId={blocoSelecionado.bloco_id}
                 onAtualizar={async () => {
-                    console.log("Atualizando dados após modificação de pavimento...");
                     await atualizarDados();
                 }}
                 />}
-                <DivSeparador></DivSeparador>
+                <DivSeparadorAjuste></DivSeparadorAjuste>
                 {pavimentoSelecionado && <CardComodos 
                 key={pavimentoSelecionado.pavimento_id}
                 dadosUsuario={usuario}
                 pavimentoId={pavimentoSelecionado.pavimento_id}
                 onAtualizar={async () => {
-                    console.log("Atualizando dados após modificação de Salas...");
                     await atualizarDados();
                 }}
                 dados={pavimentoSelecionado}/>}

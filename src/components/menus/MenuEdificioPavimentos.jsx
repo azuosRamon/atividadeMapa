@@ -10,6 +10,8 @@ import CriarCamposFormulario from "../SubCriadorForm";
 import terreo from "../..//components/Plantas/TERREO_PAVIMENTO.png";
 import Modal from "../SubModal.jsx";
 import { supabase } from "/supabaseClient";
+import { gerenciadorDeEventos } from "../../utils/gerenciadorDeEventos";
+import { FiCameraOff } from "react-icons/fi";
 
 async function LerNovosDados(empresaId, blocoId) {
     //informar uma lista composta de ['coluna', valorProcurado] para utilizar a condicao
@@ -47,7 +49,8 @@ display: grid;
 box-sizing: border-box;
 grid-template-columns: 1fr 1fr 1fr;
 grid-template-areas: 
-    "numero imagem imagem"
+    "numero numero numero"
+    "imagem imagem imagem"
     "reset . botoes";
 
 @media (max-width: 768px) {
@@ -120,6 +123,14 @@ function PavimentosOpcoes({ usuarioLogado, operacaoEnviada, item = null, blocoId
     )
 }
 
+const cameraOff={
+    width: '60%',
+    height: 'fit-content',
+    margin: 'auto',
+    color: 'gray',
+    maxWidth: '150px',
+    };
+
 /**
  * 
  * @param dadosPavimentos são os dados do bloco
@@ -137,6 +148,21 @@ function CardPavimento({dadosPavimentos, dadosUsuario, selecao, setSelecao, bloc
     const [pavimentos, setPavimentos] = useState(dadosPavimentos.pavimentos || []);
 
     /** Atualiza a lista de objetos quando ocorrer um crud */
+const VerificarImagem = ({ selecao }) => {
+  const [erroImagem, setErroImagem] = useState(false);
+
+  if (!selecao?.imagem || erroImagem) {
+    return <FiCameraOff style={cameraOff} />;
+  }
+
+  return (
+    <ImagemPavimento
+      src={selecao.imagem}
+      alt="Imagem do pavimento"
+      onError={() => setErroImagem(true)} // 👈 fallback automático
+    />
+  );
+};
 
     const atualizarLista = async () => {
         const novosDados = await LerNovosDados(dadosUsuario.empresa_id, blocoId);
@@ -172,6 +198,7 @@ function CardPavimento({dadosPavimentos, dadosUsuario, selecao, setSelecao, bloc
                     await onAtualizar();
                     setSelecao(null);
                     setMostrarModal(false);
+                    //gerenciadorDeEventos.disparar("blabla", {"email": dadosUsuario.email});
             }}>
             </PavimentosOpcoes>
 
@@ -223,7 +250,7 @@ function CardPavimento({dadosPavimentos, dadosUsuario, selecao, setSelecao, bloc
                 
                 $bgcolor={cores.corDeletar}>Excluir</HorizontalBtn>
             </DivInformacaoPavimentos>
-            <ImagemPavimento src={terreo}></ImagemPavimento>
+            <VerificarImagem selecao={selecao} />
         </BoxPavimento>
                 <HorizontalBtn onClick={(e)=>{
             e.preventDefault();
@@ -295,10 +322,13 @@ const TituloHorizontal = styled.h3`
 const DivInformacaoVertical = styled.div`
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 40%;
     height: 100%;
-    margin: auto;
     justify-content: space-evenly;
+    
+    @media (max-width: 768px) {
+        width: 100%;
+}
 `;
 const DivInformacaoPavimentos = styled(DivInformacaoVertical)`
     `;
@@ -348,6 +378,8 @@ const ImagemPavimento = styled.img`
   width: 60%;
   height: fit-content;  
   margin: auto;
+  max-width: 60%;
+  max-height: 100%;
 `;
 const TextoSelecione = styled(Chave)`
  text-align: left;
