@@ -25,15 +25,9 @@ const FormGrid = styled.form`
     ". reset botoes";
 
   @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "tabela"
-      "operacao"
-      "idCurso"
-      "nome"
-      "reset"
-      "botoes";
-  }
+    display: flex;
+    flex-direction: column;
+}
 `;
 
 function ConfigurarCursos() {

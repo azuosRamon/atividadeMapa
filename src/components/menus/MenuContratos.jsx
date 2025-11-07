@@ -21,22 +21,8 @@ grid-template-areas: /* VERIFICAR OS NOMES DAS AREAS NO ARQUIVO BdObjeto */
     ". reset botoes";
 
 @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    grid-template-areas: 
-        "tabela"
-        "operacao"
-        "id"
-        "nome"
-        "empresa_id"
-        "valor"
-        "inicio"
-        "tempo_contrato_meses"
-        "renovacao"
-        "qtd_comodos"
-        "qtd_produtos"
-        "qtd_usuarios"
-        "reset"
-        "botoes";
+    display: flex;
+    flex-direction: column;
 }
 `;
 

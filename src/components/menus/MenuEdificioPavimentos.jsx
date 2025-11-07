@@ -187,7 +187,7 @@ const VerificarImagem = ({ selecao }) => {
 
     return (
         <BoxPavimentos>
-        <Modal aberto={mostrarModal} onFechar={() => setMostrarModal(false)}>
+        <Modal aberto={mostrarModal} onFechar={() =>{console.log(selecao); setMostrarModal(false)}}>
             <PavimentosOpcoes 
                 usuarioLogado={dadosUsuario} 
                 operacaoEnviada={operacao} 

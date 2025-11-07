@@ -20,6 +20,7 @@ import ConfigurarCursos from "./components/menus/MenuCursos";
 import MenuDisciplinas from "./components/menus/MenuDisciplinas";
 import MenuEdificios from "./components/menus/MenuEdificio";
 import MenuQuadroAulas from "./components/menus/MenuQuadroAulas";
+import CadastrarDisponibilidade from "./components/menus/MenuDisponibilidade";
 import Tabelas from "./components/menus/MenuTabelas";
 import CadastrarEmpresa from "./components/menus/MenuEmpresas";
 import CadastrarFuncao from "./components/menus/MenuFuncoes";
@@ -327,6 +328,11 @@ function App() {
         <Route path="/cadastroContrato" element={
           <RotaProtegida>
             <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastroContratos usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
+          </RotaProtegida>
+        }/>
+        <Route path="/cadastrarDisponibilidade" element={
+          <RotaProtegida>
+            <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarDisponibilidade usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
           </RotaProtegida>
         }/>
         <Route path="/relacionarUsuarios" element={
