@@ -89,6 +89,7 @@ const [usuario, setUsuario] = useState(capturarUsuarioLogadoLocalStorage());
                         <React.Fragment>
                             <Button onClick={()=>{navegar('/dashboard')}} $bgcolor="rgb(38, 38, 38)">Início</Button>
                             <Button onClick={()=>{navegar('/pesquisarDados')}} $bgcolor="rgb(38, 38, 38)">Pesquisa</Button>
+                            <Button onClick={()=>{navegar('/cadastrarDisponibilidade')}} $bgcolor="rgb(38, 38, 38)">Disponibilidade</Button>
                             <Colapse fontSize="1.2rem" nome = "Configurar" estadoInicial={false}>
                                 <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>
                                 <Button onClick={()=>{navegar('/tiposAreas')}} $bgcolor="rgb(38, 38, 38)">Tipos de Áreas</Button>

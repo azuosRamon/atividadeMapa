@@ -381,11 +381,11 @@ const mapa = {
 
     // 📆 DISPONIBILIDADE SEMANAL
     disponibilidade_semanal: {
-        tabela: { nome: "disponibilidade_semanal", lista: ["disponibilidade_id", "usuario_id"], camposPesquisa: false, mostrar: true },
+        tabela: { nome: "disponibilidade_semanal", lista: ["disponibilidade_id", "usuario_id"], camposPesquisa: false, mostrar: false },
         operacao: 0,
         campos: {
-            disponibilidade_id: { valor: null, tipo: "number", campo: "input", texto: "Id", nome: "id" },
-            usuario_id: { valor: null, tipo: "text", campo: "select", texto: "Usuário", nome: "usuario_id", tabela: "usuarios", lista: ["usuario_id", "nome"] },
+            disponibilidade_id: {mostrar: false, valor: null, tipo: "number", campo: "input", texto: "Id", nome: "id" },
+            usuario_id: { mostrar: false, valor: null, tipo: "text", campo: "select", texto: "Usuário", nome: "usuario_id", tabela: "usuarios", lista: ["usuario_id", "nome"] },
             dia_da_semana: { valor: "", tipo: "number", campo: "input", texto: "Dia da Semana (1-7)", nome: "dia_da_semana" },
             hora_inicio: { valor: "", tipo: "time", campo: "input", texto: "Hora Início", nome: "hora_inicio" },
             hora_fim: { valor: "", tipo: "time", campo: "input", texto: "Hora Fim", nome: "hora_fim" }

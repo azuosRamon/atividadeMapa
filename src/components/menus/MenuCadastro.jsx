@@ -21,21 +21,8 @@ grid-template-areas:
     ". reset botoes";
 
 @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    grid-template-areas: 
-        "tabela"
-        "operacao"
-        "id"
-        "nome"
-        "nascimento"
-        "cpf"
-        "telefone"
-        "email"
-        "visibilidade"
-        "rede_social"
-        "imagem"
-        "reset"
-        "botoes";
+    display: flex;
+    flex-direction: column;
 }
 `;
 import { supabase } from "../../../supabaseClient";

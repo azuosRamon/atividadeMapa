@@ -192,7 +192,6 @@
     function CriarCamposFormulario({item, setFuncao = ()=>{}, operacao, setOperacao, objeto, children}) {
         const [btnSubmit, setBtnSubmit] = useState("");
         const [backgroundBotao, setBackground] = useState(cores.backgroundBotaoSemFoco2);
-        console.log("to aqui", objeto)
         useEffect(()=>{
             switch(operacao){
                 case "0":
