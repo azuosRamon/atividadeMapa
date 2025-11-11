@@ -5,7 +5,8 @@ import Title from "../SubTitleH2";
 import useBancoDeDados from "../BdCrudSupabase";
 import mapa from "../BdObjetoTabelas"
 import CriarCamposFormulario from "../SubCriadorForm";
-
+import { gerenciadorDeEventos } from "../../utils/gerenciadorDeEventos"; 
+import { supabase } from "../../../supabaseClient";
 
 const FormGrid = styled.form`
 gap: 10px;
@@ -25,13 +26,13 @@ grid-template-areas:
     flex-direction: column;
 }
 `;
-import { supabase } from "../../../supabaseClient";
+
 
 async function cadastrarUsuario(objeto) {
   // 1. Cria conta no Supabase Auth
   const { data, error } = await supabase.auth.signUp({
     email: objeto.email,
-    password: objeto.cpf,
+    password: objeto.cpf, // CUIDADO: Usar CPF como senha é inseguro
   });
 
   if (error) throw error;
@@ -66,18 +67,36 @@ function Cadastro({ usuarioLogado }) {
         campoId: tabela.tabela.lista[0],
         campoNome: tabela.tabela.lista[1],
     });
+
     const enviarCadastro = async (e)=>{
         e.preventDefault();
         try {
+            console.log("Iniciando cadastro Auth...");
             const objetoUsuario = await cadastrarUsuario(objeto);
-            console.log(objeto);
+            console.log("Usuário Auth criado:", objetoUsuario.id);
+
             const user_id = objetoUsuario.id;
-            console.log(user_id);
             const objetoComUserId = {...objeto, user_id};
+            
+            console.log("Enviando para o banco de dados...");
             await fazerEnvio(e, objetoComUserId);
+            console.log("Cadastro no banco de dados concluído.");
+
+            // ADICIONE ESTAS LINHAS: Dispara o evento de sucesso
+            console.log("Disparando evento 'novoUsuarioCadastrado'...");
+            
+            //
+            // ▼▼▼ [CORREÇÃO APLICADA AQUI] ▼▼▼
+            //
+            gerenciadorDeEventos.disparar("novoUsuarioCadastrado", {
+              novoUsuario: objetoComUserId, // Dados do usuário recém-criado
+              adminUsuario: usuarioLogado   // Dados do admin que fez o cadastro
+            });
+
         }
         catch(err){
-            console.error("erro ao cadastrar usuario", err.message);
+            console.error("Erro ao cadastrar usuario", err.message);
+            // (Você pode querer disparar um evento de erro aqui também)
         }
     }
     
