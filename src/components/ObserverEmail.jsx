@@ -1,12 +1,10 @@
 import React, {useEffect, useState} from "react";
-// Verifique se este caminho está correto para você
 import { gerenciadorDeEventos } from "../utils/gerenciadorDeEventos"; 
 import Modal from "./SubModal";
 import emailjs from '@emailjs/browser';
 import styled from "styled-components";
 import cores from "./Cores";
 
-// (Todos os seus styled-components aqui... não mudam)
 const TituloNotificacao = styled.h2`
   color: ${cores.corTexto};
   border-bottom: 1px solid ${cores.cor5};
@@ -28,8 +26,6 @@ const ItemMensagem = styled.li`
   margin-bottom: 8px;
   font-size: 14px;
 `;
-// --- Fim dos styled-components ---
-
 
 export default function ObserverEmail() {
     const [mensagem, setMensagem] = useState([]);

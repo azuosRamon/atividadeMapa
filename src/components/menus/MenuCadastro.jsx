@@ -29,10 +29,9 @@ grid-template-areas:
 
 
 async function cadastrarUsuario(objeto) {
-  // 1. Cria conta no Supabase Auth
   const { data, error } = await supabase.auth.signUp({
     email: objeto.email,
-    password: objeto.cpf, // CUIDADO: Usar CPF como senha é inseguro
+    password: objeto.cpf, 
   });
 
   if (error) throw error;
@@ -82,12 +81,9 @@ function Cadastro({ usuarioLogado }) {
             await fazerEnvio(e, objetoComUserId);
             console.log("Cadastro no banco de dados concluído.");
 
-            // ADICIONE ESTAS LINHAS: Dispara o evento de sucesso
+            //Dispara o evento de sucesso
             console.log("Disparando evento 'novoUsuarioCadastrado'...");
             
-            //
-            // ▼▼▼ [CORREÇÃO APLICADA AQUI] ▼▼▼
-            //
             gerenciadorDeEventos.disparar("novoUsuarioCadastrado", {
               novoUsuario: objetoComUserId, // Dados do usuário recém-criado
               adminUsuario: usuarioLogado   // Dados do admin que fez o cadastro
@@ -96,7 +92,7 @@ function Cadastro({ usuarioLogado }) {
         }
         catch(err){
             console.error("Erro ao cadastrar usuario", err.message);
-            // (Você pode querer disparar um evento de erro aqui também)
+           
         }
     }
     
