@@ -5,6 +5,7 @@ function useBancoDeDados({
   nomeTabela,
   objeto,
   setObjeto,
+  objetoInicial=null,
   operacao,
   campoId = "id",
 }) {
@@ -62,6 +63,7 @@ function useBancoDeDados({
   const deletar = async (id) => {
     const { error } = await supabase.from(nomeTabela).delete().eq(campoId, id)
     if (error) throw error
+    (objetoInicial && setObjeto(objetoInicial))
     atualizarLista()
   }
 

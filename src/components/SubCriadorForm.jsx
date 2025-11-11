@@ -18,7 +18,6 @@
     function DefinirOperacao({operacao, setOperacao}){
         return (
             <GridArea $area="operacao">
-                <Label htmlFor="operacao">operacao:</Label>
                     <Select id="operacao" autoFocus name="operacao" required onChange={(e) => {setOperacao(e.target.value)}}>
                     <option value="0">Selecione a operação desejada</option>
                     <option value="1">Adicionar</option>
@@ -189,7 +188,7 @@
         )
     };
 
-    function CriarCamposFormulario({item, setFuncao = ()=>{}, operacao, setOperacao, objeto, children}) {
+    function CriarCamposFormulario({item, setFuncao = ()=>{}, operacao, setOperacao, objeto, setObjeto, children}) {
         const [btnSubmit, setBtnSubmit] = useState("");
         const [backgroundBotao, setBackground] = useState(cores.backgroundBotaoSemFoco2);
         useEffect(()=>{
@@ -293,6 +292,30 @@
                                         setFuncao={setFuncao}
                                     />
                                     );
+                                case 'dia_da_semana':
+                                    const diasSemana = [
+                                        { valor: "1", nome: "Domingo" },
+                                        { valor: "2", nome: "Segunda-feira" },
+                                        { valor: "3", nome: "Terça-feira" },
+                                        { valor: "4", nome: "Quarta-feira" },
+                                        { valor: "5", nome: "Quinta-feira" },
+                                        { valor: "6", nome: "Sexta-feira" },
+                                        { valor: "7", nome: "Sábado" },
+                                    ];
+                                    return(
+                                        <GridArea $area={'dia_da_semana'}>
+                                            <Label>Dia da semana:</Label>
+                                            <Select value={objeto?.dia_da_semana ?? 0} key={nome} onChange={(e)=> setFuncao(e, "dia_da_semana")} id="dia_da_semana" name="dia_da_semana">
+                                                <option key={0} value="0">Selecione</option>
+                                                {diasSemana.map((dia) => (
+                                                    <option key={dia.valor} value={dia.valor}>
+                                                        {dia.nome}
+                                                    </option>
+                                                ))}
+                                            </Select>
+
+                                        </GridArea>
+                                    )
 
                             }
                             return (
