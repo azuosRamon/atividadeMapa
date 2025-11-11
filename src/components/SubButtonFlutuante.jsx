@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+// Importe o gerenciador de eventos
+import { gerenciadorDeEventos } from '../utils/gerenciadorDeEventos'; // Ajuste o caminho se necessário
+import React, { useState, useEffect } from 'react'; // Importe useEffect
 import styled from 'styled-components';
 import Label from './SubLabel';
 import Input from './SubInput';
@@ -6,6 +8,8 @@ import Box from './SubBox';
 import { IoChatboxEllipsesOutline } from "react-icons/io5";
 import cores from "./Cores"
 
+// ... (Todos os seus styled-components H2, Button, ModalOverlay, etc... não mudam) ...
+// (Vou omitir os styled-components para economizar espaço)
 const H2 = styled.h2`
   color: ${(props) => props.$color || '#e2e2e2'};
 `
@@ -82,6 +86,11 @@ const SubmitButton = styled.button`
   padding: 10px 16px;
   border-radius: 8px;
   cursor: pointer;
+  
+  &:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+  }
 `;
 
 const CloseButton = styled.button`
@@ -103,27 +112,66 @@ margin-left: auto;
 `;
 
 
+// --- INÍCIO DO COMPONENTE ---
 const BotaoFlutuante = () => {
   const [open, setOpen] = useState(false);
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [mensagem, setMensagem] = useState('');
   const [isHuman, setIsHuman] = useState(false);
+  const [estaEnviando, setEstaEnviando] = useState(false); // NOVO: State de carregamento
+
+  // Efeito para escutar as respostas do gerenciador
+  useEffect(() => {
+    // O que fazer quando o observer confirmar o sucesso
+    const tratarSucesso = () => {
+      setEstaEnviando(false);
+      setOpen(false);
+      // Limpa o formulário
+      setNome('');
+      setEmail('');
+      setMensagem('');
+      setIsHuman(false);
+      // O ObserverEmail cuidará do Alerta/Modal de sucesso
+    };
+
+    // O que fazer quando o observer avisar de um erro
+    const tratarErro = (erro) => {
+      console.error("Erro reportado pelo observer:", erro);
+      setEstaEnviando(false);
+      alert("Falha ao enviar o feedback. Tente mais tarde.");
+    };
+
+    // Inscreve este componente nos eventos de resposta
+    const desinscreverSucesso = gerenciadorDeEventos.inscrever("enviarFeedback_sucesso", tratarSucesso);
+    const desinscreverErro = gerenciadorDeEventos.inscrever("enviarFeedback_erro", tratarErro);
+
+    // Limpa as inscrições quando o componente for desmontado
+    return () => {
+      desinscreverSucesso();
+      desinscreverErro();
+    };
+  }, []); // [] = Executa apenas uma vez quando o componente monta
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Feedback enviado:", { nome, email, mensagem });
+    setEstaEnviando(true);
 
-    alert("Feedback enviado com sucesso!");
-    setOpen(false);
-    setNome('');
-    setEmail('');
-    setMensagem('');
+    // A única coisa que o submit faz é disparar o evento
+    gerenciadorDeEventos.disparar("enviarFeedback", {
+      nome,
+      email,
+      mensagem
+    });
+    
+    // O restante (fechar modal, limpar form) será feito pelo listener do useEffect
+    // quando ele receber o evento "enviarFeedback_sucesso"
   };
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}><Span><IoChatboxEllipsesOutline /></Span></Button>
+      {/* Corrigi a prop $ativo para usar o state 'open' */}
+      <Button onClick={() => setOpen(true)}><Span $ativo={open}><IoChatboxEllipsesOutline /></Span></Button>
 
       {open && (
         <ModalOverlay onClick={() => setOpen(false)}>
@@ -136,6 +184,7 @@ const BotaoFlutuante = () => {
                   placeholder="Seu nome"
                   value={nome}
                   onChange={(e) => setNome(e.target.value)}
+                  disabled={estaEnviando} // Desabilita enquanto envia
                   required
                 />
 
@@ -145,6 +194,7 @@ const BotaoFlutuante = () => {
                   placeholder="Seu e-mail"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  disabled={estaEnviando}
                   required
                 />
 
@@ -153,6 +203,7 @@ const BotaoFlutuante = () => {
                   placeholder="Escreva seu feedback aqui..."
                   value={mensagem}
                   onChange={(e) => setMensagem(e.target.value)}
+                  disabled={estaEnviando}
                   required
                 />
 
@@ -161,14 +212,19 @@ const BotaoFlutuante = () => {
                     type = "checkbox"
                     checked = {isHuman}
                     onChange={()=> setIsHuman(!isHuman)}
+                    disabled={estaEnviando}
                     required
                   />
                   Não sou um robô.
                 </CheckboxLabel>
 
               <ButtonGroup>
-                <SubmitButton type="submit">Enviar</SubmitButton>
-                <CloseButton type="button" onClick={() => setOpen(false)}>Cancelar</CloseButton>
+                <SubmitButton type="submit" disabled={estaEnviando}>
+                  {estaEnviando ? 'Enviando...' : 'Enviar'}
+                </SubmitButton>
+                <CloseButton type="button" onClick={() => setOpen(false)} disabled={estaEnviando}>
+                  Cancelar
+                </CloseButton>
               </ButtonGroup>
             </form>
           </Box>

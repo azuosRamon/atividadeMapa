@@ -271,7 +271,7 @@ function App() {
         <Route path="/edificio" element={
           <RotaProtegida>
             
-            <LayoutLogado usuarioDados={usuarioLogadoDados}><ObserverEmail /><MenuEdificios usuarioLogado={usuarioLogadoDados} dados={dadosJson}/></LayoutLogado>
+            <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuEdificios usuarioLogado={usuarioLogadoDados} dados={dadosJson}/></LayoutLogado>
           </RotaProtegida>
         }/>
         <Route path="/categorias" element={
@@ -348,6 +348,7 @@ function App() {
       </Routes>
       </AuthProvider>
       <BotaoFlutuante/>
+      <ObserverEmail />
     </Router>
   );
 }
