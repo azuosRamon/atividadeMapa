@@ -90,19 +90,21 @@ const [usuario, setUsuario] = useState(capturarUsuarioLogadoLocalStorage());
                             <Button onClick={()=>{navegar('/dashboard')}} $bgcolor="rgb(38, 38, 38)">Início</Button>
                             <Button onClick={()=>{navegar('/pesquisarDados')}} $bgcolor="rgb(38, 38, 38)">Pesquisa</Button>
                             <Button onClick={()=>{navegar('/cadastrarDisponibilidade')}} $bgcolor="rgb(38, 38, 38)">Disponibilidade</Button>
-                            <Colapse fontSize="1.2rem" nome = "Configurar" estadoInicial={false}>
-                                <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>
+                            <Button onClick={()=>{navegar('/visualizarAgendaSemanal')}} $bgcolor="rgb(38, 38, 38)">Agenda</Button>
+                            <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>
+                            <Colapse fontSize="1.2rem" nome = "Gerenciar" estadoInicial={false}>
+                                <Button onClick={()=>{navegar('/categorias')}} $bgcolor="rgb(38, 38, 38)">{modelo.categorias || "Categorias"}</Button>
+                                <Button onClick={()=>{navegar('/produtos')}} $bgcolor="rgb(38, 38, 38)">{modelo.produtos || "Produtos"}</Button>
+                                <Button onClick={()=>{navegar('/periodoHorarios')}} $bgcolor="rgb(38, 38, 38)">Horários</Button>
+                                <Button onClick={()=>{navegar('/edificio')}} $bgcolor="rgb(38, 38, 38)">Edifício</Button>
+                                <Button onClick={()=>{navegar('/quadroAulas')}} $bgcolor="rgb(38, 38, 38)">Quadro de funcionamento</Button>
+                                <Button onClick={()=>{navegar('/cadastroUsuario')}} $bgcolor="rgb(38, 38, 38)">Usuários</Button>
+                            </Colapse>
+                            <Colapse fontSize="1.2rem" nome = "Empresa" estadoInicial={false}>
                                 <Button onClick={()=>{navegar('/tiposAreas')}} $bgcolor="rgb(38, 38, 38)">Tipos de Áreas</Button>
                                 <Button onClick={()=>{navegar('/relacionarUsuarios')}} $bgcolor="rgb(38, 38, 38)">Relacionamento</Button>
                             </Colapse>
-                            <Colapse fontSize="1.2rem" nome = "Menu" estadoInicial={false}>
-                                <Button onClick={()=>{navegar('/edificio')}} $bgcolor="rgb(38, 38, 38)">Edifício</Button>
-                                <Button onClick={()=>{navegar('/periodoHorarios')}} $bgcolor="rgb(38, 38, 38)">Horários</Button>
-                                <Button onClick={()=>{navegar('/categorias')}} $bgcolor="rgb(38, 38, 38)">{modelo.categorias || "Categorias"}</Button>
-                                <Button onClick={()=>{navegar('/produtos')}} $bgcolor="rgb(38, 38, 38)">{modelo.produtos || "Produtos"}</Button>
-                                <Button onClick={()=>{navegar('/quadroAulas')}} $bgcolor="rgb(38, 38, 38)">Quadro de funcionamento</Button>
-                            </Colapse>
-                            <Colapse fontSize="1.2rem" nome = "Adicionar" estadoInicial={false}>
+                            <Colapse fontSize="1.2rem" nome = "M.A.P.A." estadoInicial={false}>
                                 <Button onClick={()=>{navegar('/cadastroUsuario')}} $bgcolor="rgb(38, 38, 38)">Usuários</Button>
                                 <Button onClick={()=>{navegar('/cadastroEmpresas')}} $bgcolor="rgb(38, 38, 38)">Empresas</Button>
                                 <Button onClick={()=>{navegar('/cadastroContrato')}} $bgcolor="rgb(38, 38, 38)">Contratos</Button>

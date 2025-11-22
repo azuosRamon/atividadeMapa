@@ -28,6 +28,7 @@ import CadastrarCargos from "./components/menus/MenuCargos";
 import CadastrarAreas from "./components/menus/MenuTipoArea";
 import CadastroModelos from "./components/menus/MenuModelos";
 import CadastroContratos from "./components/menus/MenuContratos";
+import VisualizarAgendaSemanal from "./components/menus/MenuAgendaSemanal";
 import RelacionarUsuarios from "./components/menus/MenuRelacionarUsuarios";
 import { AuthProvider } from "./components/AuthProvider";
 
@@ -333,6 +334,11 @@ function App() {
         <Route path="/cadastrarDisponibilidade" element={
           <RotaProtegida>
             <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarDisponibilidade usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
+          </RotaProtegida>
+        }/>
+        <Route path="/visualizarAgendaSemanal" element={
+          <RotaProtegida>
+            <LayoutLogado usuarioDados={usuarioLogadoDados}><VisualizarAgendaSemanal usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
           </RotaProtegida>
         }/>
         <Route path="/relacionarUsuarios" element={
