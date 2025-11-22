@@ -11,6 +11,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.12.2",
+    "emailjs": "^4.0.3",
     "form-data": "^4.0.4",
     "image-map-resizer": "^1.0.10",
     "jspdf": "^3.0.3",

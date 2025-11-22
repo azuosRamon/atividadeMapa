@@ -1,3 +1,27 @@
+const capturarUsuarioLogadoLocalStorage = () => {
+        let usuario = localStorage.getItem("usuario");
+        if (!usuario) return null;
+        try {
+            let parsedUsuario = JSON.parse(usuario);
+            return parsedUsuario
+        } catch (error){
+            console.log(error);
+            return null;
+        }
+    }
+const capturarModeloLocalStorage = () => {
+        let usuario = localStorage.getItem("modelo");
+        if (!usuario) return null;
+        try {
+            let parsedUsuario = JSON.parse(usuario);
+            return parsedUsuario
+        } catch (error){
+            console.log(error);
+            return null;
+        }
+    }
+const usuarioLogado = capturarUsuarioLogadoLocalStorage();
+const modelo = capturarModeloLocalStorage();
 const mapa = {
     cargos : {
         tabela: {nome: "cargos", lista:["cargo_id", "nome"], camposPesquisa:false, mostrar: true},
@@ -344,7 +368,7 @@ const mapa = {
         tabela: { nome: "blocos", lista: ["bloco_id", "nome"], camposPesquisa: false, mostrar: false },
         operacao: 1,
         campos: {
-            bloco_id: { valor: null, tipo: "number", campo: "input", texto: "Id", nome: "id", mostrar: false},
+            bloco_id: {  valor: null, tipo: "number", campo: "input", texto: "Id", nome: "id", mostrar: false},
             nome: { valor: "", tipo: "text", campo: "input", texto: "Nome", nome: "nome", required: true },
             imovel_id: { valor: null, tipo: "text", campo: "select", texto: "Imóvel", nome: "imovel_id", tabela: "imoveis", lista: ["imovel_id", "nome"], mostrar: false },
             empresa_id: { valor: null, tipo: "text", campo: "select", texto: "Empresa", nome: "empresa_id", tabela: "empresas", lista: ["empresa_id", "nome"], mostrar: false }
@@ -356,10 +380,10 @@ const mapa = {
         tabela: { nome: "categorias", lista: ["categoria_id", "nome"], camposPesquisa: false, mostrar: true },
         operacao: 0,
         campos: {
-            categoria_id: { valor: null, tipo: "number", campo: "input", texto: "Id", nome: "id" },
+            categoria_id: { mostrar:false, valor: null, tipo: "number", campo: "input", texto: "Id", nome: "id" },
             nome: { valor: "", tipo: "text", campo: "input", texto: "Nome", nome: "nome", required: true },
             descricao: { valor: "", tipo: "text", campo: "input", texto: "Descrição", nome: "descricao" },
-            empresa_id: { valor: null, tipo: "text", campo: "select", texto: "Empresa", nome: "empresa_id", tabela: "empresas", lista: ["empresa_id", "nome"] }
+            empresa_id: {mostrar:false, valor: null, tipo: "text", campo: "select", texto: "Empresa", nome: "empresa_id", tabela: "empresas", lista: ["empresa_id", "nome"] }
         }
     },
 
@@ -424,12 +448,12 @@ const mapa = {
         tabela: { nome: "produtos", lista: ["produtos_id", "nome"], camposPesquisa: false, mostrar: true },
         operacao: 0,
         campos: {
-            produtos_id: { valor: null, tipo: "number", campo: "input", texto: "Id", nome: "id" },
+            produtos_id: { mostrar:false, valor: null, tipo: "number", campo: "input", texto: "Id", nome: "id" },
             nome: { valor: "", tipo: "text", campo: "input", texto: "Nome", nome: "nome", required: true },
-            descricao: { valor: "", tipo: "text", campo: "textarea", texto: "Descrição", nome: "descricao" },
-            valor: { valor: "", tipo: "number", campo: "input", texto: "Valor", nome: "valor" },
-            foto: { valor: "", tipo: "file", campo: "input", texto: "Imagem", nome: "foto" },
-            empresa_id: { valor: null, tipo: "text", campo: "select", texto: "Empresa", nome: "empresa_id", tabela: "empresas", lista: ["empresa_id", "nome"] }
+            descricao: {mostrar:false, valor: null, tipo: "text", campo: "input", texto: "Descrição", nome: "descricao" },
+            valor: {mostrar:false, valor: null, tipo: "number", campo: "input", texto: "Valor", nome: "valor" },
+            imagem: {mostrar:false, valor: null, tipo: "file", campo: "input", texto: "Imagem", nome: "imagem" },
+            empresa_id: { mostrar:false, valor: null, tipo: "text", campo: "select", texto: "Empresa", nome: "empresa_id", tabela: "empresas", lista: ["empresa_id", "nome"] }
         }
     },
 
@@ -439,7 +463,27 @@ const mapa = {
         operacao: 0,
         campos: {
             tipo_area_id: { valor: null, tipo: "number", campo: "input", texto: "Id", nome: "id" },
-            nome: { valor: "", tipo: "text", campo: "input", texto: "Nome", nome: "nome", required: true }
+            nome: { valor: "", tipo: "text", campo: "input", texto: "Nome", nome: "nome", required: true },
+        }
+    },
+    quadro_de_funcionamento: {
+        tabela: { nome: "quadro_de_funcionamento", lista: ["funcionamento_id", "turma", "produto_id"], camposPesquisa: false, mostrar: true },
+        operacao: 0,
+        campos: {
+            empresa_id: { mostrar: false, valor: null, tipo: "text", campo: "select", texto: "Empresa", nome: "empresa_id", tabela: "empresas", lista: ["empresa_id", "nome"] },
+            funcionamento_id: { mostrar: false, valor: null, tipo: "number", campo: "input", texto: "Id", nome: "id" },
+            categoria_id: { valor: null, tipo: "number", campo: "select", texto: modelo.categorias, nome: "categoria", tabela:"categorias", lista: ["categoria_id","nome"],visualizar:["nome"], condicao: {coluna: "empresa_id", valor: usuarioLogado.empresa_id} },
+            produto_id: { valor: null, tipo: "number", campo: "select", texto: modelo.produtos, nome: "produto", tabela:"produtos", lista: ["produto_id","nome"], visualizar:["nome"], condicao: {coluna: "empresa_id", valor: usuarioLogado.empresa_id}},
+            turma: { valor: "", tipo: "text", campo: "input", texto: "turma", nome: "turma", required: true },
+            ano: { valor: "", tipo: "number", campo: "input", texto: "Ano", nome: "ano" },
+            semestre: { valor: "", tipo: "number", campo: "input", texto: "Semestre", nome: "semestre" },
+            horario_id: { mostrar: false, valor: "", tipo: "time", campo: "select", texto: "Horario", nome: "horario", tabela:"horarios", visualizar:["hora_inicio", "hora_termino"], lista: ["horario_id", "hora_inicio", "hora_termino"] },
+            dia_da_semana: { valor: "", tipo: "number", campo: "input", texto: "Dia da Semana", nome: "dia_da_semana" },
+            usuario_id: {mostrar: false, valor: null, tipo: "number", campo:"select", texto:"Funcionário(a)", nome:"usuario", tabela:"usuarios", lista: ["usuario_id", "nome"], visualizar:["nome"]},
+            tipo_area_id: { valor: null, tipo: "number", campo: "select", texto: "Tipo de comodo", nome: "tipo_area", tabela:"tipos_areas", visualizar: ["nome"], lista: ["tipo_area_id","nome"] },
+            ocupacao: { valor: "", tipo: "number", campo: "input", texto: "Ocupação desejada", nome: "ocupacao" },
+            comodo_id: {mostrar: false,valor: null, tipo: "number", campo: "select", texto: modelo.comodos, nome: "comodo_id", tabela:"comodos", lista: ["comodo_id"], visualizar:["numero", "lotacao"], condicao: {coluna: "empresa_id", valor: usuarioLogado.empresa_id} },
+            
         }
     }
 };

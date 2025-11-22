@@ -277,12 +277,12 @@ function App() {
         }/>
         <Route path="/categorias" element={
           <RotaProtegida>
-            <LayoutLogado usuarioDados={usuarioLogadoDados}><ConfigurarCursos/></LayoutLogado>
+            <LayoutLogado usuarioDados={usuarioLogadoDados}><ConfigurarCursos usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
           </RotaProtegida>
         }/>
         <Route path="/produtos" element={
           <RotaProtegida>
-            <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuDisciplinas/></LayoutLogado>
+            <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuDisciplinas usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
           </RotaProtegida>
         }/>
         <Route path="/pesquisarDados" element={
@@ -292,7 +292,7 @@ function App() {
         }/>
         <Route path="/quadroAulas" element={
           <RotaProtegida>
-            <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuQuadroAulas table={dadosJson} imagens={imagens}/></LayoutLogado>
+            <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuQuadroAulas usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
           </RotaProtegida>
         }/>
         <Route path="/cadastroUsuario" element={

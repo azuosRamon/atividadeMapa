@@ -1,17 +1,12 @@
 import React, { useState, useEffect, useMemo} from "react";
 import styled from "styled-components";
 import Box from "../SubBox";
-import Input from "../SubInput";
-import Select from "../SubSelect";
-import Label from "../SubLabel";
-import Button from "../SubButton";
 import Title from "../SubTitleH2";
-import GridArea from "../SubGridArea";
-import DivSeparador from "../SubDivSeparador";
-import TabelaCompleta from "../SubTabela";
-import Colapse from "../SubColapse"
-import cores from "../Cores"
 import useBancoDeDados from "../BdSupabase";
+
+import CriarCamposFormulario from "../SubCriadorForm";
+import mapa from "../BdObjetoTabelas"
+
 
 const FormGrid = styled.form`
 gap: 10px;
@@ -19,8 +14,9 @@ display: grid;
 grid-template-columns: 1fr 1fr 1fr;
 grid-template-areas: 
     "tabela tabela tabela"
-    "operacao operacao idDisciplina"
+    "operacao operacao operacao"
     "nome nome nome"
+    "descricao . ."
     ". reset botoes";
 
 @media (max-width: 768px) {
@@ -30,69 +26,44 @@ grid-template-areas:
 `;
 
 
-function MenuDisciplinas() {
+function MenuDisciplinas({usuarioLogado}) {
+    const tabela = mapa.produtos;
+    const [objeto, setObjeto] = useState(
+        Object.fromEntries(
+            Object.entries(tabela.campos).map(([k, v]) => ([k, k=="empresa_id"?usuarioLogado.empresa_id:v.valor]))
+        )
+    );
+      const [operacao, setOperacao] = useState("0");
     
-
-     const [objeto, setObjeto] = useState({
-        produtos_id: "",
-        nome: "",
-    });
-    const [operacao, setOperacao] = useState("1");
-
-    const {
+      const {
         data,
         pesquisa,
         loading,
         fazerEnvio,
         alterarObjeto
-    } = useBancoDeDados({
-        nomeTabela: "produtos",
+      } = useBancoDeDados({
+        nomeTabela: tabela.tabela.nome,
         objeto,
         setObjeto,
         operacao,
-        campoId: "produtos_id",
-        campoNome: "nome"
-    });
-    const modelo = JSON.parse(localStorage.getItem("modelo")) || null;
-    return(
-            <Box>
-                <Title>{modelo.produtos || "Produtos"}</Title>
+        campoId: tabela.tabela.lista[0],
+        campoNome: tabela.tabela.lista[1],
+      });
+
+return(
+    <Box>
+                <Title>Cadastrar Disciplinas</Title>
                 <FormGrid onSubmit={fazerEnvio}>
-                    <GridArea $area="tabela">
-                        <DivSeparador></DivSeparador>
-                        <Colapse marginBottom={'0px'} nome = "Consultar dados" estadoInicial={false}>
-                            {loading
-                                ? <div style={{padding:"16px",color:"white"}}>Carregando...</div>
-                                : <TabelaCompleta dados={pesquisa} lista={['produtos_id','nome']} camposPesquisa={false}/>
-                            }
-                        </Colapse>
-                        <DivSeparador></DivSeparador>
-                    </GridArea>
 
-                    <GridArea $area="operacao">
-                        <Label htmlFor="operacao">Operacao:</Label>
-                            <Select autoFocus id="operacao" name="operacao" required onChange={(e) => {setOperacao(e.target.value); alterarObjeto(e, 'produtos_id')}}>
-                            <option value="0">Selecione a operação desejada</option>
-                            <option value="1">Adicionar</option>
-                            <option value="2">Alterar</option>
-                            <option value="3">Deletar</option>
-                            </Select>
-                    </GridArea>
-                    <GridArea $area="idDisciplina">
-                        <Label htmlFor="idDisciplina">ID:</Label>
-                        <Input type="number" id="idDisciplina" name="idDisciplina" disabled={!operacao || Number(operacao)<=1} onChange={(e) => alterarObjeto(e, 'produtos_id')}/>
-                    </GridArea>
-                    <GridArea $area="nome">
-                        <Label htmlFor="nome">Nome da Disciplina:</Label>
-                        <Input type="text" id="nome" value={objeto.nome} name="nome" disabled={!operacao || Number(operacao)===3}  onChange={(e) => alterarObjeto(e, 'nome')} required/>
-                    </GridArea>
-                    <GridArea $area="reset">
-                        <Button $bgcolor={cores.backgroundBotaoSemFoco} type="reset">Limpar</Button>   
-                    </GridArea>
-                    <GridArea $area="botoes">
-                        <Button type="submit">Salvar</Button>   
-                    </GridArea>
+                    <CriarCamposFormulario 
+                    item={tabela}
+                    setFuncao={alterarObjeto}
+                    operacao={operacao}
+                    setOperacao={setOperacao}
+                    objeto ={objeto}
+                    ></CriarCamposFormulario>
 
+                    
                 </FormGrid>
             </Box>
     )

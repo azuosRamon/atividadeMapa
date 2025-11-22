@@ -171,7 +171,7 @@
     }
 
 
-    function CriarSelect({nomeCampo, campo, setFuncao, objeto}){
+    function CriarSelect({nomeCampo, campo, visualizar = null, setFuncao, objeto, condicao = null}){
         return(
                 <GridArea $area={campo.nome}>
                     <Label htmlFor={campo.nome}>{campo.texto != "" ? campo.texto : campo.nome}:</Label>
@@ -181,7 +181,9 @@
                     name={campo.nome} 
                     tabela={campo.tabela} 
                     listaColunas={campo.lista} 
-                    itemValue={nomeCampo} 
+                    campoDesejado={visualizar ?? campo.lista}
+                    itemValue={nomeCampo}
+                    condicao={condicao}
                     change={setFuncao} required={campo.required ?? false}></SelectComDados>
                 </GridArea>
             
@@ -328,6 +330,8 @@
                                 <CriarSelect key={nome}
                                 nomeCampo={nome}
                                 campo={campo}
+                                visualizar={campo.visualizar?? campo.lista}
+                                condicao={campo.condicao ?? null}
                                 setFuncao={setFuncao}
                                 objeto={objeto} />
                             )

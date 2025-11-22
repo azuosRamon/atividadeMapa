@@ -27,7 +27,10 @@ const cores = {
     "corTabelaTitulos": "rgb(38,38,38)",
     "corDeletar": "#ff4d4d",
     "corEditar": "#7c5b08ff",
-    "corAdicionar": "#00a2a2"
+    "corAdicionar": "#00a2a2",
+    "corIndisponivel": "#f48787",
+    "corParcial": "#d17f5bff",
+    "corDisponivel": "#a2f47b"
 }
 export default cores
 /*

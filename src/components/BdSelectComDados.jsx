@@ -8,7 +8,7 @@ function SelectComDados({tabela = "", listaColunas = ["id", "nome"], campoDeseja
   const select = listaColunas.join(", ")
   let query = supabase
     .from(tabela)
-    .select(select)
+    .select("*")
     if (condicao) {
       query = query.eq(condicao.coluna, condicao.valor)
     }

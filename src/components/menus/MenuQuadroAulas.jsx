@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect, useCallback} from "react";
 import styled from "styled-components";
 import Box from "../SubBox";
 import Input from "../SubInput";
@@ -13,40 +13,177 @@ import TabelaCompleta from "../SubTabela";
 import Colapse from "../SubColapse"
 import Slide from "../Slide"
 import cores from "../Cores"
+import useBancoDeDados from "../BdCrudSupabase";
+import CriarCamposFormulario from "../SubCriadorForm";
+import mapa from "../BdObjetoTabelas";
+import { supabase } from "/supabaseClient";
+
+async function LerDadosUsuarios(empresaId) {
+    //informar uma lista composta de ['coluna', valorProcurado] para utilizar a condicao
+    let query = supabase
+    .from('usuarios_empresas')
+    .select(`
+            *,
+            usuarios!inner(
+                *, disponibilidade_semanal(
+                    *
+                    ))
+        `)
+    .eq("empresa_id", empresaId)
+    .order('cargo_id', {ascending:true})
+    .order('nome', {foreignTable: 'usuarios', ascending: true})
+    ;
+
+    try {
+    const { data, error } = await query;
+    
+    if (error) {
+      console.error("Erro ao ler dados na tabela:", error);
+      return [];
+    }
+    
+    return data.filter(item => item.usuarios) || [];
+    }catch(error){
+    console.error("Erro inesperado ao ler dados de ", err);
+    return [];
+}
+}
+async function LerDadosHorarios(empresaId) {
+    //informar uma lista composta de ['coluna', valorProcurado] para utilizar a condicao
+    let query = supabase
+    .from('horarios')
+    .select(`
+            *
+        `)
+    //.eq("empresa_id", empresaId)
+    .order('hora_inicio', {ascending:true})
+    .order('hora_termino', {ascending: true})
+    ;
+
+    try {
+    const { data, error } = await query;
+    
+    if (error) {
+      console.error("Erro ao ler dados na tabela:", error);
+      return [];
+    }
+    
+    return data || [];
+} catch (err) {
+    console.error("Erro inesperado ao ler dados de ", err);
+    return [];
+}
+}
+async function LerDadosComodos(empresaId) {
+    //informar uma lista composta de ['coluna', valorProcurado] para utilizar a condicao
+    let query = supabase
+    .from('comodos')
+    .select(`
+            *,
+                tipos_areas:tipo_area_id(*)
+        `)
+    .eq("empresa_id", empresaId)
+    .order('lotacao', {ascending:true})
+    .order('tipo_area_id', {ascending:true})
+    .order('pavimento_id', {ascending: true})
+    .order('numero', {ascending: true})
+    .order('apelido', {ascending: true})
+    ;
+
+    try {
+    const { data, error } = await query;
+    
+    if (error) {
+      console.error("Erro ao ler dados na tabela:", error);
+      return [];
+    }
+    
+    return data || [];
+} catch (err) {
+    console.error("Erro inesperado ao ler dados de ", err);
+    return [];
+}
+}
+async function LerDadosAulasParaComodos( empresaId, ano, semestre, dia = null) {
+
+    let query = supabase
+    .from('quadro_de_funcionamento')
+    .select(`
+            *,
+                horarios(*)
+        `)
+    .eq("empresa_id", empresaId)
+    .eq("ano", Number(ano))
+    .eq("semestre", Number(semestre))
+    if (dia) {
+        query = query.eq('dia_da_semana', Number(dia))
+    }
+// eu quero retornar apenas as informações me minha empresa ou de outra empresa que possua o mesmo funcionario
+    ;
+
+    try {
+    const { data, error } = await query;
+    
+    if (error) {
+      console.error("Erro ao ler dados na tabela:", error);
+      return [];
+    }
+    
+    return data || [];
+} catch (err) {
+    console.error("Erro inesperado ao ler dados de ", err);
+    return [];
+}
+}
+async function LerDadosAulasParaUsuarios( empresaId, ano, semestre, dia = null) {
+
+    let query = supabase
+    .from('quadro_de_funcionamento')
+    .select(`
+            *,
+                horarios(*),
+                usuarios(*,
+                    usuarios_empresas(empresa_id)
+                    )
+        `)
+    .eq("ano", Number(ano))
+    .eq("semestre", Number(semestre))
+    if (dia) {
+        query = query.eq('dia_da_semana', Number(dia))
+    }
+// eu quero retornar apenas as informações me minha empresa ou de outra empresa que possua o mesmo funcionario
+    ;
+
+    try {
+    const { data, error } = await query;
+    
+    if (error) {
+      console.error("Erro ao ler dados na tabela:", error);
+      return [];
+    }
+    
+    return data.filter((aula)=>aula.usuarios?.usuarios_empresas?.some(rel => rel.empresa_id === empresaId));
+} catch (err) {
+    console.error("Erro inesperado ao ler dados de ", err);
+    return [];
+}
+}
 
 const FormGrid = styled.form`
   gap: 10px;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  grid-template-areas:  ${
-        ({ operacao }) => {
-        if (operacao === "1" || operacao === "2") {
-          return `
+  grid-template-areas:
             "tabela tabela tabela"
-            "operacao operacao id"
-            "separar1 separar1 separar1"
-            "cursos professores professores"
-            "disciplinas disciplinas disciplinas"
-            "separar separar separar"
-            "ano semestre dia"
-            "inicio termino qtdAlunos"
-            "separar2 separar2 separar2"
-            "campus campus blocos"
-            "pavimentos salas salas"
-            "separar3 separar3 separar3"
-            ". reset botoes"`
-          ;
-        } else {
-          return `
-            "tabela tabela tabela"
-            "operacao operacao id"
-            "separar3 separar3 separar3"
-            ". reset botoes"`
-          ;
-        }
-      }
-
-    }
+            "operacao operacao ."
+            "categoria categoria categoria"
+            "produto produto produto"
+            "turma ano semestre"
+            "horario horario dia_da_semana"
+            "usuario usuario usuario  "
+            "ocupacao tipo_area comodo_id"
+            ". reset botoes";
+        
 ;
     
 @media (max-width: 768px) {
@@ -55,369 +192,400 @@ const FormGrid = styled.form`
 }
 `;
 
+const Option = styled.option`
+    //background-color: ${(props) => props.$disponivel ? "green" : "red"};
+    background-color: ${(props) => props.$disponivel === "disponivel" ? cores.corDisponivel : props.$disponivel === "parcial" ? cores.corParcial : cores.corIndisponivel};
+    color: #000;
 
-function ConfigurarQuadroAulas({ table, imagens }) {
-    const data = table || {};
-    const [pesquisa, setPesquisa] = useState([]);
-    const [operacao, setOperacao] = useState(0);
-    const [id, setId] = useState("");
-    const [idInicio, setIdIncio] = useState(1);
-    const [idtermino, setIdtermino] = useState(1);
-    const [idCampus, setIdCampus] = useState(1);
-    const [idBloco, setIdBloco] = useState(1);
-    const [idPavimento, setIdPavimento] = useState(0);
-    const [idSala, setIdSala] = useState();
-    const [idDisciplina, setIdDisciplina] = useState("");
-    const [idProfessor, setIdProfessor] = useState("");
-    const [idCurso, setIdCurso] = useState("");
-    const [dia, setDia] = useState(2);
-    const [ano, setAno] = useState(data.ano || 2025);
-    const [semestre, setSemestre] = useState(data.semestre || 1);
-    const [inicio, setInicio] = useState();
-    const [termino, setTermino] = useState();
-    const [blocos, setBlocos] = useState([])
-    const [pavimentos, setPavimentos] = useState([])
-    const [salas, setSalas] = useState([])
-    const listaSalas = ["001","002"]
-    const [salasAtivas, setSalasAtivas] = useState([]);
-    const [qtdAlunos, setQtdAlunos] = useState(0);
-    const limparFormulario = () => {
-        setOperacao();
-        setId("");
-        setIdIncio("");
-        setIdtermino("");
-        setIdCampus(1);
-        setIdBloco(1);
-        setIdPavimento();
-        setIdSala();
-        setIdDisciplina("");
-        setIdProfessor("");
-        setIdCurso("");
-        setDia("");
-        setAno(data.ano || 2025);
-        setSemestre(data.semestre || 1);
-        setInicio("00:00");
-      };
+    &:disabled{
+        //color: #000;
+        font-style: italic;
+    }
+`
 
-      useEffect(() => {
-  if (!id || !operacao || Number(operacao) <= 1) return;
+function ConfigurarQuadroAulas({ usuarioLogado }) {
+    /*const funcionamento = {
+        
+        //informar o nome da turma e pode incluir mais de uma COLOCANDO;
+        //bonus poderá salvar no localstorage um padrão para a turma e ao informar o nome da turma posteriormente deve recarregar alguns dados como curso, professores, disciplinas
+        turma
 
-  const aulaSelecionada = data.quadroDeAulas.find(item => item.id === Number(id));
+        //deverá abrir uma tabela com as salas, mostrando lotacao, tipo, cidade, campus, bloco, pavimento e visualização do mapa, 
+            
+            //organizacao inicial deve ser baseada no mais proximo da lotacao informada
+            
+            //a tabela deve permitir pesquisas para cada item do cabeçalho
+          
+            //abrir a visualizacao deve mostrar as salas com 3 niveis de cores, verde - disponivel e é igual ou maior que a lotação, laranja disponivel mas abaixo da lotacao, vermelha - cabe a lotacao mas não esta disponivel
+            
+            //a ideia e que ao clicar na sala vermelha abra os dados da aula cadastrada para aquele horario
+        
 
-  if (aulaSelecionada) {
-    // Dia, início e término direto
-    setDia(aulaSelecionada.diaSemana);
-    setIdIncio(aulaSelecionada.inicioId);
-    setIdtermino(aulaSelecionada.terminoId);
-    setIdCurso(aulaSelecionada.cursoId);
-    setIdProfessor(aulaSelecionada.pessoasId);
-    setIdDisciplina(aulaSelecionada.disciplinaId);
+    }*/
+   const [comodosBase, setComodosBase] = useState([]);
+   const [comodos, setComodos] = useState([]);
+   const [qtdComodosDisponivel, setQtdComodosDisponivel] = useState(0);
+   const [professoresBase, setProfessoresBase] = useState([]);
+   const [professores, setProfessores] = useState([]);
+   const [aulasUsuarios, setAulasUsuarios] = useState([]);
+   const [aulasComodos, setAulasComodos] = useState([]);
+    const [horarios, setHorarios] = useState([]);
 
-    // Buscar a sala
-    const salaSelecionada = data.salas.find(s => s.id === aulaSelecionada.salaId);
-    if (salaSelecionada) {
-      const pavimentoSelecionado = data.pavimentos.find(p => p.id === salaSelecionada.pavimentoId);
-      if (pavimentoSelecionado) {
-        const blocoSelecionado = data.blocos.find(b => b.id === pavimentoSelecionado.blocoId);
-        if (blocoSelecionado) {
-          const campusSelecionado = data.campus.find(c => c.id === blocoSelecionado.campusId);
-          if (campusSelecionado) {
-            // Set em cadeia para atualizar tudo certo
-            setIdCampus(campusSelecionado.id);
-            setIdBloco(blocoSelecionado.id);
-            setIdPavimento(pavimentoSelecionado.id);
-            setIdSala(salaSelecionada.id);
-          }
+    const tabela = mapa.quadro_de_funcionamento;
+    const data_atual = new Date();
+    const ano = data_atual.getFullYear();
+    const semestre = data_atual.getMonth() <= 5 ? 1 : 2;
+    const [objeto, setObjeto] = useState(
+        Object.fromEntries(
+            Object.entries(tabela.campos).map(([k, v]) => ([k, k=="empresa_id"?usuarioLogado.empresa_id: k=="ano"? ano: k=="semestre"? semestre :v.valor]))
+        )
+    );
+    const [operacao, setOperacao] = useState("0");
+    
+    const {
+        data,
+        pesquisa,
+        loading,
+        fazerEnvio,
+        alterarObjeto
+    } = useBancoDeDados({
+        nomeTabela: tabela.tabela.nome,
+        objeto,
+        setObjeto,
+        operacao,
+        campoId: tabela.tabela.lista[0],
+        campoNome: tabela.tabela.lista[1],
+    });
+    
+   
+
+    const fetchUsuarios = useCallback(async () => {
+        try{
+            const dados = await LerDadosUsuarios(usuarioLogado.empresa_id);
+            setProfessoresBase(dados);
+        } catch(error) {
+            console.error("Erro ao atualizar dados de usuários:", error.message);
         }
-      }
+    }, [usuarioLogado.empresa_id]); // Dependência: empresa_id
+    
+    const fetchHorarios = useCallback(async () => {
+        try{
+            const dados = await LerDadosHorarios(usuarioLogado.empresa_id);
+            setHorarios(dados);
+        } catch(error) {
+            console.error("Erro ao atualizar dados de horários:", error.message);
+        }
+    }, [usuarioLogado.empresa_id]);
+    
+    const fetchComodos = useCallback(async () => {
+        try{
+            const dados = await LerDadosComodos(usuarioLogado.empresa_id);
+            setComodosBase(dados);
+        } catch(error) {
+            console.error("Erro ao atualizar dados de horários:", error.message);
+        }
+    }, [usuarioLogado.empresa_id]);
+    const fetchAulasUsuarios = async () => {
+        console.log("Buscando aulas com:", {
+            ano: objeto.ano,
+            semestre: objeto.semestre,
+            dia: objeto.dia_da_semana
+            });
+        try{
+            const dados = await LerDadosAulasParaUsuarios(usuarioLogado.empresa_id, objeto.ano, objeto.semestre, objeto.dia_da_semana);
+            setAulasUsuarios(dados);
+        } catch(error) {
+            console.error("Erro ao atualizar dados de horários:", error.message);
+        }
+    };
+    const fetchAulasComodos = async () => {
+        try{
+            const dados = await LerDadosAulasParaComodos(usuarioLogado.empresa_id, objeto.ano, objeto.semestre, objeto.dia_da_semana);
+            setAulasComodos(dados);
+        } catch(error) {
+            console.error("Erro ao atualizar dados de horários:", error.message);
+        }
+    };
+
+    useEffect(() => {
+        fetchUsuarios();
+        fetchHorarios();
+        fetchComodos();
+
+    }, []);
+   
+    useEffect(() => {
+        fetchAulasUsuarios();
+        fetchAulasComodos();
+
+    }, [objeto.ano, objeto.semestre, objeto.dia_da_semana]);
+
+     useEffect(()=>{
+        console.log(objeto);
+
+    }, [objeto])
+     useEffect(()=>{
+        console.log('aulas Usuarios', aulasUsuarios);
+
+    }, [aulasUsuarios])
+     useEffect(()=>{
+        console.log('aulas Comodos', aulasComodos);
+
+    }, [aulasComodos])
+ 
+    const toMinutes = (timeStr) => {
+        // aceita "HH:MM" ou "H:MM" ou "HH:MM:SS"
+        if (!timeStr) return null;
+        const parts = timeStr.split(":").map((p) => Number(p));
+        if (parts.length < 2 || Number.isNaN(parts[0]) || Number.isNaN(parts[1])) return null;
+        return parts[0] * 60 + parts[1];
+        };
+
+    const intervalosIntersectam = (startA, endA, startB, endB) => {
+        // start/end em minutos (inteiros)
+        // assumimos intervalos semi-abertos [start, end) — fim não incluso
+        return startA < endB && startB < endA;
+    };
+
+    const inicioDesejado = toMinutes("08:00:00");
+    const fimDesejado = toMinutes("10:00:00");
+    const [quantidadeProfessoresDisponiveis, setQtdProfDisp] = useState(0);
+const compararDisponibilidade = () => {
+    if (!objeto.horario_id || horarios.length === 0) return;
+
+    console.log("Comparar disponibilidade ↓");
+    const horarioSelecionado = horarios.find(
+        (item) => item.horario_id === Number(objeto.horario_id)
+    );
+
+    if (!horarioSelecionado) return;
+
+    const inicioDesejadoMin = toMinutes(horarioSelecionado.hora_inicio);
+    const fimDesejadoMin = toMinutes(horarioSelecionado.hora_termino);
+
+    if (inicioDesejadoMin == null || fimDesejadoMin == null) {
+        console.log("Horário inválido!");
+        return;
     }
 
-    // Ano, semestre
-    if (aulaSelecionada.ano) setAno(aulaSelecionada.ano);
-    if (aulaSelecionada.semestre) setSemestre(aulaSelecionada.semestre);
+    let listaAtualizada = professoresBase.map((funcionario) => {
+        const usuario = funcionario.usuarios;
+        const disponibilidade = usuario.disponibilidade_semanal || [];
 
-    // Horário de início e término
-    const horarioInicio = data.horarios.find(h => h.id === aulaSelecionada.inicioId);
-    setInicio(horarioInicio ? horarioInicio.inicio : "");
+        const disponivel = disponibilidade.some((h) => {
+            if (Number(h.dia_da_semana) !== Number(objeto?.dia_da_semana))
+                return false;
+            
+            const inicio = toMinutes(h.hora_inicio);
+            const fim = toMinutes(h.hora_fim);
+            
+            return inicio <= inicioDesejadoMin && fimDesejadoMin <= fim;
+        });
+        
+        const verificarConflito = aulasUsuarios.some((aula)=>{
+            if (Number(aula.dia_da_semana) !== Number(objeto?.dia_da_semana)) return false;
+            if (aula.usuario_id !== funcionario.usuario_id) return false;
 
-    const horarioTermino = data.horarios.find(h => h.id === aulaSelecionada.terminoId);
-    setTermino(horarioTermino ? horarioTermino.termino : "");
-  } else {
-    console.warn("ID não encontrado!");
-    limparFormulario();
-  }
-}, [id, operacao, data]);
+            let inicio = toMinutes(aula.horarios.hora_inicio);
+            let fim    = toMinutes(aula.horarios.hora_termino);
 
-      useEffect(() => {
-        if (!idInicio || !idtermino || !dia) {
-          setSalasAtivas([]);
-          return;
+            return intervalosIntersectam(
+                inicioDesejadoMin, fimDesejadoMin,
+                inicio, fim
+            );
+        });
+
+
+        let conflito = "Disponível";
+        if (verificarConflito){
+            
+            conflito = "Em outra atividade..."
+
+        } 
+        if (!disponivel){
+            conflito = "Não disponível neste horário"
         }
-      
-        const inicio = Number(idInicio);
-        const termino = Number(idtermino);
-      
-        // Filtra as aulas no intervalo e no dia certo
-        const aulasFiltradas = data.quadroDeAulas.filter(item =>
-          item.inicioId >= inicio &&
-          item.inicioId < termino &&
-          item.diaSemana === Number(dia)
+
+
+        return {
+            ...funcionario,
+            usuarios: {
+                ...usuario,
+                status: disponivel && !verificarConflito ? "disponivel" :  "indisponivel",
+                conflito: conflito
+            }
+        };
+    });
+
+    const ordem = {disponivel: 1, parcial: 2, indisponivel: 3}
+    listaAtualizada.sort((a,b)=> ordem[a.usuarios.status] - ordem[b.usuarios.status])
+
+
+    setProfessores(listaAtualizada);
+
+    const qtd = listaAtualizada.filter(f => f.usuarios.status === "disponivel").length;
+    setQtdProfDisp(qtd);
+
+};
+
+
+   useEffect(() => {
+        compararDisponibilidade();
+    }, [
+        objeto.ano,
+        objeto.semestre,
+        objeto.dia_da_semana, 
+        objeto.horario_id, 
+        aulasUsuarios,
+        professoresBase
+    ]);
+
+
+    const verificarComodos = ()=>{
+        if (!objeto.ocupacao && !objeto.tipo_area_id) return;
+
+        if (!objeto.horario_id || horarios.length === 0) return;
+
+        console.log("Comparar disponibilidade ↓");
+        const horarioSelecionado = horarios.find(
+            (item) => item.horario_id === Number(objeto.horario_id)
         );
-      
-        // Pega os salaIds dessas aulas
-        const salaIdsFiltradas = aulasFiltradas.map(item => item.salaId);
-      
-        // Busca as imagens correspondentes dessas salas
-        const imagensSalas = data.salas
-          .filter(sala => salaIdsFiltradas.includes(sala.id))
-          .map(sala => sala.imagem);
-      
-        // Remove duplicatas
-        const imagensUnicas = [...new Set(imagensSalas)];
-      
-        // Atualiza o estado
-        setSalasAtivas(imagensUnicas);
-      
-        console.log("Salas ativas no dia", dia, "entre horários:", imagensUnicas);
-      
-      }, [idInicio, idtermino, dia, data.quadroDeAulas, data.salas]);
-    useEffect(() => {
-        setPesquisa(data.horarios.filter(data => (data.ano === Number(ano))&&(data.semestre === Number(semestre))));
-    }, [ano, semestre])
 
-    useEffect(() => {
-        setIdBloco(1);
-        setIdPavimento(1);
-      }, [idCampus]);
+        if (!horarioSelecionado) return;
 
-    useEffect(() => {    
-        setBlocos(data.blocos.filter(item => (
-            item.campusId === Number(idCampus)
-            )))
-    }, [idCampus])
-    useEffect(() => {    
-        setPavimentos(data.pavimentos.filter(item => (
-            item.blocoId === Number(idBloco)
-            )))
-    }, [idCampus, idBloco])
+        const inicioDesejadoMin = toMinutes(horarioSelecionado.hora_inicio);
+        const fimDesejadoMin = toMinutes(horarioSelecionado.hora_termino);
+    
+        let ocupacaoDesejada = Number(objeto.ocupacao) || 0;
+        let areaDesejada = Number(objeto.tipo_area_id) || 0;
+        let listaAtualizada = comodosBase.map((comodo)=>{
+            const verificarConflito = aulasComodos.some((aula)=>{
+                if (Number(aula.dia_da_semana) !== Number(objeto?.dia_da_semana)) return false;
+                if (aula.comodo_id !== comodo.comodo_id) return false;
+    
+                let inicio = toMinutes(aula.horarios.hora_inicio);
+                let fim    = toMinutes(aula.horarios.hora_termino);
+    
+                return intervalosIntersectam(
+                    inicioDesejadoMin, fimDesejadoMin,
+                    inicio, fim
+                );
+            });
+            let disponibilidade = "disponivel"
+            let conflito = "Disponível";
+            if ((comodo.lotacao >= ocupacaoDesejada) && (comodo.tipo_area_id === areaDesejada) && (!verificarConflito)){
+                disponibilidade = "disponivel"
+                conflito = "Disponível"
+            } 
+            else if ((comodo.lotacao >= ocupacaoDesejada) || (comodo.tipo_area_id === areaDesejada)){
+                disponibilidade = "parcial"
+                conflito = "Não compátivel"
+            } else {
+                disponibilidade = "indisponivel"
+                conflito = "Não compátivel"
+            }
+    
+    
+            if (verificarConflito && disponibilidade != "indisponivel"){
+                disponibilidade = "indisponivel";
+                conflito = "Em uso..."    
+            } 
 
-    useEffect(() => {    
-        setSalas(data.salas.filter(item => (
-            item.pavimentoId === Number(idPavimento)
-            )))
-    }, [idCampus, idBloco, idPavimento, pavimentos])
+            
+            return{
+                ...comodo,
+                    status: disponibilidade,
+                    conflito: conflito
+            }
+        })
 
 
-    const fazerEnvio = (event) =>{
-        event.preventDefault();
-        console.log({ 
-            ano, semestre, inicio, termino
-          });
+
+
+        const ordem = {disponivel: 1, parcial: 2, indisponivel: 3}
+        listaAtualizada.sort((a,b)=> ordem[a.status] - ordem[b.status])
+    
+        setComodos(listaAtualizada);
+    
+        let qtdComodosDisp = listaAtualizada.filter(item => item.status === "disponivel").length;
+        setQtdComodosDisponivel(qtdComodosDisp);
     }
+    useEffect(()=>{
+        verificarComodos()
+    }, [objeto.ocupacao, 
+        objeto.tipo_area_id,
+        objeto.ano,
+        objeto.semestre,
+        objeto.dia_da_semana, 
+        objeto.horario_id, 
+        aulasComodos
+    ])
 
-    const handleInicioChange = (hora) => {
-        setInicio(hora);
-        const horarioSelecionado = data.horarios.find(item => item.inicio === hora);
-        setIdIncio(horarioSelecionado ? horarioSelecionado.id : "");
-      };
-      
-      const handleTerminoChange = (hora) => {
-        setTermino(hora);
-        const horarioSelecionado = data.horarios.find(item => item.termino === hora);
-        setIdtermino(horarioSelecionado ? horarioSelecionado.id : "");
-      };
-    const professoresAula = Array.from(new Set(data.usuarios.map((item)=> item.funcao + " - " + item.nome + " " + item.sobrenome)));
-    const [procurarProfessor, confProcurarProfessor] = useState("");
 
-    const [procurarDisciplina, confProcurarDisciplina] = useState("");
-    const disciplinas = Array.from(new Set(data.disciplinas.map((dados)=>dados.nome))) || [];
+
     return(
-            <Box>
-                <Title>QUADRO DE HORÁRIOS</Title>
-                <FormGrid operacao={String(operacao)} onSubmit={fazerEnvio}>
-                    <GridArea $area="tabela">
-                        <DivSeparador></DivSeparador>
-                            <Colapse marginBottom={'0px'} nome = "Visualizar salas" estadoInicial={false}>
-                                <Slide
-                                    lista_imagens={imagens}
-                                    pagina_inicio={idPavimento}
-                                    listaSalasAtivas={salasAtivas}
-                                    dados={data}                                />
-                            </Colapse>
-                        <DivSeparador></DivSeparador>
-                    </GridArea>
-                    <GridArea $area="operacao">
-                        <Label htmlFor="operacao">Operacao:</Label>
-                            <Select id="operacao" name="operacao" required onChange={(e) => setOperacao(e.target.value)}>
-                            <option value="0">Selecione a operação desejada</option>
-                            <option value="1">Adicionar</option>
-                            <option value="2">Alterar</option>
-                            <option value="3">Deletar</option>
-                            </Select>
-                    </GridArea>
+        <Box>
+                <Title>Quadro de funcionamento</Title>
+                <FormGrid onSubmit={fazerEnvio}>
 
-                    {operacao > 1 && (
-                        <>
-                    <GridArea $area="id">
-                        <Label htmlFor="id">ID:</Label>
-                        <Input 
-                            type="number" 
-                            id="id" 
-                            name="id" 
-                            placeholder="Informe o id do alvo"
-                            disabled={Number(operacao) === 1} 
-                            value={id}
-                            onChange={(e) => setId(Number(e.target.value))}
-                            />
-                    </GridArea>
-                        </>
-                    )}
-                    {(Number(operacao) === 1 || Number(operacao) === 2) && (
-                        <React.Fragment>
+                    <CriarCamposFormulario 
+                    item={tabela}
+                    setFuncao={alterarObjeto}
+                    operacao={operacao}
+                    setOperacao={setOperacao}
+                    objeto ={objeto}
+                    ></CriarCamposFormulario>
 
-                    <GridArea $area="separar1">
-                        <DivSeparador></DivSeparador>
+                    <GridArea $area="usuario">
+                            <Label>Funcionário:</Label>
+
+                        <Select onChange={(e)=>alterarObjeto(e, 'usuario_id')}>
+                            <option value={"0"}>Selecione | Professores disponíveis:  {quantidadeProfessoresDisponiveis}</option>
+                            {
+                                professores.map((funcionario) => {
+                                    return(
+                                        <Option    
+                                        key={funcionario.usuarios.usuario_id}
+                                        value={funcionario.usuarios.usuario_id}
+                                        disabled={!funcionario.usuarios?.status || funcionario.usuarios?.status === "indisponivel"}
+                                        $disponivel={funcionario.usuarios.status || false}>{funcionario.usuarios.nome} | {funcionario?.usuarios?.conflito}</Option>
+                                    )
+                                })
+                            }
+                        </Select>
+
                     </GridArea>
-                    <GridArea $area="cursos">
-                            <Select id="cursos" value={idCurso} name="cursos" onChange={(e) => setIdCurso(e.target.value)} required>
-                                <option>Selecione o curso</option>
-                                {
-                                data.cursos.map(item => (
-                                        <option key={item.id} value={item.id}>{item.nome}</option>
-                                    ))}
-                                
-                            </Select>
-                    </GridArea>
-                    <GridArea $area="professores">
-                            <InputAutocomplete
-                                                    sugestoes={professoresAula}
-                                                    valor={procurarProfessor}
-                                                    onChange={(val) => confProcurarProfessor(val)}       // Atualiza o valor enquanto digita
-                                                    onSelecionar={(val) => confProcurarProfessor(val)}    // Atualiza ao selecionar
-                                                    placeholder="Professor"
-                                                    />
-                    </GridArea>
-                    <GridArea $area="disciplinas">
-                            <InputAutocomplete
-                                sugestoes={disciplinas}
-                                valor={procurarDisciplina}
-                                onChange={(val) => confProcurarDisciplina(val)}       // Atualiza o valor enquanto digita
-                                onSelecionar={(val) => confProcurarDisciplina(val)}    // Atualiza ao selecionar
-                                placeholder="Disciplina"
-                                />
-                    </GridArea>
-                    <GridArea $area="separar">
-                        <DivSeparador></DivSeparador>
-                    </GridArea>
-                    <GridArea $area="ano">
-                        <Label htmlFor="ano">Ano:</Label>
-                        <Input type="number" id="ano" name="ano" value={ano} required onChange={(e) => setAno(Number(e.target.value))}/>
-                    </GridArea>
-                    <GridArea $area="qtdAlunos">
-                        <Label htmlFor="qtdAlunos">Quantidade de Alunos:</Label>
-                        <Input type="number" id="qtdAlunos" name="qtdAlunos" value={qtdAlunos} required onChange={(e) => setQtdAlunos(Number(e.target.value))}/>
-                    </GridArea>
-                    <GridArea $area="semestre">
-                        <Label htmlFor="semestre">Semestre:</Label>
-                        <Select value={semestre} id="semestre" name="semestre" required onChange={(e) => setSemestre(Number(e.target.value))}>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
+                    <GridArea $area="horario">
+                            <Label>Horario</Label>
+                        <Select onChange={(e)=>(alterarObjeto(e, 'horario_id'))}>
+                            <option value={"0"}>Selecione um horario</option>
+                            {
+                                horarios.map((horario)=>{
+                                    if (horario.ano === objeto.ano && horario.semestre === objeto.semestre){
+                                        return(<option key={horario.horario_id} value={horario.horario_id}>{horario.hora_inicio}  |  {horario.hora_termino}</option>)
+                                    }
+                                })
+                            }
                         </Select>
                     </GridArea>
-                    <GridArea $area="dia">
-                        <Label htmlFor="dia">Dia da Semana:</Label>
-                            <Select id="dia" value={dia} name="dia" required onChange={(e) => setDia(e.target.value)}>
-                            <option value="1">Domingo</option>
-                            <option value="2">Segunda Feira</option>
-                            <option value="3">Terça Feira</option>
-                            <option value="4">Quarta Feira</option>
-                            <option value="5">Quinta Feira</option>
-                            <option value="6">Sexta Feira</option>
-                            <option value="7">Sábado</option>
-                            </Select>
+                    <GridArea $area="comodo_id">
+                            <Label>Comodos:</Label>
+                        <Select onChange={(e)=>alterarObjeto(e, 'comodo_id')}>
+                            <option key={0} value={"0"}>Selecione | Disponíveis: {qtdComodosDisponivel}</option>
+                            {
+                                comodos.map((comodo)=>{
+                                    
+                                    return(<Option $disponivel={comodo.status} disabled={!comodo?.status ||comodo.status==="indisponivel"} key={comodo.comodo_id} value={comodo.comodo_id}>{comodo.conflito} | {comodo.tipos_areas.nome}  | Nº {comodo.numero} | Lotação {comodo.lotacao} | </Option>)                                        
+                                    
+                                    
+                                })
+                            }
+                        </Select>
                     </GridArea>
-                    <GridArea $area="inicio">
-                        <Label htmlFor="horaInicio">Inicio:</Label>
-                        <Select id="horaInicio" name="horaInicio" onChange={(e) => handleInicioChange(e.target.value)} required>
-
-                            {[...new Set(data.horarios.map(item => item.inicio))].map((hora, index) => (
-                                <option key={index} value={hora}>{hora}</option>
-                                ))}
-                                
-                            </Select>
-                    </GridArea>
-                    <GridArea $area="termino">
-                        <Label htmlFor="termino">Termino:</Label>
-                        <Select id="termino" name="termino" onChange={(e) => handleTerminoChange(e.target.value)} required>
-                                {[...new Set(data.horarios.map(item => item.termino))].map((hora, index) => (
-                                    <option key={index} value={hora}>{hora}</option>
-                                    ))}
-                                
-                            </Select>
-                    </GridArea>
-                    <GridArea $area="separar2">
-                        <DivSeparador></DivSeparador>
-                    </GridArea>
-                    <GridArea $area="campus">
-                        <Label htmlFor="campus">Campus:</Label>
-                            <Select id="campus" name="campus" onChange={(e) => setIdCampus(e.target.value)} required>
-                                {data.campus.map(item => (
-                                    <option key={item.id} value={item.id}>{item.cidade + ' - ' + item.nome}</option>
-                                    ))}
-                                
-                            </Select>
-                    </GridArea>
-                    <GridArea $area="blocos">
-                        <Label htmlFor="blocos">Bloco:</Label>
-                            <Select id="blocos" name="blocos" value={idBloco} onChange={(e) => setIdBloco(e.target.value)} required>
-                                { 
-                                blocos.length > 0 ? (
-                                    blocos.map(item => (
-                                            <option key={item.id} value={item.id}>{item.nome}</option>
-                                        ))
-                                ) : <option key="none" value={undefined}>Nenhum cadastro</option>
-                                }
-                                
-                            </Select>
-                    </GridArea>
-                    <GridArea $area="pavimentos">
-                        <Label htmlFor="pavimentos">Pavimento:</Label>
-                            <Select id="pavimentos" name="pavimentos" value={idPavimento} onChange={(e) => setIdPavimento(e.target.value)} required>
-                            { 
-                                pavimentos.length > 0 ? (
-                                    pavimentos.map(item => (
-                                            <option key={item.id} value={item.id}>{item.numero}</option>
-                                        ))
-                                ) : <option key="none" value={undefined}>Nenhum cadastro</option>
-                                }
-                                
-                            </Select>
-                    </GridArea>
-                    <GridArea $area="salas">
-                        <Label htmlFor="salas">Sala:</Label>
-                            <Select id="salas"  name="salas" value={idSala} onChange={(e) => setIdSala(e.target.value)} required>
-                            { 
-                                salas.length > 0 ? (
-                                    salas.map(item => (
-                                            <option key={item.id} value={item.id}>{item.apelido === "" ? (item.numero): (item.numero + ' - ' + item.apelido)}</option>
-                                        ))
-                                ) : <option key="none" value={undefined}>Nenhum cadastro</option>
-                                }
-                                
-                            </Select>
-                    </GridArea>
-                    </React.Fragment>
-                    )}
-                    <GridArea $area="separar3">
-                        <DivSeparador></DivSeparador>
-                    </GridArea>
-                    <GridArea $area="reset">
-                        <Button $bgcolor={cores.backgroundBotaoSemFoco} type="reset" onClick={limparFormulario}>Limpar</Button>   
-                    </GridArea>
-                    <GridArea $area="botoes">
-                        <Button type="submit">Salvar</Button>   
-                    </GridArea>
-
+                    {/*
+                    19/11 -professores conflitalos com horarios já lançados separar
+                    -comodos pela busca de acordo com ocupacao
+                    */}
                 </FormGrid>
             </Box>
     )

@@ -151,7 +151,6 @@ function CadastrarDisponibilidade({ usuarioLogado }) {
   
 
   useEffect(() => {
-    (operacao === "1" ? setObjeto.)
     atualizarDados();
   }, [objeto, operacao]);
 
@@ -235,7 +234,7 @@ const enviarCadastro = async (e) => {
     return intervalosIntersectam(novoInicio, novoFim, inicioExist, fimExist);
   });
 
-  if (conflitoRegistro && conflitoRegistro.id !== objeto.id) {
+  if (conflitoRegistro && conflitoRegistro.id !== objeto.disponibilidade_id && operacao !== "3") {
     alert(
       `Conflito com horário existente: ${conflitoRegistro.hora_inicio} - ${conflitoRegistro.hora_fim}. ` +
       `Não é possível criar um intervalo que se sobreponha.`
