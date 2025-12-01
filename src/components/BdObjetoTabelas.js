@@ -472,8 +472,8 @@ const mapa = {
         campos: {
             empresa_id: { mostrar: false, valor: null, tipo: "text", campo: "select", texto: "Empresa", nome: "empresa_id", tabela: "empresas", lista: ["empresa_id", "nome"] },
             funcionamento_id: { mostrar: false, valor: null, tipo: "number", campo: "input", texto: "Id", nome: "id" },
-            categoria_id: { valor: null, tipo: "number", campo: "select", texto: modelo.categorias, nome: "categoria", tabela:"categorias", lista: ["categoria_id","nome"],visualizar:["nome"], condicao: {coluna: "empresa_id", valor: usuarioLogado.empresa_id} },
-            produto_id: { valor: null, tipo: "number", campo: "select", texto: modelo.produtos, nome: "produto", tabela:"produtos", lista: ["produto_id","nome"], visualizar:["nome"], condicao: {coluna: "empresa_id", valor: usuarioLogado.empresa_id}},
+            categoria_id: { valor: null, tipo: "number", campo: "select", texto: modelo?.categorias || [], nome: "categoria", tabela: "categorias", lista: ["categoria_id","nome"], visualizar:["nome"], condicao: {coluna: "empresa_id", valor: usuarioLogado?.empresa_id}},
+            produto_id: { valor: null, tipo: "number", campo: "select", texto: modelo?.produtos || [], nome: "produto", tabela: "produtos", lista: ["produto_id","nome"], visualizar:["nome"], condicao: {coluna: "empresa_id", valor: usuarioLogado?.empresa_id}},
             turma: { valor: "", tipo: "text", campo: "input", texto: "turma", nome: "turma", required: true },
             ano: { valor: "", tipo: "number", campo: "input", texto: "Ano", nome: "ano" },
             semestre: { valor: "", tipo: "number", campo: "input", texto: "Semestre", nome: "semestre" },
@@ -482,7 +482,7 @@ const mapa = {
             usuario_id: {mostrar: false, valor: null, tipo: "number", campo:"select", texto:"Funcionário(a)", nome:"usuario", tabela:"usuarios", lista: ["usuario_id", "nome"], visualizar:["nome"]},
             tipo_area_id: { valor: null, tipo: "number", campo: "select", texto: "Tipo de comodo", nome: "tipo_area", tabela:"tipos_areas", visualizar: ["nome"], lista: ["tipo_area_id","nome"] },
             ocupacao: { valor: "", tipo: "number", campo: "input", texto: "Ocupação desejada", nome: "ocupacao" },
-            comodo_id: {mostrar: false,valor: null, tipo: "number", campo: "select", texto: modelo.comodos, nome: "comodo_id", tabela:"comodos", lista: ["comodo_id"], visualizar:["numero", "lotacao"], condicao: {coluna: "empresa_id", valor: usuarioLogado.empresa_id} },
+            comodo_id: {mostrar: false, valor: null, tipo: "number", campo: "select", texto: modelo?.comodos || [], nome: "comodo_id", tabela: "comodos", lista: ["comodo_id"], visualizar: ["numero", "lotacao"], condicao: {coluna: "empresa_id", valor: usuarioLogado?.empresa_id}},
             
         }
     }
