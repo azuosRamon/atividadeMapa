@@ -51,7 +51,7 @@ const CelularMenu = styled.div`
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        z-index:998;
+        z-index:900;
         overflow: auto;
     
 `;
@@ -105,7 +105,7 @@ const HamburgerIcon = styled.div`
     font-size: 2rem;
     cursor: pointer;
     margin-right: 30px;
-    z-index: 999;
+    z-index: 901;
     @media screen and (max-width: 768px) {
         display: block;
 
