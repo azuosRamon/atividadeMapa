@@ -3,12 +3,11 @@ import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaSearchLocation, FaBars, FaTimes } from "react-icons/fa";
 import { BsPersonFillGear } from "react-icons/bs";
-import Usuario_logado from './pages/Usuario_logado';
-import Logo from './assets/Logo_2.png'
+import Usuario_logado from './pages/Usuario_logado'; // Certifique-se que este é o arquivo Usuario.js abaixo
+import Logo from './assets/Logo_2.png';
 import DivSeparador from './SubDivSeparador';
-import cores from "./Cores"
+import cores from "./Cores";
 import axios from "axios";
-import { use } from 'react';
 
 const HeaderMenu = styled.header`
     background-color: ${cores.backgroundMenus};
@@ -25,7 +24,6 @@ const Content = styled.div`
     justify-content: space-between;
     align-items: center;
     position: relative;
-
 `;
 
 const UlMenu = styled.ul`
@@ -40,20 +38,21 @@ const UlMenu = styled.ul`
 `;
 
 const CelularMenu = styled.div`
-        position: fixed;
-        top: 0;
-        left: ${({ $abrir }) => ($abrir ? "0" : "-100%")};
-        width: 100%;
-        height: 100vh;
-        background-color: ${cores.backgroundMenusMobileLogado};
-        transition: left 0.3s ease-in-out;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        z-index:900;
-        overflow: auto;
-    
+    position: fixed;
+    top: 0;
+    left: ${({ $abrir }) => ($abrir ? "0" : "-100%")};
+    width: 100%;
+    height: 100vh;
+    background-color: ${cores.backgroundMenusMobileLogado};
+    transition: left 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; 
+    z-index: 900;
+    overflow-y: auto; 
+    padding-top: 20px; 
+    padding-bottom: 20px;
 `;
 
 const ImagemLogo = styled.img`
@@ -70,16 +69,18 @@ const ImagemLogo = styled.img`
 `;
 
 const LiMenu = styled.li`
+    display: flex;
+    justify-content: center;
     align-items: center;
     text-align: center;
     list-style: none;
     padding: 15px;
-    width: 100%;
-   &:hover{
+    width: 50%;
+    &:hover{
         transition: .7s;
         background-color: ${cores.cor1};
     } 
-     @media screen and (max-width: 768px) {
+    @media screen and (max-width: 768px) {
         background-color: ${cores.backgroundMenusMobile};
     };
 `;
@@ -105,29 +106,24 @@ const HamburgerIcon = styled.div`
     font-size: 2rem;
     cursor: pointer;
     margin-right: 30px;
-    z-index: 901;
+    z-index: 901; /* Maior que o menu para ficar clicável */
     @media screen and (max-width: 768px) {
         display: block;
-
     }
-    
 `;
 
 const PessoaIcon = styled(BsPersonFillGear)`
     font-size: 30px;
-
 `;
 
-
-
 function Header() {
-    const [status, setStatus] = useState(false)
-     const capturarUsuarioLogadoLocalStorage = () => {
-
-            let usuario = localStorage.getItem("usuario");
-            if (usuario) {
-                return true;
-            } return false;
+    const [status, setStatus] = useState(false);
+    
+    const capturarUsuarioLogadoLocalStorage = () => {
+        let usuario = localStorage.getItem("usuario");
+        if (usuario) {
+            return true;
+        } return false;
     }
 
     useEffect(() => {
@@ -136,7 +132,8 @@ function Header() {
 
     const LogInOut = status ? "Logout" : <PessoaIcon />;
     const [abrirMenu, setAbrirMenu] = useState(false);
-    const navigate = useNavigate();
+    // const navigate = useNavigate(); // Não estava sendo usado diretamente aqui, mas pode manter se precisar
+
     const fazerLogout = async () => {
         if (status) {
             const usuario = JSON.parse(localStorage.getItem('usuario') || "null");
@@ -177,12 +174,23 @@ function Header() {
                 </HamburgerIcon>
 
             </Content>
-                    <CelularMenu $abrir={abrirMenu}>
-                        <DivSeparador></DivSeparador>
-                            <LiMenu><StyledLink to="/" onClick={()=> setAbrirMenu(false)}><FaSearchLocation /></StyledLink></LiMenu>
-                             {status && <Usuario_logado mobile={true} fecharMenu={() => setAbrirMenu(false)}/>}
-                                <LiMenu><StyledLink to="/login" onClick={() => { setAbrirMenu(false); if (status) {fazerLogout();}}}>{LogInOut}</StyledLink></LiMenu>
-                    </CelularMenu>
+            
+            <CelularMenu $abrir={abrirMenu}>
+                {/* Removido DivSeparador desnecessário no topo se usar padding */}
+                {status && <Usuario_logado mobile={true} fecharMenu={() => setAbrirMenu(false)}/>}
+                
+                <LiMenu>
+                    <StyledLink to="/" onClick={()=> setAbrirMenu(false)}>
+                        <FaSearchLocation /> 
+                    </StyledLink>
+                </LiMenu>
+                    
+                <LiMenu>
+                    <StyledLink to="/login" onClick={() => { setAbrirMenu(false); if (status) {fazerLogout();}}}>
+                        {LogInOut}
+                    </StyledLink>
+                </LiMenu>
+            </CelularMenu>
         </HeaderMenu>
     )
 }
