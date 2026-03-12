@@ -39,7 +39,29 @@ import terceiro_pavimento from "./components/Plantas/TERCEIRO_PAVIMENTO.png";
 import LerDados from "./components/BdLerTabela";
 import Modal from "./components/SubModal";
 import ObserverEmail from "./components/ObserverEmail";
+
+const express = require('express');
+const cors = require('cors');
+const app = express();
+
+// Option A: Allow ALL origins (Quickest for testing)
+app.use(cors());
+
+// Option B: Allow only your specific Vercel frontend (Recommended for security)
+app.use(cors({
+  origin: 'https://atividade-mapa.vercel.app'
+}));
+
+app.get('/login', (req, res) => {
+  res.json({ message: 'Success' });
+});
+
+
 const imagens = [terreo, primeiro_pavimento, segundo_pavimento, terceiro_pavimento];
+
+
+
+
 const data = [
   { id:0, nome: "Carlos", sobrenome: "Silva", telefone: "21912341234",nascimento:"2025-03-24", email:"carlossilva@mail.com", cpf: "111.222.333-44", matricula:"202411122", funcao: "Administrador", foto: "", senha: "admin"},
   { nome: "Ana", funcao: "Secretaria", foto: "" },
