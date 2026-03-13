@@ -40,22 +40,6 @@ import LerDados from "./components/BdLerTabela";
 import Modal from "./components/SubModal";
 import ObserverEmail from "./components/ObserverEmail";
 
-const express = require('express');
-const cors = require('cors');
-const app = express();
-
-// Option A: Allow ALL origins (Quickest for testing)
-app.use(cors());
-
-// Option B: Allow only your specific Vercel frontend (Recommended for security)
-app.use(cors({
-  origin: 'https://atividade-mapa.vercel.app'
-}));
-
-app.get('/login', (req, res) => {
-  res.json({ message: 'Success' });
-});
-
 
 const imagens = [terreo, primeiro_pavimento, segundo_pavimento, terceiro_pavimento];
 

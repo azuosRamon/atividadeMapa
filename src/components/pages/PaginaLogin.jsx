@@ -82,16 +82,29 @@ function Login() {
 
       if (!user || !user.user_id) {
         alert("Erro ao fazer login: usuário não encontrado.");
-        setLogando(false);
         return;
       }
 
+      // Opcional: consulta a sessão no Redis antes de seguir
+      try {
+        const sessao = await axios.get(`https://atividademapa.onrender.com/sessao/${user.user_id}`);
+        if (!sessao.data?.user) {
+          alert("Erro ao validar sessão no servidor.");
+          return;
+        }
+      } catch (errSessao) {
+        console.warn("Falha ao validar sessão após login:", errSessao);
+      }
 
-      const modelo = await RecuperarModelo(user.empresa_id);
-
+      let modelo = null;
+      if (user.empresa_id) {
+        modelo = await RecuperarModelo(user.empresa_id);
+      }
 
       localStorage.setItem("usuario", JSON.stringify(user));
-      localStorage.setItem("modelo", JSON.stringify(modelo));
+      if (modelo) localStorage.setItem("modelo", JSON.stringify(modelo));
+      else localStorage.removeItem("modelo");
+
       window.location.href = "/dashboard"; // força reload para AuthProvider atualizar
     } catch (err) {
       alert("Erro ao fazer login: " + (err.response?.data?.detail || err.message));
