@@ -3,11 +3,12 @@ import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaSearchLocation, FaBars, FaTimes } from "react-icons/fa";
 import { BsPersonFillGear } from "react-icons/bs";
-import Usuario_logado from './pages/Usuario_logado'; // Certifique-se que este é o arquivo Usuario.js abaixo
-import Logo from './assets/Logo_2.png';
+import Usuario_logado from './pages/Usuario_logado';
+import Logo from './assets/Logo_2.png'
 import DivSeparador from './SubDivSeparador';
-import cores from "./Cores";
+import cores from "./Cores"
 import axios from "axios";
+import { use } from 'react';
 
 const HeaderMenu = styled.header`
     background-color: ${cores.backgroundMenus};

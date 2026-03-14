@@ -1,18 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import styled from "styled-components";
 import { CgProfile } from "react-icons/cg";
 import Button from "../SubButton";
 import { useNavigate } from 'react-router-dom';
 import Box from "../SubBox";
-import cores from "../Cores";
+import cores from "../Cores"
 import Colapse from "../SubColapse";
 
 const BoxEditada = styled(Box)`
     min-width: 100px;
     padding: 20px;
-    max-width: ${({ $mobile }) => ($mobile ? "100%" : "200px")};
-    width: ${({ $mobile }) => ($mobile ? "50%" : "auto")};
-    margin: ${({ $mobile }) => ($mobile ? "0 0 20px 0" : "0 auto")};
+    max-width: 200px;
 `;
 
 const DivContentInformacoes = styled.div`
@@ -36,6 +34,7 @@ const Titulo3 = styled.h3`
     margin: 0 auto;
 `;
 
+
 const ParagrafoInformacao = styled.p`
     color: ${cores.corTexto};
     font-size: 12px;
@@ -43,12 +42,11 @@ const ParagrafoInformacao = styled.p`
 `;
 
 const DivContent = styled.div`
+
     margin-top: 15px;
-    /* Adiciona flex wrap se necessário no mobile */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 `;
+
+
 
 function Usuario({ fecharMenu, mobile=false, logo=false }) {
     const capturarUsuarioLogadoLocalStorage = () => {
@@ -56,7 +54,7 @@ function Usuario({ fecharMenu, mobile=false, logo=false }) {
         if (!usuario) return null;
         try {
             let parsedUsuario = JSON.parse(usuario);
-            return parsedUsuario;
+                return parsedUsuario
         } catch (error){
             console.log(error);
             return null;
@@ -64,19 +62,14 @@ function Usuario({ fecharMenu, mobile=false, logo=false }) {
     }
 
     const telaAtual = useNavigate();
-    const modelo = JSON.parse(localStorage.getItem("modelo")) || {};
+    const modelo = JSON.parse(localStorage.getItem("modelo")) || null;
     const [usuario, setUsuario] = useState(capturarUsuarioLogadoLocalStorage());
-
     const navegar = (rota) => {
         telaAtual(rota);
-        if (mobile && fecharMenu) fecharMenu();
+        if (mobile) fecharMenu();
     }
-
-    if (!usuario) return null; // Prevenção de erro caso não tenha usuário
-
     return (
-        // Passando a prop $mobile para o styled-component
-        <BoxEditada $mobile={mobile}>
+            <BoxEditada>
             <DivContent>
                 {usuario?.imagem ? (
                     <Imagem src={usuario.imagem} alt={`${usuario.nome} - imagem`} />
@@ -99,8 +92,7 @@ function Usuario({ fecharMenu, mobile=false, logo=false }) {
                         <Button onClick={()=>{navegar('/cadastrarDisponibilidade')}} $bgcolor="rgb(38, 38, 38)">Disponibilidade</Button>
                         <Button onClick={()=>{navegar('/visualizarAgendaSemanal')}} $bgcolor="rgb(38, 38, 38)">Agenda</Button>
                         <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>
-                        
-                        <Colapse fontSize="1.2rem" nome="Gerenciar" estadoInicial={false}>
+                            <Colapse fontSize="1.2rem" nome = "Gerenciar" estadoInicial={false}>
                             <Button onClick={()=>{navegar('/categorias')}} $bgcolor="rgb(38, 38, 38)">{modelo.categorias || "Categorias"}</Button>
                             <Button onClick={()=>{navegar('/produtos')}} $bgcolor="rgb(38, 38, 38)">{modelo.produtos || "Produtos"}</Button>
                             <Button onClick={()=>{navegar('/periodoHorarios')}} $bgcolor="rgb(38, 38, 38)">Horários</Button>
@@ -108,13 +100,11 @@ function Usuario({ fecharMenu, mobile=false, logo=false }) {
                             <Button onClick={()=>{navegar('/quadroAulas')}} $bgcolor="rgb(38, 38, 38)">Quadro de funcionamento</Button>
                             <Button onClick={()=>{navegar('/cadastroUsuario')}} $bgcolor="rgb(38, 38, 38)">Usuários</Button>
                         </Colapse>
-                        
-                        <Colapse fontSize="1.2rem" nome="Empresa" estadoInicial={false}>
+                            <Colapse fontSize="1.2rem" nome = "Empresa" estadoInicial={false}>
                             <Button onClick={()=>{navegar('/tiposAreas')}} $bgcolor="rgb(38, 38, 38)">Tipos de Áreas</Button>
                             <Button onClick={()=>{navegar('/relacionarUsuarios')}} $bgcolor="rgb(38, 38, 38)">Relacionamento</Button>
                         </Colapse>
-                        
-                        <Colapse fontSize="1.2rem" nome="M.A.P.A." estadoInicial={false}>
+                            <Colapse fontSize="1.2rem" nome = "M.A.P.A." estadoInicial={false}>
                             <Button onClick={()=>{navegar('/cadastroUsuario')}} $bgcolor="rgb(38, 38, 38)">Usuários</Button>
                             <Button onClick={()=>{navegar('/cadastroEmpresas')}} $bgcolor="rgb(38, 38, 38)">Empresas</Button>
                             <Button onClick={()=>{navegar('/cadastroContrato')}} $bgcolor="rgb(38, 38, 38)">Contratos</Button>
@@ -124,8 +114,7 @@ function Usuario({ fecharMenu, mobile=false, logo=false }) {
                         </Colapse>
                     </React.Fragment>
                 )}
-
-                { (usuario.tipo?.toLowerCase() === "sakdnaskdja") && (
+                    { (usuario.tipo.toLowerCase() === "sakdnaskdja") && (
                     <React.Fragment>
                         <Button onClick={()=>{navegar('/dashboard')}} $bgcolor="rgb(38, 38, 38)">Início</Button>
                         <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>
@@ -133,8 +122,7 @@ function Usuario({ fecharMenu, mobile=false, logo=false }) {
                         <Button onClick={()=>{navegar('/funcoes')}} $bgcolor="rgb(38, 38, 38)">Funcoes</Button>
                     </React.Fragment>
                 )}
-
-                { (usuario.tipo?.toLowerCase() === "empresa") && (
+                    { (usuario.tipo.toLowerCase() === "empresa") && (
                     <React.Fragment>
                         <Button onClick={()=>{navegar('/dashboard')}} $bgcolor="rgb(38, 38, 38)">Início</Button>
                         <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>
@@ -148,7 +136,6 @@ function Usuario({ fecharMenu, mobile=false, logo=false }) {
                         <Button onClick={()=>{navegar('/relacionarUsuarios')}} $bgcolor="rgb(38, 38, 38)">Relacionar Usuários</Button>
                     </React.Fragment>
                 )}
-
                 { (usuario.funcao?.toLowerCase() === "funcionario(a)") && (
                     <React.Fragment>
                         <Button onClick={()=>{navegar('/dashboard')}} $bgcolor="rgb(38, 38, 38)">Início</Button>
@@ -157,6 +144,8 @@ function Usuario({ fecharMenu, mobile=false, logo=false }) {
                     </React.Fragment>
                 )}
             </DivContent>
+
+
         </BoxEditada>
     )
 }
