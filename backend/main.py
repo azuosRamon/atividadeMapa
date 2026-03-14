@@ -12,12 +12,12 @@ load_dotenv()
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-UPSTASH_REDIS_URL = os.getenv("UPSTASH_REDIS_REST_URL")
+UPSTASH_REDIS_URL = os.getenv("UPSTASH_REDIS_URL")
 UPTASH_TOKEN = os.getenv("UPSTASH_REDIS_REST_TOKEN")
 
 # 🔹 Instancia clientes
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-redis = Redis(url=UPSTASH_REDIS_URL, token=UPTASH_TOKEN, decode_responses=True)
+redis = Redis(UPSTASH_REDIS_URL, decode_responses=True)
 
 app = FastAPI()
 
