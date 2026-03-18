@@ -31,9 +31,9 @@ export default function ObserverEmail() {
     const [mensagem, setMensagem] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
 
-    // Suas chaves do EmailJS
-    const SERVICE_ID = 'service_nxjz2tg';
-    const PUBLIC_KEY = 'rbCHkaRc0eGNQlXEw';
+    // Suas chaves do EmailJS (.env local configurado como VITE_EMAILJS_SERVICE_ID e VITE_EMAILJS_PUBLIC_KEY)
+    const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_nxjz2tg'; // Fallback temporário
+    const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'rbCHkaRc0eGNQlXEw';
 
     useEffect(() => {
         

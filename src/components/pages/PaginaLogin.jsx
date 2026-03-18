@@ -78,11 +78,17 @@ function Login() {
         password
       });
 
-      const { user } = response.data;
+      const { user, access_token, refresh_token } = response.data;
 
       if (!user || !user.user_id) {
         alert("Erro ao fazer login: usuário não encontrado.");
         return;
+      }
+
+      // Supabase Sec: Injeta nova sessão baseada nos tokens seguros retornados do backend
+      if (access_token && refresh_token) {
+        localStorage.setItem("sb_tokens", JSON.stringify({ access_token, refresh_token }));
+        await supabase.auth.setSession({ access_token, refresh_token });
       }
 
       // Opcional: consulta a sessão no Redis antes de seguir
@@ -101,7 +107,19 @@ function Login() {
         modelo = await RecuperarModelo(user.empresa_id);
       }
 
-      localStorage.setItem("usuario", JSON.stringify(user));
+      // Evita vazar (CPF, Senha, Info Sensivel) no localStorage
+      const safeUser = {
+        user_id: user.user_id,
+        nome: user.nome,
+        sobrenome: user.sobrenome,
+        imagem: user.imagem || user.foto || user.avatar || "",
+        tipo: user.tipo,
+        empresa_id: user.empresa_id,
+        funcao: user.funcao,
+        usuario_id: user.usuario_id
+      };
+
+      localStorage.setItem("usuario", JSON.stringify(safeUser));
       if (modelo) localStorage.setItem("modelo", JSON.stringify(modelo));
       else localStorage.removeItem("modelo");
 

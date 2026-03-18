@@ -53,12 +53,15 @@ function adicionarTempo(horario, horas = 0, minutos = 0, segundos = 0) {
 }
 
 function ConfigurarHorarios() {
+    const ano_atual = new Date().getFullYear();
+    const mes_atual = new Date().getMonth() + 1;
+    const semestre_atual = mes_atual <= 6 ? 1 : 2;
     const [objeto, setObjeto] = useState({
         horario_id: "0",
         hora_inicio: "00:00",
         hora_termino: "",
-        ano: 2025,
-        semestre: 1
+        ano: ano_atual,
+        semestre: semestre_atual
         });
     const [operacao, setOperacao] = useState("1");
     const [duracao, setDuracao] = useState(50);

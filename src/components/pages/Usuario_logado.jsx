@@ -68,6 +68,10 @@ function Usuario({ fecharMenu, mobile=false, logo=false }) {
         telaAtual(rota);
         if (mobile) fecharMenu();
     }
+    const nomeCategoria = modelo?.categorias || "Categorias";
+    const nomeProduto = modelo?.produtos || "Produtos";
+    const nomeImovel = modelo?.imoveis || "Imoveis";
+    const nomeComodo = modelo?.comodos || "Comodos";
     return (
             <BoxEditada>
             <DivContent>
@@ -92,9 +96,9 @@ function Usuario({ fecharMenu, mobile=false, logo=false }) {
                         <Button onClick={()=>{navegar('/cadastrarDisponibilidade')}} $bgcolor="rgb(38, 38, 38)">Disponibilidade</Button>
                         <Button onClick={()=>{navegar('/visualizarAgendaSemanal')}} $bgcolor="rgb(38, 38, 38)">Agenda</Button>
                         <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>
-                            <Colapse fontSize="1.2rem" nome = "Gerenciar" estadoInicial={false}>
-                            <Button onClick={()=>{navegar('/categorias')}} $bgcolor="rgb(38, 38, 38)">{modelo.categorias || "Categorias"}</Button>
-                            <Button onClick={()=>{navegar('/produtos')}} $bgcolor="rgb(38, 38, 38)">{modelo.produtos || "Produtos"}</Button>
+                            <Colapse fontSize="1.2rem" nome = "Gerenciar" estadoInicial={false}> 
+                            <Button onClick={()=>{navegar('/categorias')}} $bgcolor="rgb(38, 38, 38)">{nomeCategoria}</Button>
+                            <Button onClick={()=>{navegar('/produtos')}} $bgcolor="rgb(38, 38, 38)">{nomeProduto}</Button>
                             <Button onClick={()=>{navegar('/periodoHorarios')}} $bgcolor="rgb(38, 38, 38)">Horários</Button>
                             <Button onClick={()=>{navegar('/edificio')}} $bgcolor="rgb(38, 38, 38)">Edifício</Button>
                             <Button onClick={()=>{navegar('/quadroAulas')}} $bgcolor="rgb(38, 38, 38)">Quadro de funcionamento</Button>
@@ -103,6 +107,7 @@ function Usuario({ fecharMenu, mobile=false, logo=false }) {
                             <Colapse fontSize="1.2rem" nome = "Empresa" estadoInicial={false}>
                             <Button onClick={()=>{navegar('/tiposAreas')}} $bgcolor="rgb(38, 38, 38)">Tipos de Áreas</Button>
                             <Button onClick={()=>{navegar('/relacionarUsuarios')}} $bgcolor="rgb(38, 38, 38)">Relacionamento</Button>
+                            <Button onClick={()=>{navegar('/cargos')}} $bgcolor="rgb(38, 38, 38)">Cargos</Button>
                         </Colapse>
                             <Colapse fontSize="1.2rem" nome = "M.A.P.A." estadoInicial={false}>
                             <Button onClick={()=>{navegar('/cadastroUsuario')}} $bgcolor="rgb(38, 38, 38)">Usuários</Button>
@@ -110,7 +115,6 @@ function Usuario({ fecharMenu, mobile=false, logo=false }) {
                             <Button onClick={()=>{navegar('/cadastroContrato')}} $bgcolor="rgb(38, 38, 38)">Contratos</Button>
                             <Button onClick={()=>{navegar('/modelos')}} $bgcolor="rgb(38, 38, 38)">Modelos</Button>
                             <Button onClick={()=>{navegar('/funcoes')}} $bgcolor="rgb(38, 38, 38)">Funcoes</Button>
-                            <Button onClick={()=>{navegar('/cargos')}} $bgcolor="rgb(38, 38, 38)">Cargos</Button>
                         </Colapse>
                     </React.Fragment>
                 )}

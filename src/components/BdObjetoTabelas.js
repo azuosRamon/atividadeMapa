@@ -80,12 +80,13 @@ const mapa = {
             }
         },
         usuarios: {
-            tabela : {nome: "usuarios", lista:["usuario_id", "nome"], camposPesquisa:false, mostrar: true},
-            operacao: 0,
+            tabela : {nome: "usuarios", lista:["usuario_id", "nome"], camposPesquisa:false, mostrar: false},
+            operacao: 2,
             campos: {
-                usuario_id: {valor: null, tipo: "number", campo:"input", texto:"", nome:"id"},
+                usuario_id: {mostrar: false, valor: null, tipo: "number", campo:"input", texto:"", nome:"id"},
                 
                 nome: {valor: "", tipo: "text", campo:"input", texto:"", nome:"nome"},
+                sobrenome: {valor: "", tipo: "text", campo:"input", texto:"", nome:"sobrenome"},
                 
                 nascimento: {valor: "", tipo: "date", campo:"input", texto:"", nome:"nascimento"},
 
@@ -97,7 +98,7 @@ const mapa = {
                                                 
                 rede_social: {valor: "", tipo: "text", campo:"input", texto:"Rede Social", nome:"rede_social"},
                 
-                imagem: {valor: "", tipo: "file", campo:"input", texto:"", nome:"imagem"},
+                imagem: { valor: "", tipo: "file", campo: "input", texto: "Imagem", nome: "imagem" },
                 
                 visibilidade: {valor: false, tipo: "checkbox", campo:"input", texto:"visibilidade externa", nome:"visibilidade"}              
             }

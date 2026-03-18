@@ -78,10 +78,19 @@ async def login(req: Request):
     dados['tipo'] = tipo
 
 
+    session = getattr(res, "session", None)
+    access_token = session.access_token if session else None
+    refresh_token = session.refresh_token if session else None
+
     # 🔹 Armazena no Redis com expiração (24h)
     redis.setex(f"user:{user.id}", 60 * 60 * 24, json.dumps(dados))
 
-    return {"mensagem": "Login bem-sucedido", "user": dados}
+    return {
+        "mensagem": "Login bem-sucedido", 
+        "user": dados,
+        "access_token": access_token,
+        "refresh_token": refresh_token
+    }
 
 # ---------------------------
 # ROTA DE VALIDAÇÃO
@@ -91,7 +100,7 @@ async def validar_sessao(user_id: str):
     dados = redis.get(f"user:{user_id}")
     if not dados:
         raise HTTPException(status_code=401, detail="Sessão expirada ou não encontrada")
-    return {"user": eval(dados)}
+    return {"user": json.loads(dados)}
 
 # ---------------------------
 # LOGOUT

@@ -11,17 +11,34 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const usuarioLocal = JSON.parse(localStorage.getItem("usuario") || "null");
+    const sbTokens = JSON.parse(localStorage.getItem("sb_tokens") || "null");
+
+    const revalidarSessaoLocal = async () => {
+      // Reconstrói a máscara segura no Supabase local do Vite
+      if (sbTokens?.access_token && sbTokens?.refresh_token) {
+        // Precisamos do supabaseClient, vamos importa-lo no topo
+        const { supabase } = await import('../../supabaseClient.js');
+        await supabase.auth.setSession({
+          access_token: sbTokens.access_token,
+          refresh_token: sbTokens.refresh_token
+        });
+      }
+    };
+
     if (usuarioLocal?.user_id) {
-      // Consulta sessão no backend (Redis)
-      axios.get(`https://atividademapa.onrender.com/sessao/${usuarioLocal.user_id}`)
-        .then(res => {
-          setUser(res.data.user);
-        })
-        .catch(() => {
-          setUser(null);
-          localStorage.removeItem("usuario");
-        })
-        .finally(() => setLoading(false));
+      revalidarSessaoLocal().then(() => {
+        // Consulta sessão no backend (Redis)
+        axios.get(`https://atividademapa.onrender.com/sessao/${usuarioLocal.user_id}`)
+          .then(res => {
+            setUser(res.data.user);
+          })
+          .catch(() => {
+            setUser(null);
+            localStorage.removeItem("usuario");
+            localStorage.removeItem("sb_tokens");
+          })
+          .finally(() => setLoading(false));
+      });
     } else {
       setUser(null);
       setLoading(false);

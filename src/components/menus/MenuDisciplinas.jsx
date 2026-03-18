@@ -27,6 +27,7 @@ grid-template-areas:
 
 
 function MenuDisciplinas({usuarioLogado}) {
+    console.log(usuarioLogado);
     const tabela = mapa.produtos;
     const [objeto, setObjeto] = useState(
         Object.fromEntries(

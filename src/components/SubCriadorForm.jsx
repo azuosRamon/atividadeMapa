@@ -238,6 +238,7 @@
                 }
             }
         };
+        setOperacao(String(item?.operacao) ?? "0");
 
         return (
             <>
