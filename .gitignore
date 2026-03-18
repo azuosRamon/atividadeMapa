@@ -26,3 +26,9 @@ yarn-error.log*
 
 venv/
 __pycache__/
+
+# Antigravity / Agentes
+.agent/
+CODEBASE.md
+etapa_c_walkthrough.md
+walkthrough.md

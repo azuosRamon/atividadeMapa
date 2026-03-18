@@ -261,7 +261,7 @@ function Slide({
           .map(([x, y]) => `${x},${y}`)
           .join(" ");
         return {
-          id: item.id,
+          id: item.comodo_id || item.id || Math.random(),
           numero: item.numero,
           apelido: item.apelido,
           coords,
@@ -321,7 +321,7 @@ function Slide({
                   {/* Polígonos existentes */}
                   {poligonos.map((poly) => (
                     <AreaPoligonal
-                      key={poly.id}
+                      key={`poly-${poly.id}`}
                       points={poly.coords}
                       onClick={() => {
                         if (!capturarCoordenadas) {
