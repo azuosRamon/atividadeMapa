@@ -27,9 +27,9 @@ const mapa = {
         tabela: {nome: "cargos", lista:["cargo_id", "nome"], camposPesquisa:false, mostrar: true},
         operacao: 0,
         campos:{
-            cargo_id: {valor: null, tipo: "number", campo:"input", texto:"Id", nome:"id", mostrar: true},
+            cargo_id: {valor: null, tipo: "number", campo:"input", texto:"Id", nome:"id", mostrar: false},
             nome: {valor: "", tipo: "text", campo:"input", texto:"", nome:"nome", mostrar: true, required: true},
-            empresa_id: {valor: null, tipo: "text", campo:"select", texto:"Empresa", nome:"empresa_id",tabela:"empresas", lista:["empresa_id", "nome"]}
+            empresa_id: {mostrar: false, valor: usuarioLogado?.empresa_id || null, tipo: "text", campo:"select", texto:"Empresa", nome:"empresa_id",tabela:"empresas", lista:["empresa_id", "nome"]}
         },
         },
         funcoes: {
@@ -142,16 +142,18 @@ const mapa = {
                     texto:"Usuario", 
                     nome:"usuario_id",
                     tabela:"usuarios", 
-                    lista:["usuario_id","nome","cpf"]
+                    lista:["usuario_id","nome","cpf"],
+                    visualizar: ["nome"]
                 },
                 empresa_id: {
-                    valor: null, 
+                    valor: usuarioLogado?.empresa_id || null, 
                     tipo: "text", 
                     campo:"select", 
                     texto:"Empresa", 
                     nome:"empresa_id",
                     tabela:"empresas", 
                     lista:["empresa_id","nome"],
+                    visualizar: ["nome"],
                     mostrar: false
                 },
                 funcao_id: {
@@ -161,7 +163,8 @@ const mapa = {
                     texto:"Funcao", 
                     nome:"funcao_id",
                     tabela:"funcoes", 
-                    lista:["funcao_id","nome"]
+                    lista:["funcao_id","nome"],
+                    visualizar: ["nome"]
                 },
                 cargo_id: {
                     valor: null, 
@@ -170,8 +173,17 @@ const mapa = {
                     texto:"Cargo", 
                     nome:"cargo_id",
                     tabela:"cargos", 
-                    lista:["cargo_id","nome"]
+                    lista:["cargo_id","nome"],
+                    visualizar: ["nome"]
                 },
+                data_cadastro: {
+                    valor: new Date().toISOString().split('T')[0], 
+                    tipo: "date", 
+                    campo:"input", 
+                    texto:"Data de Matrícula", 
+                    nome:"data_cadastro",
+                    mostrar: false
+                }
 
                 },
                 

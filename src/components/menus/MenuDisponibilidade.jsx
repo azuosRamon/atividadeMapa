@@ -80,8 +80,13 @@ const Tr = styled.tr`
   
 `
 const HoraDesativada = styled.td`
-  background-color: #7d4444;
+  background-color: ${({ $preview }) => ($preview ? 'rgba(76, 175, 80, 0.44)' : '#7d4444')};
   color: white;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  &:hover {
+     background-color: ${({ $preview }) => ($preview ? 'rgba(76, 175, 80, 0.6)' : '#a15858')};
+  }
 `;
 
 const Tooltip = styled.div`
@@ -132,6 +137,7 @@ function CadastrarDisponibilidade({ usuarioLogado }) {
   const tabela = mapa.disponibilidade_semanal;
   const [dados, setDados] = useState([]);
   const [hoverGroup, setHoverGroup] = useState(null);
+  const [horarioClicado, setHorarioClicado] = useState(null);
   const [tooltip, setTooltip] = useState({ visible: false, text: "", x: 0, y: 0 });
   const [objetoInicial, setObjetoInicial] = useState(
     Object.fromEntries(
@@ -324,11 +330,57 @@ const enviarCadastro = async (e) => {
                               // Preenche o formulário com o registro clicado
                               setObjeto({ ...registroBloco });
                               setOperacao("2"); // opcional: modo edição
+                              setHorarioClicado(null);
                             }}
                           />
                         );
                       } else {
-                        return <HoraDesativada key={i} />;
+                        const isPreview = 
+                           String(objeto.dia_da_semana) === String(dIndex + 1) &&
+                           objeto.hora_inicio && 
+                           objeto.hora_fim &&
+                           (operacao === "0" || operacao === "2");
+                        
+                        let inPreviewRange = false;
+                        if (isPreview) {
+                            const pInicio = parseInt(objeto.hora_inicio.split(":")[0]);
+                            const pFim = parseInt(objeto.hora_fim.split(":")[0]);
+                            if (i >= pInicio && i < pFim) inPreviewRange = true;
+                        }
+
+                        return (
+                          <HoraDesativada 
+                            key={i} 
+                            $preview={inPreviewRange}
+                            onClick={() => {
+                               const formatTime = (h) => Intl.NumberFormat(undefined, { minimumIntegerDigits: 2 }).format(h) + ":00";
+                               
+                               if (horarioClicado && horarioClicado.dia === dIndex + 1) {
+                                   const inicio = Math.min(horarioClicado.hora, i);
+                                   const fim = Math.max(horarioClicado.hora, i) + 1; // +1h no ultimo click
+                                   
+                                   setObjeto({
+                                       ...objeto,
+                                       dia_da_semana: String(dIndex + 1),
+                                       hora_inicio: formatTime(inicio),
+                                       hora_fim: formatTime(fim)
+                                   });
+                                   setOperacao("0");
+                                   setHorarioClicado(null);
+                               } else {
+                                   // Inicia a marcação
+                                   setObjeto({
+                                       ...objeto,
+                                       dia_da_semana: String(dIndex + 1),
+                                       hora_inicio: formatTime(i),
+                                       hora_fim: formatTime(i + 1)
+                                   });
+                                   setOperacao("0");
+                                   setHorarioClicado({ dia: dIndex + 1, hora: i });
+                               }
+                            }}
+                          />
+                        );
                       }
                     })}
                   </Tr>

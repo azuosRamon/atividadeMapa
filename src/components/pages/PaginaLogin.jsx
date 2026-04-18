@@ -83,7 +83,7 @@ function Login() {
       let empresaId = userData.empresa_id;
 
       const safeUser = {
-        user_id: userData.user_id,
+        user_id: userData.user_id || userData.id,
         nome: userData.nome,
         sobrenome: userData.sobrenome,
         imagem: userData.imagem || userData.foto || userData.avatar || "",
@@ -125,41 +125,49 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setLogando(true);
+    setMensagemErro("");
 
     try {
-      const response = await axios.post('https://atividademapa.onrender.com/login', {
+      
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email,
         password
       });
 
-      const { user: userRecebido, access_token, refresh_token } = response.data;
-
-      if (!userRecebido || !userRecebido.user_id) {
-        setMensagemErro("Usuário não encontrado.");
+      if (authError || !authData.user) {
+        setMensagemErro("Email ou senha incorretos.");
         setModalErroAberto(true);
         setLogando(false);
         return;
       }
 
-      // 1. Injeta os tokens na sessão do supabase do Client
+      const access_token = authData.session?.access_token;
+      const refresh_token = authData.session?.refresh_token;
+
+      // Injeta os tokens na sessão armazenada localmente
       if (access_token && refresh_token) {
         localStorage.setItem("sb_tokens", JSON.stringify({ access_token, refresh_token }));
-        await supabase.auth.setSession({ access_token, refresh_token });
       }
 
-      try {
-        const sessao = await axios.get(`https://atividademapa.onrender.com/sessao/${userRecebido.user_id}`);
-        if (!sessao.data?.user) {
-          setMensagemErro("Erro ao validar sessão no servidor.");
-          setModalErroAberto(true);
-          setLogando(false);
-          return;
-        }
-      } catch (errSessao) {
-        console.warn("Falha ao validar sessão após login:", errSessao);
-      }
+      const userRecebido = authData.user;
+      
+      // Procura primeiro os da tabela usuarios da plataforma
+      const { data: usuarioPerfil, error: errPerfil } = await supabase
+          .from('usuarios')
+          .select('*')
+          .eq('user_id', userRecebido.id)
+          .maybeSingle();
 
-      // 2. Com a sessao habilitada, procuramos as empresas do usuário
+      // Busca na tabela empresas se for o Admin originário (SaaS Founder / Empresa)
+      const { data: empresaFundada } = await supabase
+          .from('empresas')
+          .select('*')
+          .eq('user_id', userRecebido.id)
+          .maybeSingle();
+      
+      const usuario_id_db = usuarioPerfil?.usuario_id || userRecebido.id;
+
+      // Com a sessao habilitada, procuramos as empresas do usuário
       const { data: vinculos, error: errorVinculos } = await supabase
           .from('usuarios_empresas')
           .select(`
@@ -168,27 +176,37 @@ function Login() {
             funcoes(nome),
             empresas(nome, modelo_id)
           `)
-          .eq('usuario_id', userRecebido.usuario_id);
+          .eq('usuario_id', usuario_id_db);
+
+      const combinedUser = { 
+          ...userRecebido, 
+          tipo: empresaFundada ? 'empresa' : 'usuario', 
+          nome: empresaFundada?.nome || usuarioPerfil?.nome || 'Usuário',
+          sobrenome: usuarioPerfil?.sobrenome || '',
+          imagem: empresaFundada?.imagem || usuarioPerfil?.imagem || '',
+          empresa_id: empresaFundada?.empresa_id || undefined,
+          usuario_id: usuario_id_db,
+          user_id: userRecebido.id
+      };
 
       if (errorVinculos || !vinculos || vinculos.length === 0) {
-          // Fallback usual: não tem vínculos cadastrados no DB associativo
-          await concluirLogin(userRecebido, null);
+          await concluirLogin(combinedUser, null);
           return;
       }
 
       if (vinculos.length === 1) {
-          await concluirLogin(userRecebido, vinculos[0]);
+          await concluirLogin(combinedUser, vinculos[0]);
           return;
       } else {
           // Processo Multitenant - abre modal
           setEmpresasDisponiveis(vinculos);
-          setTmpUser(userRecebido);
+          setTmpUser(combinedUser);
           setLogando(false);
           setSelecionandoEmpresa(true);
       }
 
     } catch (err) {
-      setMensagemErro(err.response?.data?.detail || err.message);
+      setMensagemErro(err.message || "Erro de conexão ao realizar o login.");
       setModalErroAberto(true);
       setLogando(false);
     }

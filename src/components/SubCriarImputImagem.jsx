@@ -150,12 +150,15 @@ const handleCropAndUpload = async () => {
             const fileExtension = '.png';
             const fileName = `${Date.now()}-${baseFileName}${fileExtension}`;
 
+            // Define a pasta de forma dinâmica
+            const pasta = objeto.empresa_id ? `empresas/${objeto.empresa_id}` : `usuarios`;
+
             // ----------------------------------------------------
             // 2. FAZ O UPLOAD DA NOVA IMAGEM
             // ----------------------------------------------------
             const { data: uploadData, error: uploadError } = await supabase.storage
                 .from("imagens")
-                .upload(`uploads/${objeto.empresa_id}/${fileName}`, croppedFile, {
+                .upload(`uploads/${pasta}/${fileName}`, croppedFile, {
                     contentType: 'image/png',
                 });
 

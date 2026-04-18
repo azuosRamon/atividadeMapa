@@ -13,8 +13,9 @@ CREATE TABLE public.blocos (
 CREATE TABLE public.cargos (
   cargo_id integer NOT NULL DEFAULT nextval('cargos_cargo_id_seq'::regclass),
   nome character varying,
-  empresa_id integer NOT NULL,
-  CONSTRAINT cargos_pkey PRIMARY KEY (cargo_id)
+  empresa_id uuid NOT NULL,
+  CONSTRAINT cargos_pkey PRIMARY KEY (cargo_id),
+  CONSTRAINT cargos_empresa_id_fkey FOREIGN KEY (empresa_id) REFERENCES public.empresas(empresa_id)
 );
 CREATE TABLE public.categorias (
   categoria_id integer NOT NULL DEFAULT nextval('categorias_categoria_id_seq'::regclass),
@@ -248,6 +249,7 @@ CREATE POLICY "Permitir ALL para usuários logados" ON public.disponibilidade_se
 CREATE POLICY "Permitir ALL para usuarios vinculados" ON public.empresas FOR ALL TO authenticated USING (auth.uid() = user_id);
 CREATE POLICY "Permitir Leitura para usuários logados" ON public.empresas FOR SELECT TO authenticated USING (true);
 CREATE POLICY "Permitir ALL para admin" ON public.funcoes FOR ALL TO authenticated USING (auth.uid() = '03a64e9a-844b-4483-a4dd-fa5d740cc1fa');
+CREATE POLICY "Permitir Leitura para logados" ON public.funcoes FOR SELECT TO authenticated USING (true);
 
 CREATE POLICY "Permitir Leitura para usuários logados" ON public.horarios FOR SELECT TO authenticated USING (true);
 CREATE POLICY "Permitir Edição para funções específicas" ON public.horarios FOR ALL TO authenticated USING (public.pode_editar_cadastro());
@@ -272,3 +274,7 @@ CREATE POLICY "Permitir Leitura de usuarios para logados" ON public.usuarios FOR
 CREATE POLICY "Permitir Insercao de usuarios para logados" ON public.usuarios FOR INSERT TO authenticated WITH CHECK (true);
 CREATE POLICY "Permitir Atualizacao de usuarios para logados" ON public.usuarios FOR UPDATE TO authenticated USING (true);
 CREATE POLICY "Permitir ALL para usuários logados" ON public.usuarios_empresas FOR ALL TO authenticated USING (true);
+
+-- Garante que uma empresa não relacione o mesmo usuário duas vezes na tabela (Evita duplicatas)
+ALTER TABLE public.usuarios_empresas
+ADD CONSTRAINT unique_usuario_empresa UNIQUE (usuario_id, empresa_id);
