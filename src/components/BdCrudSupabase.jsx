@@ -36,6 +36,11 @@ function useBancoDeDados({
     // remove o campo id (disciplina_id ou outro campoId)
     const { [campoId]: _, ...semId } = novoObjeto
 
+    // Tratar strings vazias para null (evita erro de Date ou restrições UNIQUE)
+    Object.keys(semId).forEach(key => {
+        if (semId[key] === "") semId[key] = null;
+    });
+
     const { error } = await supabase
         .from(nomeTabela)
         .insert([semId])
@@ -48,6 +53,11 @@ function useBancoDeDados({
     const alterar = async (id, dadosAtualizados) => {
     // remove o campo de id do objeto
     const { [campoId]: _, ...semId } = dadosAtualizados
+
+    // Tratar strings vazias para null
+    Object.keys(semId).forEach(key => {
+        if (semId[key] === "") semId[key] = null;
+    });
 
     const { error } = await supabase
         .from(nomeTabela)

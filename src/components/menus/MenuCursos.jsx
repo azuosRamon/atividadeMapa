@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Box from "../SubBox";
 import Title from "../SubTitleH2";
 import useBancoDeDados from "../BdSupabase";
+import { pegarNomenclatura } from "../Nomenclaturas";
 
 import CriarCamposFormulario from "../SubCriadorForm";
 import mapa from "../BdObjetoTabelas";
@@ -48,9 +49,11 @@ function ConfigurarCursos({usuarioLogado}) {
         campoNome: tabela.tabela.lista[1],
       });
 
+      const nomes = pegarNomenclatura();
+
 return(
     <Box>
-                <Title>Cadastrar Cursos</Title>
+                <Title>Cadastrar {nomes.categorias}</Title>
                 <FormGrid onSubmit={fazerEnvio}>
 
                     <CriarCamposFormulario 

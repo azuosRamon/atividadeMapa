@@ -11,6 +11,7 @@ import terceiro_pavimento from "./Plantas/TERCEIRO_PAVIMENTO.png";
 import sala03 from "./Plantas/03.png";
 import sala12 from "./Plantas/12.png";
 import Slide from "./Slide";
+import { pegarNomenclatura } from "./Nomenclaturas";
 import cores from "./Cores"
 import GridArea from "./SubGridArea"
 
@@ -119,6 +120,7 @@ function CriarCard({ dados, nome, disciplina, dia, horarioInicial, horarioFinal,
         setMostrarMapa(false)
     }
     
+    const nomes = pegarNomenclatura();
 
     return (
         <Container>
@@ -152,7 +154,7 @@ function CriarCard({ dados, nome, disciplina, dia, horarioInicial, horarioFinal,
                         <ParagrafoInformacao>|</ParagrafoInformacao>
                     </GridAreaFlex>
                     <GridAreaFlex $area='sala'>
-                        <Titulo4>Sala: {sala}</Titulo4>
+                        <Titulo4>{nomes.comodos}: {sala}</Titulo4>
 
                     </GridAreaFlex>
             </Box>

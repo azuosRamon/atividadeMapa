@@ -7,6 +7,7 @@ import Input from "../SubInput";
 import Container from "../SubContainer";
 import ParagrafoInformacao from "../SubParagrafo";
 import SpamSublinhado from "../SubSpam";
+import Modal from "../SubModal";
 import cores from "../Cores";
 import { supabase } from "/supabaseClient";
 import { useAuth } from "../AuthProvider"
@@ -27,6 +28,8 @@ const StyledLink = styled(Link)`
   font-size: 12px;
   cursor: pointer;
 `;
+
+// Recupera informações de modelo quando não houver MultiTenant ou como Fallback
 async function RecuperarModelo(empresaId) {
   try {
     const { data: empresa, error: errorEmpresa } = await supabase
@@ -60,13 +63,64 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [logando, setLogando] = useState(false);
+  const [mensagemErro, setMensagemErro] = useState("");
+  const [modalErroAberto, setModalErroAberto] = useState(false);
+
+  // States para seleção de empresa (MultiTenant)
+  const [empresasDisponiveis, setEmpresasDisponiveis] = useState([]);
+  const [selecionandoEmpresa, setSelecionandoEmpresa] = useState(false);
+  const [tmpUser, setTmpUser] = useState(null);
 
   useEffect(() => {
     if (!loading && user) {
-      console.log("Usuário já autenticado, redirecionando...");
       navigate("/dashboard", { replace: true });
     }
   }, [user, loading, navigate]);
+
+
+  const concluirLogin = async (userData, vinculo) => {
+      let modelo = null;
+      let empresaId = userData.empresa_id;
+
+      const safeUser = {
+        user_id: userData.user_id,
+        nome: userData.nome,
+        sobrenome: userData.sobrenome,
+        imagem: userData.imagem || userData.foto || userData.avatar || "",
+        tipo: userData.tipo,
+        empresa_id: userData.empresa_id,
+        funcao: userData.funcao,
+        usuario_id: userData.usuario_id
+      };
+
+      if (vinculo) {
+          empresaId = vinculo.empresa_id;
+          safeUser.empresa_id = empresaId;
+          safeUser.funcao = vinculo.funcoes?.nome || safeUser.funcao;
+          
+          if (vinculo.empresas?.modelo_id) {
+              try {
+                  const { data: modeloFetch } = await supabase
+                      .from('modelos')
+                      .select('*')
+                      .eq('modelo_id', vinculo.empresas.modelo_id)
+                      .single();
+                  modelo = modeloFetch;
+              } catch(e) {
+                  console.error("Erro ao buscar modelo do vinculo", e);
+              }
+          }
+      } else if (empresaId) {
+          modelo = await RecuperarModelo(empresaId);
+      }
+
+      localStorage.setItem("usuario", JSON.stringify(safeUser));
+      if (modelo) localStorage.setItem("modelo", JSON.stringify(modelo));
+      else localStorage.removeItem("modelo");
+
+      window.location.href = "/dashboard";
+  };
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -78,60 +132,70 @@ function Login() {
         password
       });
 
-      const { user, access_token, refresh_token } = response.data;
+      const { user: userRecebido, access_token, refresh_token } = response.data;
 
-      if (!user || !user.user_id) {
-        alert("Erro ao fazer login: usuário não encontrado.");
+      if (!userRecebido || !userRecebido.user_id) {
+        setMensagemErro("Usuário não encontrado.");
+        setModalErroAberto(true);
+        setLogando(false);
         return;
       }
 
-      // Supabase Sec: Injeta nova sessão baseada nos tokens seguros retornados do backend
+      // 1. Injeta os tokens na sessão do supabase do Client
       if (access_token && refresh_token) {
         localStorage.setItem("sb_tokens", JSON.stringify({ access_token, refresh_token }));
         await supabase.auth.setSession({ access_token, refresh_token });
       }
 
-      // Opcional: consulta a sessão no Redis antes de seguir
       try {
-        const sessao = await axios.get(`https://atividademapa.onrender.com/sessao/${user.user_id}`);
+        const sessao = await axios.get(`https://atividademapa.onrender.com/sessao/${userRecebido.user_id}`);
         if (!sessao.data?.user) {
-          alert("Erro ao validar sessão no servidor.");
+          setMensagemErro("Erro ao validar sessão no servidor.");
+          setModalErroAberto(true);
+          setLogando(false);
           return;
         }
       } catch (errSessao) {
         console.warn("Falha ao validar sessão após login:", errSessao);
       }
 
-      let modelo = null;
-      if (user.empresa_id) {
-        modelo = await RecuperarModelo(user.empresa_id);
+      // 2. Com a sessao habilitada, procuramos as empresas do usuário
+      const { data: vinculos, error: errorVinculos } = await supabase
+          .from('usuarios_empresas')
+          .select(`
+            empresa_id,
+            funcao_id,
+            funcoes(nome),
+            empresas(nome, modelo_id)
+          `)
+          .eq('usuario_id', userRecebido.usuario_id);
+
+      if (errorVinculos || !vinculos || vinculos.length === 0) {
+          // Fallback usual: não tem vínculos cadastrados no DB associativo
+          await concluirLogin(userRecebido, null);
+          return;
       }
 
-      // Evita vazar (CPF, Senha, Info Sensivel) no localStorage
-      const safeUser = {
-        user_id: user.user_id,
-        nome: user.nome,
-        sobrenome: user.sobrenome,
-        imagem: user.imagem || user.foto || user.avatar || "",
-        tipo: user.tipo,
-        empresa_id: user.empresa_id,
-        funcao: user.funcao,
-        usuario_id: user.usuario_id
-      };
+      if (vinculos.length === 1) {
+          await concluirLogin(userRecebido, vinculos[0]);
+          return;
+      } else {
+          // Processo Multitenant - abre modal
+          setEmpresasDisponiveis(vinculos);
+          setTmpUser(userRecebido);
+          setLogando(false);
+          setSelecionandoEmpresa(true);
+      }
 
-      localStorage.setItem("usuario", JSON.stringify(safeUser));
-      if (modelo) localStorage.setItem("modelo", JSON.stringify(modelo));
-      else localStorage.removeItem("modelo");
-
-      window.location.href = "/dashboard"; // força reload para AuthProvider atualizar
     } catch (err) {
-      alert("Erro ao fazer login: " + (err.response?.data?.detail || err.message));
-    } finally {
+      setMensagemErro(err.response?.data?.detail || err.message);
+      setModalErroAberto(true);
       setLogando(false);
     }
   };
 
   if (loading) return <div>Carregando sessão...</div>;
+
   return (
     <Container>
       <Box>
@@ -153,8 +217,8 @@ function Login() {
             required
           />
 
-          <Button type="submit" disabled={loading}>
-            {loading ? "Carregando..." : "Entrar"}
+          <Button type="submit" disabled={logando}>
+            {logando ? "Carregando..." : "Entrar"}
           </Button>
         </form>
         <StyledLink to="/RecuperarSenha">Esqueceu a senha? Clique aqui!</StyledLink>
@@ -164,6 +228,36 @@ function Login() {
           <SpamSublinhado> email@mail.com.br </SpamSublinhado>
         </ParagrafoInformacao>
       </Box>
+      
+      <Modal aberto={selecionandoEmpresa} onFechar={()=>{}}>
+          <Box>
+             <Title>Selecione a Empresa</Title>
+             <ParagrafoInformacao>Encontramos mais de um vínculo para sua conta.</ParagrafoInformacao>
+             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '20px' }}>
+                 {empresasDisponiveis.map(vinculo => (
+                    <Button key={vinculo.empresa_id} onClick={() => concluirLogin(tmpUser, vinculo)}>
+                        Acessar como {vinculo.funcoes?.nome} na {vinculo.empresas?.nome || 'Empresa'}
+                    </Button>
+                 ))}
+             </div>
+          </Box>
+      </Modal>
+
+      {/* Modal de Erro */}
+      <Modal aberto={modalErroAberto} onFechar={() => setModalErroAberto(false)}>
+          <Box>
+            <Title>Erro no Login</Title>
+            <ParagrafoInformacao style={{ color: "red", textAlign: "center", marginBottom: "20px" }}>
+              {mensagemErro}
+            </ParagrafoInformacao>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <Button onClick={() => setModalErroAberto(false)}>
+                Tentar Novamente
+              </Button>
+            </div>
+          </Box>
+      </Modal>
+
     </Container>
   );
 }

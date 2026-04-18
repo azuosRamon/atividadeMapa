@@ -238,7 +238,13 @@
                 }
             }
         };
-        setOperacao(String(item?.operacao) ?? "0");
+
+        useEffect(() => {
+            if (item?.operacao !== undefined) {
+                setOperacao(String(item.operacao));
+            }
+        }, [item]);
+
 
         return (
             <>

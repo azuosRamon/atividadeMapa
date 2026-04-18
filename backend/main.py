@@ -45,12 +45,13 @@ async def login(req: Request):
     if not email or not password:
         raise HTTPException(status_code=400, detail="Email e senha são obrigatórios")
 
-    # 🔹 Login no Supabase
-    res = supabase.auth.sign_in_with_password({"email": email, "password": password})
-    user = getattr(res, "user", None)
-    error = getattr(res, "error", None)
-
-    if error or not user:
+    # 🔹 Login no Supabase (usar Try Catch pois o Supabase-py emite Exception em senha incorreta)
+    try:
+        res = supabase.auth.sign_in_with_password({"email": email, "password": password})
+        user = getattr(res, "user", None)
+        if not user:
+            raise HTTPException(status_code=401, detail="Usuário ou senha incorretos")
+    except Exception as e:
         raise HTTPException(status_code=401, detail="Usuário ou senha incorretos")
 
     # 🔹 Busca dados adicionais

@@ -246,6 +246,7 @@ CREATE POLICY "Permitir Edição para funções específicas" ON public.comodos 
 CREATE POLICY "Permitir ALL para usuários logados" ON public.contratos_empresas FOR ALL TO authenticated USING (auth.uid() = '03a64e9a-844b-4483-a4dd-fa5d740cc1fa');
 CREATE POLICY "Permitir ALL para usuários logados" ON public.disponibilidade_semanal FOR ALL TO authenticated USING (true);
 CREATE POLICY "Permitir ALL para usuarios vinculados" ON public.empresas FOR ALL TO authenticated USING (auth.uid() = user_id);
+CREATE POLICY "Permitir Leitura para usuários logados" ON public.empresas FOR SELECT TO authenticated USING (true);
 CREATE POLICY "Permitir ALL para admin" ON public.funcoes FOR ALL TO authenticated USING (auth.uid() = '03a64e9a-844b-4483-a4dd-fa5d740cc1fa');
 
 CREATE POLICY "Permitir Leitura para usuários logados" ON public.horarios FOR SELECT TO authenticated USING (true);
@@ -255,6 +256,7 @@ CREATE POLICY "Permitir Leitura para usuários logados" ON public.imoveis FOR SE
 CREATE POLICY "Permitir Edição para funções específicas" ON public.imoveis FOR ALL TO authenticated USING (public.pode_editar_cadastro());
 
 CREATE POLICY "Permitir ALL para admin" ON public.modelos FOR ALL TO authenticated USING (auth.uid() = '03a64e9a-844b-4483-a4dd-fa5d740cc1fa');
+CREATE POLICY "Permitir Leitura para usuários logados" ON public.modelos FOR SELECT TO authenticated USING (true);
 
 CREATE POLICY "Permitir Leitura para usuários logados" ON public.pavimentos FOR SELECT TO authenticated USING (true);
 CREATE POLICY "Permitir Edição para funções específicas" ON public.pavimentos FOR ALL TO authenticated USING (public.pode_editar_cadastro());
@@ -266,5 +268,7 @@ CREATE POLICY "Permitir Leitura para usuários logados" ON public.quadro_de_func
 CREATE POLICY "Permitir Edição para funções específicas" ON public.quadro_de_funcionamento FOR ALL TO authenticated USING (public.pode_editar_cadastro());
 
 CREATE POLICY "Permitir ALL para usuários logados" ON public.tipos_areas FOR ALL TO authenticated USING (true);
-CREATE POLICY "Permitir ALL para usuarios vinculados" ON public.usuarios FOR ALL TO authenticated USING (auth.uid() = user_id);
+CREATE POLICY "Permitir Leitura de usuarios para logados" ON public.usuarios FOR SELECT TO authenticated USING (true);
+CREATE POLICY "Permitir Insercao de usuarios para logados" ON public.usuarios FOR INSERT TO authenticated WITH CHECK (true);
+CREATE POLICY "Permitir Atualizacao de usuarios para logados" ON public.usuarios FOR UPDATE TO authenticated USING (true);
 CREATE POLICY "Permitir ALL para usuários logados" ON public.usuarios_empresas FOR ALL TO authenticated USING (true);

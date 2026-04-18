@@ -81,7 +81,7 @@ const mapa = {
         },
         usuarios: {
             tabela : {nome: "usuarios", lista:["usuario_id", "nome"], camposPesquisa:false, mostrar: false},
-            operacao: 2,
+            operacao: 0,
             campos: {
                 usuario_id: {mostrar: false, valor: null, tipo: "number", campo:"input", texto:"", nome:"id"},
                 

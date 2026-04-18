@@ -8,6 +8,7 @@ import Select from "./SubSelect";
 import Container from "./SubContainer";
 import logo_cliente from "../components/assets/UniVassouras-Vertical-Branca.png"
 import { MdHeight } from "react-icons/md";
+import { pegarNomenclatura } from "./Nomenclaturas";
 import InputAutocomplete from "./SubInputAutocomplete";
 import cores from "./Cores";
 
@@ -168,7 +169,7 @@ function Pesquisa({dados}){
     
     const [estadoModal, mudarEstadoModal] = useState(false);
     
-   
+    const nomes = pegarNomenclatura();
 
     const cursosEDisciplinas = cursos.concat(disciplinas);
 
@@ -215,14 +216,14 @@ function Pesquisa({dados}){
                         valor={procurarSala}
                         onChange={(val) => confProcurarSala(val)}       // Atualiza o valor enquanto digita
                         onSelecionar={(val) => confProcurarSala(val)}    // Atualiza ao selecionar
-                        placeholder="Sala"
+                        placeholder={nomes.comodos}
                         />
                         <InputAutocomplete
                         sugestoes={cursosEDisciplinas}
                         valor={procurarCurso}
                         onChange={(val) => confProcurarCurso(val)}       // Atualiza o valor enquanto digita
                         onSelecionar={(val) => confProcurarCurso(val)}    // Atualiza ao selecionar
-                        placeholder="Curso ou disciplina"
+                        placeholder={`${nomes.categorias} ou ${nomes.produtos}`}
                         />
                     
                     <Select id="dia" value={dia} name="dia" onChange={(e) => confDia(e.target.value)}>

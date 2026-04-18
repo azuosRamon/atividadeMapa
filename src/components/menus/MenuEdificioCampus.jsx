@@ -3,6 +3,7 @@ import styled from "styled-components";
 import useBancoDeDados from "../BdSupabase";
 import CriarCamposFormulario from "../SubCriadorForm";
 import mapa from "../BdObjetoTabelas"
+import { pegarNomenclatura } from "../Nomenclaturas";
 import Title from "../SubTitleH2";
 import Box from "../SubBox";
 import Button from "../SubButton";
@@ -62,10 +63,11 @@ function CampusOpcoes({ usuarioLogado, operacaoEnviada, item = null }) {
         campoNome: tabela.tabela.lista[1],
       });
 
-   
+    const nomes = pegarNomenclatura();
+
     return(
             <div>
-                <TitleSublinhado>IMÓVEL</TitleSublinhado>
+                <TitleSublinhado>{nomes.imoveis.toUpperCase()}</TitleSublinhado>
                 <FormGrid onSubmit={fazerEnvio}>
                     <CriarCamposFormulario 
                     item={tabela}
@@ -86,6 +88,7 @@ function CardImovel({onClick, dadosImovel=null, dadosUsuario, selecao = null, in
     
 
     const data = selecao || dadosImovel;
+    const nomes = pegarNomenclatura();
 
     return (
         <>
@@ -95,9 +98,9 @@ function CardImovel({onClick, dadosImovel=null, dadosUsuario, selecao = null, in
                 e.preventDefault();
                 setOperacao("1");
                 setMostrarModal(true)}
-            } >Cadastrar Novo Imóvel</AdicionarBtn>
+            } >Cadastrar Novo {nomes.imoveis}</AdicionarBtn>
                     
-            <TitleSublinhado>Selecione um imóvel</TitleSublinhado>
+            <TitleSublinhado>Selecione um {nomes.imoveis}</TitleSublinhado>
             </>
                     }
         <BoxImoveis $dadosImovel={dadosImovel ? true : false}>
@@ -109,7 +112,7 @@ function CardImovel({onClick, dadosImovel=null, dadosUsuario, selecao = null, in
             </CampusOpcoes>
 
         </Modal>
-        <TituloVertical>{dadosImovel ? (` #${indice+1}`): "Imovel"}</TituloVertical>
+        <TituloVertical>{dadosImovel ? (` #${indice+1}`): nomes.imoveis}</TituloVertical>
         {data &&
             <BoxImovel onClick={onClick}>
             <DivInformacao>

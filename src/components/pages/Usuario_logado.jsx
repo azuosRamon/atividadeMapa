@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import Box from "../SubBox";
 import cores from "../Cores"
 import Colapse from "../SubColapse";
+import { pegarNomenclatura } from "../Nomenclaturas";
 
 const BoxEditada = styled(Box)`
     min-width: 100px;
@@ -62,16 +63,18 @@ function Usuario({ fecharMenu, mobile=false, logo=false }) {
     }
 
     const telaAtual = useNavigate();
-    const modelo = JSON.parse(localStorage.getItem("modelo")) || null;
     const [usuario, setUsuario] = useState(capturarUsuarioLogadoLocalStorage());
     const navegar = (rota) => {
         telaAtual(rota);
         if (mobile) fecharMenu();
     }
-    const nomeCategoria = modelo?.categorias || "Categorias";
-    const nomeProduto = modelo?.produtos || "Produtos";
-    const nomeImovel = modelo?.imoveis || "Imoveis";
-    const nomeComodo = modelo?.comodos || "Comodos";
+    
+    const nomes = pegarNomenclatura();
+    const nomeCategoria = nomes.categorias;
+    const nomeProduto = nomes.produtos;
+    const nomeImovel = nomes.imoveis;
+    const nomeComodo = nomes.comodos;
+    
     return (
             <BoxEditada>
             <DivContent>

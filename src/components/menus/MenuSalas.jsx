@@ -16,6 +16,7 @@ import primeiro_pavimento from "../Plantas/PRIMEIRO_PAVIMENTO.png";
 import segundo_pavimento from "../Plantas/SEGUNDO_PAVIMENTO.png";
 import terceiro_pavimento from "../Plantas/TERCEIRO_PAVIMENTO.png";
 import CriarCamposFormulario from "../SubCriadorForm";
+import { pegarNomenclatura } from "../Nomenclaturas";
 
 import mapa from "../BdObjetoTabelas";
 //import terreo from "../..//components/Plantas/TERREO_PAVIMENTO.png";
@@ -163,11 +164,11 @@ function SalaOpcoes({ usuarioLogado, operacaoEnviada, item = null, pavimentoId=n
         setMostrarMapa(false);
     }, [pontos]);
 
-
+    const nomes = pegarNomenclatura();
 
     return(
             <div>
-                <TitleSublinhado>SALA</TitleSublinhado>
+                <TitleSublinhado>{nomes.comodos.toUpperCase()}</TitleSublinhado>
                 <FormGrid onSubmit={atualizarDados}>
                     <CriarCamposFormulario 
                                         item={tabela}
@@ -182,7 +183,7 @@ function SalaOpcoes({ usuarioLogado, operacaoEnviada, item = null, pavimentoId=n
                         <Button onClick={(e) => {
                             e.preventDefault();
                             setMostrarMapa(true);
-                        }}>Editar sala</Button>
+                        }}>Editar {nomes.comodos}</Button>
                         <Modal aberto={mostrarMapa} onFechar={() => setMostrarMapa(false)}>
                             <TitleSublinhado>Croqui</TitleSublinhado>
                             <Slide
@@ -227,6 +228,8 @@ function CardComodos({dados, dadosUsuario, pavimentoId = null, onAtualizar}){
                 setComodos(dados?.comodos || []);
                 }, [dados]);
             
+        const nomes = pegarNomenclatura();
+
     return(
         <BoxComodos>
             <Modal aberto={mostrarModal} onFechar={() => setMostrarModal(false)}>
@@ -243,14 +246,14 @@ function CardComodos({dados, dadosUsuario, pavimentoId = null, onAtualizar}){
                         </SalaOpcoes>
             
                     </Modal>
-            <TituloVertical>Salas</TituloVertical>
+            <TituloVertical>{nomes.comodos}</TituloVertical>
             <ListaSalas>
                 <BoxComodo>
                     <AdicionarBtn  onClick={(e)=>{
                         e.preventDefault();
                         setItemModificar(null);
                         setOperacao("1");
-                        setMostrarModal(true)}}>+ Nova Sala</AdicionarBtn>
+                        setMostrarModal(true)}}>+ Novo {nomes.comodos}</AdicionarBtn>
                 </BoxComodo>
                 {comodos.map((item)=>(
                     <BoxComodo key={item.comodo_id}>
