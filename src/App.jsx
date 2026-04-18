@@ -27,9 +27,10 @@ import CadastrarFuncao from "./components/menus/MenuFuncoes";
 import CadastrarCargos from "./components/menus/MenuCargos";
 import CadastrarAreas from "./components/menus/MenuTipoArea";
 import CadastroModelos from "./components/menus/MenuModelos";
+import RelacionarUsuarios from "./components/menus/MenuRelacionarUsuarios";
 import CadastroContratos from "./components/menus/MenuContratos";
 import VisualizarAgendaSemanal from "./components/menus/MenuAgendaSemanal";
-import RelacionarUsuarios from "./components/menus/MenuRelacionarUsuarios";
+import MenuDashboardAdmin from "./components/menus/MenuDashboardAdmin";
 import { AuthProvider } from "./components/AuthProvider";
 
 import terreo from "./components/Plantas/TERREO_PAVIMENTO.png";
@@ -141,7 +142,10 @@ function App() {
         }/>
         <Route path="/dashboard" element={
           <RotaProtegida>
-            <LayoutLogado usuarioDados={data} usuarioId={0}><Slide dados={dadosJson} lista_imagens={imagens} pagina_inicio={0}/></LayoutLogado>
+            <LayoutLogado usuarioDados={usuarioLogadoDados}>
+              {/* <Slide dados={dadosJson} lista_imagens={imagens} pagina_inicio={0}/> */}
+              <MenuDashboardAdmin usuarioLogado={usuarioLogadoDados} />
+            </LayoutLogado>
           </RotaProtegida>
       }/>
         <Route path="/editarPerfil" element={
