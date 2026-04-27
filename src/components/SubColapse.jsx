@@ -41,8 +41,12 @@ const Span = styled.span`
 `;
 
 
-function Colapse({ nome, children, estadoInicial = false, fontSize = "24px" }) {
+function Colapse({ nome, children, estadoInicial = false, fontSize = "24px", fecharTrilho = 0 }) {
     const [status, setStatus] = useState(estadoInicial);
+
+    React.useEffect(() => {
+        if (fecharTrilho > 0) setStatus(false);
+    }, [fecharTrilho]);
 
     return(
             <div>

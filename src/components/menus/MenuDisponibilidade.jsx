@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Box from "../SubBox";
+import Button from "../SubButton";
 import Title from "../SubTitleH2";
 import useBancoDeDados from "../BdCrudSupabase";
 import CriarCamposFormulario from "../SubCriadorForm";
@@ -202,23 +203,23 @@ const enviarCadastro = async (e) => {
   const inicioStr = String(objeto.hora_inicio ?? "").trim();
   const fimStr = String(objeto.hora_fim ?? "").trim();
 
-  if (!dia || !inicioStr || !fimStr) {
+  if (operacao !== "3" && (!dia || !inicioStr || !fimStr)) {
     alert("Preencha o dia e os horários corretamente.");
     return;
   }
-  if (dia < 1 && dia > 7){
+  if (operacao !== "3" && (dia < 1 || dia > 7)){
     alert("Selecione um dia")
     return;
   }
   const novoInicio = toMinutes(inicioStr);
   const novoFim = toMinutes(fimStr);
 
-  if (novoInicio === null || novoFim === null) {
+  if (operacao !== "3" && (novoInicio === null || novoFim === null)) {
     alert("Formato de horário inválido. Use HH:MM.");
     return;
   }
 
-  if (novoFim <= novoInicio) {
+  if (operacao !== "3" && novoFim <= novoInicio) {
     alert("O horário final deve ser maior que o horário inicial.");
     return;
   }
@@ -226,7 +227,7 @@ const enviarCadastro = async (e) => {
   // Filtra horários do mesmo dia.
   // IMPORTANTE: normalizamos para string para evitar mismatch tipo "1" vs 1
   const horariosDoDia = dados.filter(
-    (item) => String(item.dia_da_semana) === String(dia) && String(item.id) !== String(objeto.id ?? "")
+    (item) => String(item.dia_da_semana) === String(dia) && String(item.disponibilidade_id) !== String(objeto.disponibilidade_id ?? "")
   );
 
   // Procurar conflito (retorna o primeiro registro conflitando)
@@ -240,7 +241,7 @@ const enviarCadastro = async (e) => {
     return intervalosIntersectam(novoInicio, novoFim, inicioExist, fimExist);
   });
 
-  if (conflitoRegistro && conflitoRegistro.id !== objeto.disponibilidade_id && operacao !== "3") {
+  if (conflitoRegistro && String(conflitoRegistro.disponibilidade_id) !== String(objeto.disponibilidade_id ?? "") && operacao !== "3") {
     alert(
       `Conflito com horário existente: ${conflitoRegistro.hora_inicio} - ${conflitoRegistro.hora_fim}. ` +
       `Não é possível criar um intervalo que se sobreponha.`
@@ -271,7 +272,27 @@ const enviarCadastro = async (e) => {
           operacao={operacao}
           setOperacao={setOperacao}
           objeto={objeto}
-        />
+        >
+          {operacao === "2" && (
+             <div style={{ gridArea: "operacao", display: "flex", alignItems: "center" }}>
+                <Button 
+                   type="button" 
+                   $bgcolor={cores.corDeletar}
+                   onClick={(e) => {
+                       if(window.confirm("Deseja excluir este horário permanentemente?")) {
+                           setOperacao("3");
+                           const form = e.target.closest("form");
+                           setTimeout(() => {
+                               if (form) form.requestSubmit();
+                           }, 100);
+                       }
+                   }}
+                >
+                   Excluir Horário
+                </Button>
+             </div>
+          )}
+        </CriarCamposFormulario>
       </FormGrid>
 
       <TableContainer>
@@ -339,7 +360,7 @@ const enviarCadastro = async (e) => {
                            String(objeto.dia_da_semana) === String(dIndex + 1) &&
                            objeto.hora_inicio && 
                            objeto.hora_fim &&
-                           (operacao === "0" || operacao === "2");
+                           (operacao === "0" || operacao === "1" || operacao === "2");
                         
                         let inPreviewRange = false;
                         if (isPreview) {
@@ -365,7 +386,7 @@ const enviarCadastro = async (e) => {
                                        hora_inicio: formatTime(inicio),
                                        hora_fim: formatTime(fim)
                                    });
-                                   setOperacao("0");
+                                   setOperacao("1");
                                    setHorarioClicado(null);
                                } else {
                                    // Inicia a marcação
@@ -375,7 +396,7 @@ const enviarCadastro = async (e) => {
                                        hora_inicio: formatTime(i),
                                        hora_fim: formatTime(i + 1)
                                    });
-                                   setOperacao("0");
+                                   setOperacao("1");
                                    setHorarioClicado({ dia: dIndex + 1, hora: i });
                                }
                             }}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Box from "../SubBox";
-import CardImovel from "./MenuEdificioCampus";
+import CardImovel, { CampusOpcoes } from "./MenuEdificioCampus";
 import CardBloco from "./MenuEdificioBlocos";
 import CardPavimento from "./MenuEdificioPavimentos";
 import CardComodos from "./MenuSalas";
@@ -85,9 +85,19 @@ function ConfigurarEdificio() {
     
     const atualizarDados = async ()=>{
     try {
-        const dadosImovelSelecionado = await LerDadosImoveis(usuario.empresa_id);// 🔹 atualiza lista e fecha modal
+        const dadosImovelSelecionado = await LerDadosImoveis(usuario.empresa_id);
         setImoveis(dadosImovelSelecionado);
-        setImovelSelecionado(dadosImovelSelecionado.find(imovel => imovel.imovel_id === imovelSelecionado.imovel_id));
+        
+        let novoSelecionado = null;
+        if (imovelSelecionado) {
+             novoSelecionado = dadosImovelSelecionado.find(imovel => imovel.imovel_id === imovelSelecionado.imovel_id);
+        }
+        
+        if (!novoSelecionado && dadosImovelSelecionado.length > 0) {
+             novoSelecionado = dadosImovelSelecionado[0];
+        }
+
+        setImovelSelecionado(novoSelecionado);
         setContador(contador + 1);
     }
     catch(error){
@@ -157,9 +167,20 @@ function ConfigurarEdificio() {
         }, []);
 
         const [mostrarModalSelecao, setMostrarModalSelecao] = useState(false);
+        const [mostrarModalAdicionar, setMostrarModalAdicionar] = useState(false);
   if (carregando) return <BussolaCarregando aberto={carregando} onFechar={() => setCarregando(false)}>Buscando imóveis</BussolaCarregando>;
     return(
             <BoxContainer>
+                <Modal aberto={mostrarModalAdicionar} onFechar={() => setMostrarModalAdicionar(false)}>
+                    <CampusOpcoes 
+                        usuarioLogado={usuario} 
+                        operacaoEnviada="1" 
+                        onAtualizar={async () => {
+                            setMostrarModalAdicionar(false);
+                            await atualizarDados();
+                        }}
+                    />
+                </Modal>
                 <Modal aberto={mostrarModalSelecao} onFechar={() => setMostrarModalSelecao(false)}>
                     {imoveis.map((item, indice) =>{
                         return(
@@ -184,8 +205,12 @@ function ConfigurarEdificio() {
                             <VerticalBtn
              onClick={(e)=>{
                     e.preventDefault();
-                    setMostrarModalSelecao(true);
-                }} >Trocar Imóvel</VerticalBtn>
+                    if(imoveis.length <= 1) {
+                        setMostrarModalAdicionar(true);
+                    } else {
+                        setMostrarModalSelecao(true);
+                    }
+                }} >{imoveis.length <= 1 ? "+ Adicionar Imóvel" : "Trocar Imóvel"}</VerticalBtn>
                 <DivSeparadorAjuste></DivSeparadorAjuste>
 
                 {imovelSelecionado && <CardBloco 

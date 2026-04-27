@@ -10,7 +10,6 @@ import Button from "../SubButton";
 import cores from "../Cores.js"
 import Modal from "../SubModal.jsx";
 
-
 const FormGrid = styled.form`
 gap: 10px;
 display: grid;
@@ -35,7 +34,7 @@ const TitleSublinhado = styled(Title)`
     margin-bottom: 20px;
 `
 
-function CampusOpcoes({ usuarioLogado, operacaoEnviada, item = null }) {
+export function CampusOpcoes({ usuarioLogado, operacaoEnviada, item = null, onAtualizar }) {
     const tabela = mapa.imoveis;
     const [objeto, setObjeto] = useState(
         Object.fromEntries(
@@ -68,25 +67,28 @@ function CampusOpcoes({ usuarioLogado, operacaoEnviada, item = null }) {
     return(
             <div>
                 <TitleSublinhado>{nomes.imoveis.toUpperCase()}</TitleSublinhado>
-                <FormGrid onSubmit={fazerEnvio}>
+                <FormGrid onSubmit={async (e) => {
+                    await fazerEnvio(e);
+                    if(onAtualizar) onAtualizar();
+                }}>
                     <CriarCamposFormulario 
                     item={tabela}
                     setFuncao={alterarObjeto}
                     operacao={operacao}
                     setOperacao={setOperacao}
-                    objeto ={objeto}
+                    objeto={objeto}
+                    setObjeto={setObjeto}
                     ></CriarCamposFormulario>
                 </FormGrid>
             </div>
     )
 }
 
-function CardImovel({onClick, dadosImovel=null, dadosUsuario, selecao = null, indice}) {
+function CardImovel({onClick, dadosImovel=null, dadosUsuario, selecao = null, indice, onAtualizar}) {
     const [operacao, setOperacao] = useState("1")
     const [itemModificar, setItemModificar] = useState(null)
     const [mostrarModal, setMostrarModal] = useState(false);
     
-
     const data = selecao || dadosImovel;
     const nomes = pegarNomenclatura();
 
@@ -108,7 +110,12 @@ function CardImovel({onClick, dadosImovel=null, dadosUsuario, selecao = null, in
             <CampusOpcoes tabindex="0"
                 usuarioLogado={dadosUsuario} 
                 operacaoEnviada={operacao} 
-                item={itemModificar}>
+                item={itemModificar}
+                onAtualizar={async () => {
+                    setMostrarModal(false);
+                    if(onAtualizar) onAtualizar();
+                }}
+                >
             </CampusOpcoes>
 
         </Modal>
@@ -162,8 +169,6 @@ function CardImovel({onClick, dadosImovel=null, dadosUsuario, selecao = null, in
 
 export default CardImovel;
 
-// ESTILOS
-
 const Chave = styled.p`
     font-size: 1rem;
     color: gray;
@@ -175,18 +180,13 @@ const Valor = styled.p`
     color: gray;
     margin: 0;
     `;
-
-
 const LinhaInformacao = styled.div`
     display: flex;
     flex-direction: row;
     margin: 5px 0;
     gap: 10px;
     justify-content: space-between;
-
-    
     `;
-
 
 const AdicionarBtn = styled(Button)`
     min-height: 50px;
@@ -208,8 +208,6 @@ const TituloVertical = styled.h3`
         writing-mode: horizontal-tb;
         transform: none;
 }
-
-
     `;
 
 const VerticalBtn = styled(Button)`
@@ -226,7 +224,6 @@ const VerticalBtn = styled(Button)`
         margin: 5px auto;
         
 }
-
     `;
 const BoxImoveis = styled.div`
     display: flex;
@@ -235,6 +232,7 @@ const BoxImoveis = styled.div`
     grid-column: span 9;
     cursor: ${(props) => (props.$dadosImovel ? "pointer" : "default")};
     margin-bottom: 20px;
+    height: 90%;   
 
     @media (max-width: 768px) {
     flex-direction: column;
@@ -265,5 +263,4 @@ const DivInformacao = styled.div`
     @media (max-width: 768px) {
        width: 90%;
 }
-
     `;

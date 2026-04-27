@@ -67,7 +67,7 @@ const Table = styled.table`
   }
 `;
 
-const HoraAtivada = styled.td`
+const HoraAtivada = styled.div`
   background-color: ${({ destacado }) => (destacado ? "#2e7d32" : cores.cor3)};
   color: white;
   transition: background-color 0.2s ease, transform 0.2s ease;
@@ -77,6 +77,7 @@ const HoraAtivada = styled.td`
   position: relative;
   padding: 8px;
   min-width: 180px;
+  border-radius: 4px;
 `;
 
 const HoraDesativada = styled.td`
@@ -169,6 +170,12 @@ function VisualizarAgendaSemanal({ usuarioLogado }) {
     return parts[0] * 60 + parts[1];
   };
 
+  const fromMinutes = (mins) => {
+      const h = String(Math.floor(mins / 60)).padStart(2, '0');
+      const m = String(mins % 60).padStart(2, '0');
+      return `${h}:${m}`;
+  };
+
   // dias da semana (índice 0 = domingo)
   const diasDaSemana = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
 
@@ -178,21 +185,27 @@ function VisualizarAgendaSemanal({ usuarioLogado }) {
     return Array.from(setDias).sort((a, b) => a - b); // ordenado
   }, [dados]);
 
-  // Deriva faixas horárias únicas (hora_inicio + hora_termino) e ordena por hora_inicio
+  // Extrai todos os intervalos atômicos de tempo em uma malha cronológica linear contínua
   const timeSlots = useMemo(() => {
-    const map = new Map();
+    const boundaries = new Set();
     dados.forEach((d) => {
-      const hi = d.horarios?.hora_inicio;
-      const ht = d.horarios?.hora_termino;
-      if (!hi || !ht) return;
-      const key = `${hi}-${ht}`;
-      if (!map.has(key)) {
-        map.set(key, { hora_inicio: hi, hora_termino: ht });
-      }
+      const hi = toMinutes(d.horarios?.hora_inicio);
+      const ht = toMinutes(d.horarios?.hora_termino);
+      if (hi !== null) boundaries.add(hi);
+      if (ht !== null) boundaries.add(ht);
     });
-    const arr = Array.from(map.values());
-    arr.sort((a, b) => (toMinutes(a.hora_inicio) || 0) - (toMinutes(b.hora_inicio) || 0));
-    return arr;
+    
+    const sorted = Array.from(boundaries).sort((a,b) => a - b);
+    const slots = [];
+    for(let i=0; i < sorted.length - 1; i++) {
+         slots.push({
+             hora_inicio: fromMinutes(sorted[i]),
+             hora_termino: fromMinutes(sorted[i+1]),
+             min_inicio: sorted[i],
+             min_termino: sorted[i+1]
+         });
+    }
+    return slots;
   }, [dados]);
 
   const mostrarTooltip = (evento, texto) => {
@@ -207,13 +220,13 @@ function VisualizarAgendaSemanal({ usuarioLogado }) {
 
   const esconderTooltip = () => setTooltip({ visible: false, text: "", x: 0, y: 0 });
 
-  // Função para encontrar a aula que corresponde a um slot e dia
+  // Função para encontrar TODAS as aulas que estão ativas englobando este bloco de tempo
   const acharAula = (slot, diaNum) => {
-    return dados.find((d) => {
+    return dados.filter((d) => {
       if (Number(d.dia_da_semana) !== Number(diaNum)) return false;
-      const hi = d.horarios?.hora_inicio;
-      const ht = d.horarios?.hora_termino;
-      return hi === slot.hora_inicio && ht === slot.hora_termino;
+      const hi = toMinutes(d.horarios?.hora_inicio);
+      const ht = toMinutes(d.horarios?.hora_termino);
+      return hi <= slot.min_inicio && ht >= slot.min_termino;
     });
   };
 
@@ -226,9 +239,8 @@ function VisualizarAgendaSemanal({ usuarioLogado }) {
           <thead>
             <tr>
               <Th></Th>
-              {diasDaSemana.map((dia, index) => (
-                
-                <Th key={index}>{dia}</Th>
+              {diasUtilizados.map((diaNum, index) => (
+                <Th key={index}>{diasDaSemana[diaNum - 1]}</Th>
               ))}
             </tr>
           </thead>
@@ -247,34 +259,41 @@ function VisualizarAgendaSemanal({ usuarioLogado }) {
                   {slot.hora_inicio} - {slot.hora_termino}
                 </td>
 
-                {diasDaSemana.map((_, i) => {
-                  const diaNum = i + 1; // supondo seus dias serem 1..7
-                  const aula = acharAula(slot, diaNum);
-                  if (aula) {
-                    const textoTooltip = `${aula.horarios?.hora_inicio} - ${aula.horarios?.hora_termino} — ${aula.empresas?.nome || ""}`;
+                {diasUtilizados.map((diaNum, i) => {
+                  const aulasNoSlot = acharAula(slot, diaNum);
+                  
+                  if (aulasNoSlot && aulasNoSlot.length > 0) {
                     return (
-                      <HoraAtivada
-                        key={i}
-                        destacado={false}
-                        onMouseEnter={(e) => mostrarTooltip(e, textoTooltip)}
-                        onMouseLeave={esconderTooltip}
-                      >
-                        <div style={{ fontWeight: "600" }}>{aula.empresas?.nome}</div>
-                        <div style={{ fontSize: 12 }}>
-                          {aula.comodos?.pavimentos?.blocos?.imoveis?.cidade} -{" "}
-                          {aula.comodos?.pavimentos?.blocos?.imoveis?.nome}
-                        </div>
-                        <div style={{ fontSize: 12 }}>
-                          Bloco: {aula.comodos?.pavimentos?.blocos?.nome}, Pavimento: nº {aula.comodos?.pavimentos?.numero}
-                        </div>
-                        <div style={{ fontSize: 12 }}>
-                          {aula.comodos?.tipos_areas?.nome}: nº {aula.comodos?.numero}{" "}
-                          {aula.comodos?.apelido ? "(" + aula.comodos.apelido + ")" : ""}
-                        </div>
-                        <div style={{ fontSize: 12 }}>
-                          {aula.categorias?.nome} {aula.produtos?.nome}
-                        </div>
-                      </HoraAtivada>
+                      <td key={i} style={{ padding: 4, verticalAlign: 'top', border: '1px solid #444' }}>
+                        {aulasNoSlot.map((aula, idx) => {
+                          const textoTooltip = `${aula.horarios?.hora_inicio} - ${aula.horarios?.hora_termino} — ${aula.empresas?.nome || ""}`;
+                          return (
+                            <HoraAtivada
+                              key={idx}
+                              destacado={false}
+                              onMouseEnter={(e) => mostrarTooltip(e, textoTooltip)}
+                              onMouseLeave={esconderTooltip}
+                              style={{ marginBottom: aulasNoSlot.length > 1 && idx < aulasNoSlot.length - 1 ? 4 : 0 }}
+                            >
+                              <div style={{ fontWeight: "600" }}>{aula.empresas?.nome}</div>
+                              <div style={{ fontSize: 12 }}>
+                                {aula.comodos?.pavimentos?.blocos?.imoveis?.cidade} -{" "}
+                                {aula.comodos?.pavimentos?.blocos?.imoveis?.nome}
+                              </div>
+                              <div style={{ fontSize: 12 }}>
+                                Bloco: {aula.comodos?.pavimentos?.blocos?.nome}, Pavimento: nº {aula.comodos?.pavimentos?.numero}
+                              </div>
+                              <div style={{ fontSize: 12 }}>
+                                {aula.comodos?.tipos_areas?.nome}: nº {aula.comodos?.numero}{" "}
+                                {aula.comodos?.apelido ? "(" + aula.comodos.apelido + ")" : ""}
+                              </div>
+                              <div style={{ fontSize: 12 }}>
+                                {aula.categorias?.nome} {aula.produtos?.nome} - <b>{aula.turma || ""}</b>
+                              </div>
+                            </HoraAtivada>
+                          );
+                        })}
+                      </td>
                     );
                   } else {
                     return <HoraDesativada key={i} />;

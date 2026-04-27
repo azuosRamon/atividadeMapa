@@ -20,7 +20,7 @@ function useBancoDeDados({
 
     if (error) {
       console.error(error)
-      alert("Erro ao carregar dados!")
+      window.dispatchEvent(new CustomEvent('crud-alert', { detail: { message: "Erro ao carregar dados!" } }))
     } else {
       setData(rows || [])
     }
@@ -93,22 +93,33 @@ function useBancoDeDados({
   const fazerEnvio = async (event, objetoEnviado = objeto) => {
     event.preventDefault()
     
+    let usuarioLocal = localStorage.getItem("usuario");
+    let usuarioInfo = usuarioLocal ? JSON.parse(usuarioLocal) : null;
+    let empresaIdLocal = usuarioInfo?.empresa_id || null;
+    const tabelasSemEmpresa = ["funcoes", "modelos", "tipos_areas", "usuarios"];
+
+    if (empresaIdLocal && !tabelasSemEmpresa.includes(nomeTabela) && !objetoEnviado.empresa_id) {
+        objetoEnviado = { ...objetoEnviado, empresa_id: empresaIdLocal };
+    }
+
+
+    
     try {
       if (operacao === "1") {
         await criar(objetoEnviado)
-        alert("Adicionado com sucesso!")
+        window.dispatchEvent(new CustomEvent('crud-alert', { detail: { message: "Adicionado com sucesso!" } }))
       } else if (operacao === "2") {
         await alterar(objetoEnviado?.[campoId], objetoEnviado)
-        alert("Alterado com sucesso!")
+        window.dispatchEvent(new CustomEvent('crud-alert', { detail: { message: "Alterado com sucesso!" } }))
       } else if (operacao === "3") {
         await deletar(objetoEnviado?.[campoId])
-        alert("Deletado com sucesso!")
+        window.dispatchEvent(new CustomEvent('crud-alert', { detail: { message: "Deletado com sucesso!" } }))
       } else {
-        alert("Selecione uma operação valida!")
+        window.dispatchEvent(new CustomEvent('crud-alert', { detail: { message: "Selecione uma operação valida!" } }))
       }
     } catch (err) {
       console.error(err)
-      alert("Erro ao salvar. Tente novamente.")
+      window.dispatchEvent(new CustomEvent('crud-alert', { detail: { message: "Erro ao executar operação. Tente novamente." } }))
     }
   }
 

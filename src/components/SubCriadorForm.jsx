@@ -7,6 +7,7 @@
     import GridArea from "./SubGridArea";
     import DivSeparador from "./SubDivSeparador";
     import TabelaCompleta from "./SubTabela";
+    import SubCardsConsulta from "./SubCardsConsulta";
     import Colapse from "./SubColapse"
     import cores from "./Cores"
     import SelectComDados from "./BdSelectComDados";
@@ -14,6 +15,12 @@
     import { data } from "react-router-dom";
     import { supabase } from "../../supabaseClient";
     import CriarInputImagemCrop from "./SubCriarImputImagem";
+    import { FaAsterisk } from "react-icons/fa";
+
+    function IconeObrigatorio({ required }) {
+        if (!required) return null;
+        return <FaAsterisk title="Campo obrigatório" style={{color: cores.corDeletar, fontSize: '10px', marginLeft: '4px', verticalAlign: 'super'}} />
+    }
 
     function DefinirOperacao({operacao, setOperacao}){
         return (
@@ -28,21 +35,20 @@
         );
     };
 
-    function ExibirTabelaConsulta({tabela}){
+    function ExibirTabelaConsulta({tabela, setOperacao, setObjeto, fecharColapse, triggerFechar}){
         /*
         @cria uma tabela com os dados do banco de dados
         @param deve receber objeto.tabela
         */
     const [loading, setLoading] = useState(true)
-    const reload = 0
     const data = LerDados({setLoading: setLoading, tabela:tabela.nome,listaColunas:tabela.lista})
         return(
             <GridArea $area="tabela">
                     <DivSeparador></DivSeparador>
-                    <Colapse marginBottom={'0px'} nome = "Consultar dados" estadoInicial={false} onclick={data}>
+                    <Colapse marginBottom={'0px'} nome = "Consultar dados" estadoInicial={false} fecharTrilho={triggerFechar}>
                         {loading
-                            ? <div style={{padding: "16px"}}>Carregando...</div>
-                            : <TabelaCompleta dados={data} lista={tabela.lista} camposPesquisa={false} />
+                            ? <div style={{padding: "16px", color: 'white'}}>Carregando...</div>
+                            : <SubCardsConsulta dados={data} listaColunas={tabela.lista} setOperacao={setOperacao} setObjeto={setObjeto} onAction={fecharColapse}/>
                         }
                     </Colapse>
                     <DivSeparador></DivSeparador>
@@ -148,6 +154,7 @@
         <GridArea $area={campo.nome}>
         <Label htmlFor={campo.nome}>
             {campo.texto !== "" ? campo.texto : campo.nome}:
+            <IconeObrigatorio required={campo.required} />
         </Label>
         <Input
             required={campo.required ?? false}
@@ -174,7 +181,10 @@
     function CriarSelect({nomeCampo, campo, visualizar = null, setFuncao, objeto, condicao = null}){
         return(
                 <GridArea $area={campo.nome}>
-                    <Label htmlFor={campo.nome}>{campo.texto != "" ? campo.texto : campo.nome}:</Label>
+                    <Label htmlFor={campo.nome}>
+                        {campo.texto != "" ? campo.texto : campo.nome}:
+                        <IconeObrigatorio required={campo.required} />
+                    </Label>
                     <SelectComDados 
                     value={objeto?.[nomeCampo] ?? "0"} 
                     id={campo.nome} 
@@ -193,6 +203,7 @@
     function CriarCamposFormulario({item, setFuncao = ()=>{}, operacao, setOperacao, objeto, setObjeto, children}) {
         const [btnSubmit, setBtnSubmit] = useState("");
         const [backgroundBotao, setBackground] = useState(cores.backgroundBotaoSemFoco2);
+        const [fecharTrigger, setFecharTrigger] = useState(0);
         useEffect(()=>{
             switch(operacao){
                 case "0":
@@ -240,24 +251,29 @@
         };
 
         useEffect(() => {
-            if (item?.operacao !== undefined) {
-                setOperacao(String(item.operacao));
+            if (operacao === "0") {
+                setOperacao("1"); // Força para modo Adicionar no início
             }
-        }, [item]);
+        }, [operacao, setOperacao]);
 
 
         return (
             <>
                 {(item.tabela?.mostrar ?? false) && (
-                    <ExibirTabelaConsulta tabela={item.view ?? item.tabela} ></ExibirTabelaConsulta>
-                )}
-                {(item?.operacao === 0) && (
-                    <DefinirOperacao operacao={operacao} setOperacao={setOperacao}/>
-
+                    <ExibirTabelaConsulta 
+                        tabela={item.view ?? item.tabela} 
+                        setOperacao={setOperacao} 
+                        setObjeto={setObjeto} 
+                        fecharColapse={() => setFecharTrigger(prev=>prev+1)}
+                        triggerFechar={fecharTrigger}
+                    ></ExibirTabelaConsulta>
                 )}
 
                 {Object.entries(item.campos).map(([nome, campo]) =>{
                         if ((campo.mostrar ?? true )&& campo.campo == "input"){
+                            // Esconde a chave primária de formulários, mas a mantém no objeto no backend para edição funcionar
+                            if (nome === item.tabela?.lista?.[0] || campo.nome === item.tabela?.lista?.[0]) return null;
+
                             switch(campo.nome){
                                 case "cep":
                                     return(
@@ -303,26 +319,42 @@
                                     );
                                 case 'dia_da_semana':
                                     const diasSemana = [
-                                        { valor: "1", nome: "Domingo" },
-                                        { valor: "2", nome: "Segunda-feira" },
-                                        { valor: "3", nome: "Terça-feira" },
-                                        { valor: "4", nome: "Quarta-feira" },
-                                        { valor: "5", nome: "Quinta-feira" },
-                                        { valor: "6", nome: "Sexta-feira" },
-                                        { valor: "7", nome: "Sábado" },
+                                        { valor: "1", nome: "Dom", titulo: "Domingo" },
+                                        { valor: "2", nome: "Seg", titulo: "Segunda-feira" },
+                                        { valor: "3", nome: "Ter", titulo: "Terça-feira" },
+                                        { valor: "4", nome: "Qua", titulo: "Quarta-feira" },
+                                        { valor: "5", nome: "Qui", titulo: "Quinta-feira" },
+                                        { valor: "6", nome: "Sex", titulo: "Sexta-feira" },
+                                        { valor: "7", nome: "Sáb", titulo: "Sábado" },
                                     ];
+                                    const valorAtual = String(objeto?.dia_da_semana ?? "0");
                                     return(
                                         <GridArea $area={'dia_da_semana'}>
-                                            <Label>Dia da semana:</Label>
-                                            <Select value={objeto?.dia_da_semana ?? 0} key={nome} onChange={(e)=> setFuncao(e, "dia_da_semana")} id="dia_da_semana" name="dia_da_semana">
-                                                <option key={0} value="0">Selecione</option>
+                                            <Label>Dia da semana:<IconeObrigatorio required={campo.required} /></Label>
+                                            <div style={{display: 'flex', gap: '5px', overflowX: 'auto', alignItems: 'center'}}>
                                                 {diasSemana.map((dia) => (
-                                                    <option key={dia.valor} value={dia.valor}>
+                                                    <button 
+                                                        key={dia.valor} 
+                                                        type="button"
+                                                        title={dia.titulo}
+                                                        onClick={() => setFuncao({target: {name: "dia_da_semana", value: dia.valor}}, "dia_da_semana")}
+                                                        style={{
+                                                            flex: 1,
+                                                            padding: '10px 4px',
+                                                            borderRadius: '5px',
+                                                            border: valorAtual === dia.valor ? `2px solid ${cores.corWhite}` : '1px solid transparent',
+                                                            backgroundColor: valorAtual === dia.valor ? cores.corHover : cores.backgroundBotaoSemFoco,
+                                                            color: cores.corTexto,
+                                                            cursor: 'pointer',
+                                                            fontWeight: valorAtual === dia.valor ? 'bold' : 'normal',
+                                                            transition: 'all 0.2s',
+                                                            minWidth: '40px'
+                                                        }}
+                                                    >
                                                         {dia.nome}
-                                                    </option>
+                                                    </button>
                                                 ))}
-                                            </Select>
-
+                                            </div>
                                         </GridArea>
                                     )
 
@@ -348,7 +380,15 @@
                 }       
                     {children}
                         <GridArea $area="reset">
-                            <Button $bgcolor={cores.backgroundBotaoSemFoco} type="reset">Limpar</Button>   
+                            <Button $bgcolor={cores.backgroundBotaoSemFoco} type="button" onClick={() => {
+                                setOperacao("1");
+                                if (setObjeto && item.campos) {
+                                    const objInicial = Object.fromEntries(
+                                        Object.entries(item.campos).map(([k, v]) => [k, v.valor])
+                                    );
+                                    setObjeto(objInicial);
+                                }
+                            }}>Limpar / Novo</Button>   
                         </GridArea>
                         <GridArea $area="botoes">
                             <Button disabled={operacao=="0"} $bgcolor={backgroundBotao}>{btnSubmit}</Button>   

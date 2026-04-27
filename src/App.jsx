@@ -40,7 +40,7 @@ import terceiro_pavimento from "./components/Plantas/TERCEIRO_PAVIMENTO.png";
 import LerDados from "./components/BdLerTabela";
 import Modal from "./components/SubModal";
 import ObserverEmail from "./components/ObserverEmail";
-
+import GlobalCrudModal from "./components/GlobalCrudModal";
 
 const imagens = [terreo, primeiro_pavimento, segundo_pavimento, terceiro_pavimento];
 
@@ -249,6 +249,7 @@ function App() {
       </AuthProvider>
       <BotaoFlutuante/>
       <ObserverEmail />
+      <GlobalCrudModal />
     </Router>
   );
 }

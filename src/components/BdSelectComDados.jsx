@@ -1,17 +1,27 @@
 import { useEffect, useState } from "react"
 import { supabase } from "../../supabaseClient"
 import Select from "./SubSelect";
+import SubSelectAutocomplete from "./SubSelectAutocomplete";
 
 
 function SelectComDados({tabela = "", listaColunas = ["id", "nome"], campoDesejado = listaColunas, value, itemValue, change, condicao = null }) {
   const [dados, setDados] = useState([])
   const select = listaColunas.join(", ")
+  let usuarioLocal = localStorage.getItem("usuario");
+  let usuarioInfo = usuarioLocal ? JSON.parse(usuarioLocal) : null;
+  let empresaIdLocal = usuarioInfo?.empresa_id || null;
+
   let query = supabase
     .from(tabela)
     .select("*")
-    if (condicao) {
-      query = query.eq(condicao.coluna, condicao.valor)
-    }
+    
+  const tabelasSemEmpresa = ["funcoes", "modelos", "tipos_areas", "usuarios"];
+
+  if (condicao) {
+    query = query.eq(condicao.coluna, condicao.valor)
+  } else if (empresaIdLocal && !tabelasSemEmpresa.includes(tabela)) {
+    query = query.eq('empresa_id', empresaIdLocal)
+  }
   useEffect(() => {
     async function fetch() {
       const { data, error } = await query
@@ -26,16 +36,14 @@ function SelectComDados({tabela = "", listaColunas = ["id", "nome"], campoDeseja
     fetch()
   }, [])
   return (
-    <Select value={value ?? "0"} onChange={(e) => change(e,listaColunas[0])}>
-      <option value="0">Selecione uma opção</option>
-      {dados.map((c) => (
-        <option key={c[listaColunas[0]]} value={(c?.[`${itemValue}`])}>
-          {
-          campoDesejado.map(item => c[item]).join(" - ")
-          }
-        </option>
-      ))}
-    </Select>
+    <SubSelectAutocomplete 
+        dados={dados} 
+        itemValue={itemValue} 
+        campoDesejado={campoDesejado} 
+        listaColunas={listaColunas} 
+        value={value} 
+        onChange={change} 
+    />
   )
 }
 

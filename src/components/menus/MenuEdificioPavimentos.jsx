@@ -116,7 +116,8 @@ function PavimentosOpcoes({ usuarioLogado, operacaoEnviada, item = null, blocoId
                     setFuncao={alterarObjeto}
                     operacao={operacao}
                     setOperacao={setOperacao}
-                    objeto ={objeto}
+                    objeto={objeto}
+                    setObjeto={setObjeto}
                     ></CriarCamposFormulario>
                 </FormGrid>
             </div>

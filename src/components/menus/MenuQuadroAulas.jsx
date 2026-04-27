@@ -9,6 +9,7 @@ import Title from "../SubTitleH2";
 import GridArea from "../SubGridArea";
 import DivSeparador from "../SubDivSeparador";
 import InputAutocomplete from "../SubInputAutocomplete";
+import SubSelectAutocomplete from "../SubSelectAutocomplete";
 import TabelaCompleta from "../SubTabela";
 import Colapse from "../SubColapse"
 import Slide from "../Slide"
@@ -55,7 +56,7 @@ async function LerDadosHorarios(empresaId) {
     .select(`
             *
         `)
-    //.eq("empresa_id", empresaId)
+    .eq("empresa_id", empresaId)
     .order('hora_inicio', {ascending:true})
     .order('hora_termino', {ascending: true})
     ;
@@ -372,19 +373,31 @@ const compararDisponibilidade = () => {
         const usuario = funcionario.usuarios;
         const disponibilidade = usuario.disponibilidade_semanal || [];
 
-        const disponivel = disponibilidade.some((h) => {
-            if (Number(h.dia_da_semana) !== Number(objeto?.dia_da_semana))
-                return false;
-            
-            const inicio = toMinutes(h.hora_inicio);
-            const fim = toMinutes(h.hora_fim);
-            
-            return inicio <= inicioDesejadoMin && fimDesejadoMin <= fim;
-        });
+        const disponibilidadesDoDia = disponibilidade
+            .filter((h) => Number(h.dia_da_semana) === Number(objeto?.dia_da_semana))
+            .map((h) => ({
+                inicio: toMinutes(h.hora_inicio),
+                fim: toMinutes(h.hora_fim)
+            }))
+            .filter(h => h.inicio !== null && h.fim !== null)
+            .sort((a, b) => a.inicio - b.inicio);
+
+        let fimContinuo = inicioDesejadoMin;
+        for (const bloco of disponibilidadesDoDia) {
+            if (bloco.fim <= fimContinuo) continue;
+            if (bloco.inicio <= fimContinuo) {
+                fimContinuo = Math.max(fimContinuo, bloco.fim);
+            } else {
+                break;
+            }
+        }
+        
+        const disponivel = fimContinuo >= fimDesejadoMin;
         
         const verificarConflito = aulasUsuarios.some((aula)=>{
             if (Number(aula.dia_da_semana) !== Number(objeto?.dia_da_semana)) return false;
             if (aula.usuario_id !== funcionario.usuario_id) return false;
+            if (objeto?.funcionamento_id && aula.funcionamento_id === objeto.funcionamento_id) return false;
 
             let inicio = toMinutes(aula.horarios.hora_inicio);
             let fim    = toMinutes(aula.horarios.hora_termino);
@@ -462,6 +475,7 @@ const compararDisponibilidade = () => {
             const verificarConflito = aulasComodos.some((aula)=>{
                 if (Number(aula.dia_da_semana) !== Number(objeto?.dia_da_semana)) return false;
                 if (aula.comodo_id !== comodo.comodo_id) return false;
+                if (objeto?.funcionamento_id && aula.funcionamento_id === objeto.funcionamento_id) return false;
     
                 let inicio = toMinutes(aula.horarios.hora_inicio);
                 let fim    = toMinutes(aula.horarios.hora_termino);
@@ -533,26 +547,27 @@ const compararDisponibilidade = () => {
                     setFuncao={alterarObjeto}
                     operacao={operacao}
                     setOperacao={setOperacao}
-                    objeto ={objeto}
+                    objeto={objeto}
+                    setObjeto={setObjeto}
                     ></CriarCamposFormulario>
 
                     <GridArea $area="usuario">
-                            <Label>Funcionário:</Label>
+                            <Label>Funcionários Livres: {quantidadeProfessoresDisponiveis}</Label>
 
-                        <Select onChange={(e)=>alterarObjeto(e, 'usuario_id')}>
-                            <option value={"0"}>Selecione | Professores disponíveis:  {quantidadeProfessoresDisponiveis}</option>
-                            {
-                                professores.map((funcionario) => {
-                                    return(
-                                        <Option    
-                                        key={funcionario.usuarios.usuario_id}
-                                        value={funcionario.usuarios.usuario_id}
-                                        disabled={!funcionario.usuarios?.status || funcionario.usuarios?.status === "indisponivel"}
-                                        $disponivel={funcionario.usuarios.status || false}>{funcionario.usuarios.nome} | {funcionario?.usuarios?.conflito}</Option>
-                                    )
-                                })
-                            }
-                        </Select>
+                        <SubSelectAutocomplete
+    dados={professores}
+    itemValue="usuario_id"
+    campoDesejado={["nome"]}
+    listaColunas={["usuario_id"]}
+    value={objeto.usuario_id}
+    onChange={alterarObjeto}
+    getTexto={(item) => `${item.usuarios.nome} | ${item.usuarios.conflito}`}
+    getBackgroundColor={(item) => {
+        const status = item.usuarios.status;
+        return status === "disponivel" ? cores.corDisponivel : status === "parcial" ? cores.corParcial : cores.corIndisponivel;
+    }}
+    getDisabled={(item) => !item.usuarios.status || item.usuarios.status === "indisponivel"}
+/>
 
                     </GridArea>
                     <GridArea $area="horario">
@@ -569,18 +584,21 @@ const compararDisponibilidade = () => {
                         </Select>
                     </GridArea>
                     <GridArea $area="comodo_id">
-                            <Label>Comodos:</Label>
-                        <Select onChange={(e)=>alterarObjeto(e, 'comodo_id')}>
-                            <option key={0} value={"0"}>Selecione | Disponíveis: {qtdComodosDisponivel}</option>
-                            {
-                                comodos.map((comodo)=>{
-                                    
-                                    return(<Option $disponivel={comodo.status} disabled={!comodo?.status ||comodo.status==="indisponivel"} key={comodo.comodo_id} value={comodo.comodo_id}>{comodo.conflito} | {comodo.tipos_areas.nome}  | Nº {comodo.numero} | Lotação {comodo.lotacao} | </Option>)                                        
-                                    
-                                    
-                                })
-                            }
-                        </Select>
+                            <Label>Comodos Livres: {qtdComodosDisponivel}</Label>
+                        <SubSelectAutocomplete
+    dados={comodos}
+    itemValue="comodo_id"
+    campoDesejado={["conflito", "nome", "numero", "lotacao"]}
+    listaColunas={["comodo_id"]}
+    value={objeto.comodo_id}
+    onChange={alterarObjeto}
+    getTexto={(item) => `${item.conflito} | ${item.tipos_areas.nome} | Nº ${item.numero} | Lotação ${item.lotacao}`}
+    getBackgroundColor={(item) => {
+        const status = item.status;
+        return status === "disponivel" ? cores.corDisponivel : status === "parcial" ? cores.corParcial : cores.corIndisponivel;
+    }}
+    getDisabled={(item) => !item.status || item.status === "indisponivel"}
+/>
                     </GridArea>
                     {/*
                     19/11 -professores conflitalos com horarios já lançados separar
