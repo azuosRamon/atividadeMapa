@@ -18,6 +18,8 @@ import useBancoDeDados from "../BdCrudSupabase";
 import CriarCamposFormulario from "../SubCriadorForm";
 import mapa from "../BdObjetoTabelas";
 import { supabase } from "/supabaseClient";
+import Modal from "../SubModal";
+import { FaDoorOpen } from "react-icons/fa";
 
 async function LerDadosUsuarios(empresaId) {
     //informar uma lista composta de ['coluna', valorProcurado] para utilizar a condicao
@@ -204,6 +206,182 @@ const Option = styled.option`
     }
 `
 
+const SeletorBotao = styled.button`
+  margin: 10px 0;
+  border: 1px solid #000;
+  width: 100%;
+  height: 40px;
+  padding: 10px;
+  color: ${cores.corTexto};
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: ${cores.backgroundInput};
+  text-align: left;
+  
+  &:hover {
+    background-color: #222;
+    transition: 0.5s;
+  }
+`;
+
+const ThumbMini = styled.img`
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 8px;
+  border: 1px solid ${cores.corWhite};
+`;
+
+const MiniAvatar = styled.div`
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #555;
+  color: #fff;
+  font-size: 10px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  border: 1px solid ${cores.corWhite};
+`;
+
+const CardsGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 15px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 10px 5px;
+`;
+
+const CardFuncionario = styled.div`
+  background-color: ${cores.backgroundBox};
+  border: 2px solid ${props => 
+    props.$status === "disponivel" 
+      ? cores.corDisponivel 
+      : props.$status === "parcial" 
+      ? cores.corParcial 
+      : cores.corIndisponivel
+  };
+  opacity: ${props => props.$disabled ? 0.5 : 1};
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: ${props => props.$disabled ? "not-allowed" : "pointer"};
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: ${props => props.$disabled ? "none" : "translateY(-4px)"};
+    box-shadow: ${props => props.$disabled ? "none" : `0 4px 12px rgba(255, 255, 255, 0.15)`};
+  }
+`;
+
+const FotoCard = styled.img`
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #444;
+  margin-bottom: 12px;
+  border: 2px solid ${cores.corWhite};
+`;
+
+const DefaultAvatar = styled.div`
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-color: #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  border: 2px solid ${cores.corWhite};
+`;
+
+const NomeCard = styled.div`
+  font-weight: bold;
+  font-size: 15px;
+  color: ${cores.corTexto};
+  margin-bottom: 4px;
+`;
+
+const ConflitoCard = styled.div`
+  font-size: 12px;
+  color: ${cores.corTextoClaro};
+`;
+
+const StatusBadge = styled.div`
+  font-size: 11px;
+  margin-top: 8px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: ${props => 
+    props.$status === "disponivel" 
+      ? "rgba(40, 167, 69, 0.2)" 
+      : "rgba(220, 53, 69, 0.2)"
+  };
+  color: ${props => 
+    props.$status === "disponivel" 
+      ? cores.corDisponivel 
+      : cores.corIndisponivel
+  };
+  font-weight: bold;
+  text-transform: uppercase;
+`;
+
+const CardComodo = styled.div`
+  background-color: ${cores.backgroundBox};
+  border: 2px solid ${props => 
+    props.$status === "disponivel" 
+      ? cores.corDisponivel 
+      : props.$status === "parcial" 
+      ? cores.corParcial 
+      : cores.corIndisponivel
+  };
+  opacity: ${props => props.$disabled ? 0.5 : 1};
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: ${props => props.$disabled ? "not-allowed" : "pointer"};
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: ${props => props.$disabled ? "none" : "translateY(-4px)"};
+    box-shadow: ${props => props.$disabled ? "none" : `0 4px 12px rgba(255, 255, 255, 0.15)`};
+  }
+`;
+
+const IconeComodoBox = styled.div`
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  background-color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${cores.corTexto};
+  font-size: 32px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+`;
+
 function ConfigurarQuadroAulas({ usuarioLogado }) {
     /*const funcionamento = {
         
@@ -230,17 +408,47 @@ function ConfigurarQuadroAulas({ usuarioLogado }) {
    const [professores, setProfessores] = useState([]);
    const [aulasUsuarios, setAulasUsuarios] = useState([]);
    const [aulasComodos, setAulasComodos] = useState([]);
-    const [horarios, setHorarios] = useState([]);
+   const [horarios, setHorarios] = useState([]);
 
-    const tabela = mapa.quadro_de_funcionamento;
-    const data_atual = new Date();
-    const ano = data_atual.getFullYear();
-    const semestre = data_atual.getMonth() <= 5 ? 1 : 2;
-    const [objeto, setObjeto] = useState(
-        Object.fromEntries(
-            Object.entries(tabela.campos).map(([k, v]) => ([k, k=="empresa_id"?usuarioLogado.empresa_id: k=="ano"? ano: k=="semestre"? semestre :v.valor]))
-        )
-    );
+   const [modalUsuarioAberto, setModalUsuarioAberto] = useState(false);
+   const [buscaUsuario, setBuscaUsuario] = useState("");
+
+   const [modalComodoAberto, setModalComodoAberto] = useState(false);
+   const [buscaComodo, setBuscaComodo] = useState("");
+
+   const tabela = mapa.quadro_de_funcionamento;
+   const data_atual = new Date();
+   const ano = data_atual.getFullYear();
+   const semestre = data_atual.getMonth() <= 5 ? 1 : 2;
+   const [objeto, setObjeto] = useState(
+       Object.fromEntries(
+           Object.entries(tabela.campos).map(([k, v]) => ([k, k=="empresa_id"?usuarioLogado.empresa_id: k=="ano"? ano: k=="semestre"? semestre :v.valor]))
+       )
+   );
+
+   const funcionarioSelecionado = professores.find(p => p.usuario_id === objeto.usuario_id);
+   const textoBotao = funcionarioSelecionado 
+     ? `${funcionarioSelecionado.usuarios.nome} ${funcionarioSelecionado.usuarios.sobrenome || ""}` 
+     : "Selecionar Funcionário";
+
+   const professoresFiltrados = professores.filter(p => {
+       const nomeCompleto = `${p.usuarios.nome} ${p.usuarios.sobrenome || ""}`.toLowerCase();
+       return nomeCompleto.includes(buscaUsuario.toLowerCase());
+   });
+
+   const comodoSelecionado = comodos.find(c => c.comodo_id === objeto.comodo_id);
+   const textoBotaoComodo = comodoSelecionado 
+     ? `Nº ${comodoSelecionado.numero} ${comodoSelecionado.apelido ? `(${comodoSelecionado.apelido})` : ""} - ${comodoSelecionado.tipos_areas?.nome || ""}` 
+     : "Selecionar Cômodo";
+
+   const comodosFiltrados = comodos.filter(c => {
+       const query = buscaComodo.toLowerCase();
+       const numeroMatch = String(c.numero).includes(query);
+       const apelidoMatch = c.apelido ? c.apelido.toLowerCase().includes(query) : false;
+       const areaMatch = c.tipos_areas?.nome ? c.tipos_areas.nome.toLowerCase().includes(query) : false;
+       return numeroMatch || apelidoMatch || areaMatch;
+   });
+    
     const [operacao, setOperacao] = useState("0");
     
     const {
@@ -538,7 +746,8 @@ const compararDisponibilidade = () => {
 
 
     return(
-        <Box>
+        <React.Fragment>
+            <Box>
                 <Title>Quadro de funcionamento</Title>
                 <FormGrid onSubmit={fazerEnvio}>
 
@@ -552,23 +761,23 @@ const compararDisponibilidade = () => {
                     ></CriarCamposFormulario>
 
                     <GridArea $area="usuario">
-                            <Label>Funcionários Livres: {quantidadeProfessoresDisponiveis}</Label>
-
-                        <SubSelectAutocomplete
-    dados={professores}
-    itemValue="usuario_id"
-    campoDesejado={["nome"]}
-    listaColunas={["usuario_id"]}
-    value={objeto.usuario_id}
-    onChange={alterarObjeto}
-    getTexto={(item) => `${item.usuarios.nome} | ${item.usuarios.conflito}`}
-    getBackgroundColor={(item) => {
-        const status = item.usuarios.status;
-        return status === "disponivel" ? cores.corDisponivel : status === "parcial" ? cores.corParcial : cores.corIndisponivel;
-    }}
-    getDisabled={(item) => !item.usuarios.status || item.usuarios.status === "indisponivel"}
-/>
-
+                        <Label>Funcionário: <span style={{ color: cores.corTextoClaro, fontWeight: "normal" }}>({quantidadeProfessoresDisponiveis} livres)</span></Label>
+                        <SeletorBotao type="button" onClick={() => setModalUsuarioAberto(true)}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                {funcionarioSelecionado?.usuarios?.imagem ? (
+                                    <ThumbMini src={funcionarioSelecionado.usuarios.imagem} alt="Foto" />
+                                ) : funcionarioSelecionado ? (
+                                    <MiniAvatar>
+                                        {(funcionarioSelecionado.usuarios.nome?.[0] || "").toUpperCase()}
+                                        {(funcionarioSelecionado.usuarios.sobrenome?.[0] || "").toUpperCase()}
+                                    </MiniAvatar>
+                                ) : null}
+                                <span>{textoBotao}</span>
+                            </div>
+                            <span style={{ fontSize: '13px', color: cores.corTextoClaro }}>
+                                {funcionarioSelecionado ? `(${funcionarioSelecionado.usuarios.conflito})` : "Clique para selecionar"}
+                            </span>
+                        </SeletorBotao>
                     </GridArea>
                     <GridArea $area="horario">
                             <Label>Horario</Label>
@@ -584,21 +793,16 @@ const compararDisponibilidade = () => {
                         </Select>
                     </GridArea>
                     <GridArea $area="comodo_id">
-                            <Label>Comodos Livres: {qtdComodosDisponivel}</Label>
-                        <SubSelectAutocomplete
-    dados={comodos}
-    itemValue="comodo_id"
-    campoDesejado={["conflito", "nome", "numero", "lotacao"]}
-    listaColunas={["comodo_id"]}
-    value={objeto.comodo_id}
-    onChange={alterarObjeto}
-    getTexto={(item) => `${item.conflito} | ${item.tipos_areas.nome} | Nº ${item.numero} | Lotação ${item.lotacao}`}
-    getBackgroundColor={(item) => {
-        const status = item.status;
-        return status === "disponivel" ? cores.corDisponivel : status === "parcial" ? cores.corParcial : cores.corIndisponivel;
-    }}
-    getDisabled={(item) => !item.status || item.status === "indisponivel"}
-/>
+                        <Label>Cômodo: <span style={{ color: cores.corTextoClaro, fontWeight: "normal" }}>({qtdComodosDisponivel} livres)</span></Label>
+                        <SeletorBotao type="button" onClick={() => setModalComodoAberto(true)}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <FaDoorOpen style={{ fontSize: '18px', marginRight: '8px', color: cores.corTextoClaro }} />
+                                <span>{textoBotaoComodo}</span>
+                            </div>
+                            <span style={{ fontSize: '13px', color: cores.corTextoClaro }}>
+                                {comodoSelecionado ? `(${comodoSelecionado.conflito})` : "Clique para selecionar"}
+                            </span>
+                        </SeletorBotao>
                     </GridArea>
                     {/*
                     19/11 -professores conflitalos com horarios já lançados separar
@@ -606,6 +810,123 @@ const compararDisponibilidade = () => {
                     */}
                 </FormGrid>
             </Box>
+
+            <Modal aberto={modalUsuarioAberto} onFechar={() => setModalUsuarioAberto(false)}>
+                <Box>
+                    <Title style={{ marginBottom: "10px" }}>Selecionar Funcionário</Title>
+                    <div style={{ color: cores.corTextoClaro, fontSize: "14px", marginBottom: "20px" }}>
+                        Selecione um funcionário disponível para este horário.
+                    </div>
+                    <Input
+                        placeholder="Pesquisar por nome ou sobrenome..."
+                        value={buscaUsuario}
+                        onChange={(e) => setBuscaUsuario(e.target.value)}
+                        style={{ marginBottom: '20px' }}
+                    />
+                    <CardsGrid>
+                        {professoresFiltrados.length === 0 ? (
+                            <div style={{ color: "#fff", gridColumn: "1/-1", textAlign: "center", padding: "20px" }}>
+                                Nenhum funcionário encontrado.
+                            </div>
+                        ) : (
+                            professoresFiltrados.map((item) => {
+                                const status = item.usuarios.status;
+                                const isIndisponivel = !status || status === "indisponivel";
+                                const iniciais = ((item.usuarios.nome?.[0] || "") + (item.usuarios.sobrenome?.[0] || "")).toUpperCase();
+                                
+                                return (
+                                    <CardFuncionario
+                                        key={item.usuario_id}
+                                        $status={status}
+                                        $disabled={isIndisponivel}
+                                        onClick={() => {
+                                            if (!isIndisponivel) {
+                                                setObjeto(prev => ({ ...prev, usuario_id: item.usuario_id }));
+                                                setModalUsuarioAberto(false);
+                                                setBuscaUsuario("");
+                                            }
+                                        }}
+                                    >
+                                        {item.usuarios.imagem ? (
+                                            <FotoCard src={item.usuarios.imagem} alt={`${item.usuarios.nome} Foto`} />
+                                        ) : (
+                                            <DefaultAvatar>{iniciais}</DefaultAvatar>
+                                        )}
+                                        <NomeCard>
+                                            {item.usuarios.nome} {item.usuarios.sobrenome || ""}
+                                        </NomeCard>
+                                        <ConflitoCard>
+                                            {item.usuarios.conflito}
+                                        </ConflitoCard>
+                                        <StatusBadge $status={status}>
+                                            {status === "disponivel" ? "Disponível" : "Indisponível"}
+                                        </StatusBadge>
+                                    </CardFuncionario>
+                                );
+                            })
+                        )}
+                    </CardsGrid>
+                </Box>
+            </Modal>
+
+            <Modal aberto={modalComodoAberto} onFechar={() => setModalComodoAberto(false)}>
+                <Box>
+                    <Title style={{ marginBottom: "10px" }}>Selecionar Cômodo</Title>
+                    <div style={{ color: cores.corTextoClaro, fontSize: "14px", marginBottom: "20px" }}>
+                        Selecione um cômodo compatível e disponível para este horário.
+                    </div>
+                    <Input
+                        placeholder="Pesquisar por número, apelido ou tipo de área..."
+                        value={buscaComodo}
+                        onChange={(e) => setBuscaComodo(e.target.value)}
+                        style={{ marginBottom: '20px' }}
+                    />
+                    <CardsGrid>
+                        {comodosFiltrados.length === 0 ? (
+                            <div style={{ color: "#fff", gridColumn: "1/-1", textAlign: "center", padding: "20px" }}>
+                                Nenhum cômodo encontrado.
+                            </div>
+                        ) : (
+                            comodosFiltrados.map((item) => {
+                                const status = item.status;
+                                const isIndisponivel = !status || status === "indisponivel";
+                                
+                                return (
+                                    <CardComodo
+                                        key={item.comodo_id}
+                                        $status={status}
+                                        $disabled={isIndisponivel}
+                                        onClick={() => {
+                                            if (!isIndisponivel) {
+                                                setObjeto(prev => ({ ...prev, comodo_id: item.comodo_id }));
+                                                setModalComodoAberto(false);
+                                                setBuscaComodo("");
+                                            }
+                                        }}
+                                    >
+                                        <IconeComodoBox>
+                                            <FaDoorOpen />
+                                        </IconeComodoBox>
+                                        <NomeCard>
+                                            Nº {item.numero} {item.apelido ? `(${item.apelido})` : ""}
+                                        </NomeCard>
+                                        <ConflitoCard style={{ fontSize: '13px', color: cores.corTextoClaro, margin: '4px 0' }}>
+                                            {item.tipos_areas?.nome || "Cômodo"}
+                                        </ConflitoCard>
+                                        <ConflitoCard>
+                                            Lotação: {item.lotacao} | {item.conflito}
+                                        </ConflitoCard>
+                                        <StatusBadge $status={status}>
+                                            {status === "disponivel" ? "Disponível" : status === "parcial" ? "Parcial" : "Indisponível"}
+                                        </StatusBadge>
+                                    </CardComodo>
+                                );
+                            })
+                        )}
+                    </CardsGrid>
+                </Box>
+            </Modal>
+        </React.Fragment>
     )
 }
 

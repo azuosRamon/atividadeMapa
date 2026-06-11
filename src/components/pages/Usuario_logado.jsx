@@ -141,7 +141,7 @@ function Usuario({ fecharMenu, mobile=false, logo=false }) {
                             <Button onClick={()=>{navegar('/periodoHorarios')}} $bgcolor="rgb(38, 38, 38)">Horários</Button>
                             <Button onClick={()=>{navegar('/produtos')}} $bgcolor="rgb(38, 38, 38)">{nomeProduto}</Button>
                             <Button onClick={()=>{navegar('/categorias')}} $bgcolor="rgb(38, 38, 38)">{nomeCategoria}</Button>
-                            <Button onClick={()=>{navegar('/edificio')}} $bgcolor="rgb(38, 38, 38)">Edifício</Button>
+                            
                         </Colapse>
                     </React.Fragment>
 

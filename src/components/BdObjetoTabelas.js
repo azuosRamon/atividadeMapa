@@ -139,7 +139,8 @@ const mapa = {
                     required: true,
                     tabela:"usuarios", 
                     lista:["usuario_id","nome","cpf"],
-                    visualizar: ["nome"]
+                    visualizar: ["nome"],
+                    mostrar: false
                 },
                 empresa_id: {
                     valor: usuarioLogado?.empresa_id || null, 

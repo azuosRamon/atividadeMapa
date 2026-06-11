@@ -4,7 +4,6 @@ import styled from "styled-components";
 import Box from "../SubBox";
 import Button from "../SubButton";
 import Title from "../SubTitleH2";
-import useBancoDeDados from "../BdCrudSupabase";
 import CriarCamposFormulario from "../SubCriadorForm";
 import mapa from "../BdObjetoTabelas";
 import { supabase } from "/supabaseClient";
@@ -159,17 +158,12 @@ function CadastrarDisponibilidade({ usuarioLogado }) {
 
   useEffect(() => {
     atualizarDados();
-  }, [objeto, operacao]);
+  }, []);
 
-  const { fazerEnvio, alterarObjeto } = useBancoDeDados({
-    nomeTabela: tabela.tabela.nome,
-    objeto,
-    setObjeto,
-    objetoInicial,
-    operacao,
-    campoId: tabela.tabela.lista[0],
-    campoNome: tabela.tabela.lista[1],
-  });
+  const alterarObjeto = (event, campo) => {
+    const valor = event.target.type === "checkbox" ? event.target.checked : event.target.value;
+    setObjeto((prev) => ({ ...prev, [campo]: valor }));
+  };
 
   const mostrarTooltip = (evento, texto) => {
     const { clientX, clientY } = evento;
@@ -252,7 +246,40 @@ const enviarCadastro = async (e) => {
 
   // Sem conflitos -> envia
   try {
-    await fazerEnvio(e);
+    const payload = {
+      usuario_id: usuarioLogado.usuario_id,
+      dia_da_semana: Number(dia),
+      hora_inicio: inicioStr,
+      hora_fim: fimStr
+    };
+
+    if (operacao === "1") {
+      const { error } = await supabase
+        .from("disponibilidade_semanal")
+        .insert([payload]);
+      if (error) throw error;
+      window.dispatchEvent(new CustomEvent('crud-alert', { detail: { message: "Adicionado com sucesso!" } }));
+    } else if (operacao === "2") {
+      const { error } = await supabase
+        .from("disponibilidade_semanal")
+        .update(payload)
+        .eq("disponibilidade_id", objeto.disponibilidade_id);
+      if (error) throw error;
+      window.dispatchEvent(new CustomEvent('crud-alert', { detail: { message: "Alterado com sucesso!" } }));
+    } else if (operacao === "3") {
+      const { error } = await supabase
+        .from("disponibilidade_semanal")
+        .delete()
+        .eq("disponibilidade_id", objeto.disponibilidade_id);
+      if (error) throw error;
+      window.dispatchEvent(new CustomEvent('crud-alert', { detail: { message: "Deletado com sucesso!" } }));
+    } else {
+      window.dispatchEvent(new CustomEvent('crud-alert', { detail: { message: "Selecione uma operação válida!" } }));
+      return;
+    }
+
+    setObjeto(objetoInicial);
+    setOperacao("1");
     await atualizarDados();
   } catch (err) {
     console.error("Erro ao cadastrar horário:", err);
