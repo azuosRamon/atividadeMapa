@@ -138,12 +138,17 @@ function App() {
           {/* Grupo de rotas compartilhando LayoutLogado sob autenticação global */}
           <Route element={<RotaProtegida><LayoutLogado /></RotaProtegida>}>
             <Route path="/editarPerfil" element={<DashboardRoute Component={Perfil} />} />
-            <Route path="/dashboard" element={<DashboardRoute Component={MenuDashboardAdmin} />} />
+            
+            {/* Rota restrita de dashboard - apenas empresa, gerente ou moderador(a) */}
+            <Route element={<RotaProtegida tiposPermitidos={["empresa"]} funcoesPermitidas={["gerente", "moderador(a)"]} />}>
+              <Route path="/dashboard" element={<DashboardRoute Component={MenuDashboardAdmin} />} />
+            </Route>
+
             <Route path="/cadastrarDisponibilidade" element={<DashboardRoute Component={CadastrarDisponibilidade} />} />
             <Route path="/visualizarAgendaSemanal" element={<DashboardRoute Component={VisualizarAgendaSemanal} />} />
 
             {/* Rotas restritas para tipo "empresa" ou função "gerente" */}
-            <Route element={<RotaProtegida tiposPermitidos={["empresa"]} funcoesPermitidas={["gerente"]} />}>
+            <Route element={<RotaProtegida tiposPermitidos={["empresa"]} funcoesPermitidas={["gerente", "Moderador(a)"]} />}>
               <Route path="/edificio" element={<DashboardRoute Component={MenuEdificios} dados={dadosJson} />}/>
               <Route path="/cadastroUsuario" element={<DashboardRoute Component={MenuCadastro} />} />
               <Route path="/cargos" element={<DashboardRoute Component={CadastrarCargos} />} />
@@ -152,7 +157,7 @@ function App() {
             </Route>
 
             {/* Rotas restritas apenas para a função "gerente" */}
-            <Route element={<RotaProtegida tiposPermitidos={["empresa"]} funcoesPermitidas={["Gerente", "Administrador(a)"]} />}>
+            <Route element={<RotaProtegida tiposPermitidos={["empresa"]} funcoesPermitidas={["Gerente", "Administrador(a)", "moderador(a)"]} />}>
               <Route path="/pesquisarDados" element={<DashboardRoute Component={Tabelas} dados={dadosJson} />} />
               <Route path="/periodoHorarios" element={<DashboardRoute Component={MenuHorarios} tableHorarios={dadosJson.horarios} />} />
               <Route path="/categorias" element={<DashboardRoute Component={ConfigurarCursos} />} />

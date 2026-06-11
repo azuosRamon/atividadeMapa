@@ -119,12 +119,22 @@ const PessoaIcon = styled(BsPersonFillGear)`
 
 function Header() {
     const [status, setStatus] = useState(false);
+    const [userRedirectPath, setUserRedirectPath] = useState("/dashboard");
     
     const capturarUsuarioLogadoLocalStorage = () => {
         let usuario = localStorage.getItem("usuario");
         if (usuario) {
+            try {
+                const parsed = JSON.parse(usuario);
+                const canAccessDashboard = parsed.tipo?.toLowerCase() === "empresa" || 
+                                           ["gerente", "moderador(a)"].includes(parsed.funcao?.toLowerCase());
+                setUserRedirectPath(canAccessDashboard ? "/dashboard" : "/editarPerfil");
+            } catch (e) {
+                console.error(e);
+            }
             return true;
-        } return false;
+        } 
+        return false;
     }
 
     useEffect(() => {
@@ -165,7 +175,7 @@ function Header() {
                 
                 <UlMenu>
                     {status && (
-                        <LiMenu><StyledLink to="/dashboard">Menu</StyledLink></LiMenu>
+                        <LiMenu><StyledLink to={userRedirectPath}>Menu</StyledLink></LiMenu>
                     )}
                     <LiMenu><StyledLink to={!status && "/login"}  onClick={status ? fazerLogout : undefined}>{LogInOut}</StyledLink></LiMenu>
                 </UlMenu>

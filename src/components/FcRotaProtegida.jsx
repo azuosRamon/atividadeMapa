@@ -15,12 +15,16 @@ export default function RotaProtegida({ children, tiposPermitidos, funcoesPermit
     return <Navigate to="/login" replace />;
   }
 
+  const canAccessDashboard = user.tipo?.toLowerCase() === "empresa" || 
+                             ["gerente", "moderador(a)"].includes(user.funcao?.toLowerCase());
+  const fallbackRedirect = canAccessDashboard ? "/dashboard" : "/editarPerfil";
+
   // Validação por empresa_id (se definido)
   if (empresasPermitidas) {
     const listEmpresas = Array.isArray(empresasPermitidas) ? empresasPermitidas : [empresasPermitidas];
     if (!listEmpresas.includes(user.empresa_id)) {
-      console.warn(`Acesso negado para a empresa ${user.empresa_id}. Redirecionando para dashboard...`);
-      return <Navigate to="/dashboard" replace />;
+      console.warn(`Acesso negado para a empresa ${user.empresa_id}. Redirecionando para ${fallbackRedirect}...`);
+      return <Navigate to={fallbackRedirect} replace />;
     }
   }
 
@@ -38,18 +42,18 @@ export default function RotaProtegida({ children, tiposPermitidos, funcoesPermit
 
     if (tiposPermitidos && funcoesPermitidas) {
       if (!atendeTipo && !atendeFuncao) {
-        console.warn(`Acesso negado para o tipo ${user.tipo} e função ${user.funcao}. Redirecionando para dashboard...`);
-        return <Navigate to="/dashboard" replace />;
+        console.warn(`Acesso negado para o tipo ${user.tipo} e função ${user.funcao}. Redirecionando para ${fallbackRedirect}...`);
+        return <Navigate to={fallbackRedirect} replace />;
       }
     } else if (tiposPermitidos) {
       if (!atendeTipo) {
-        console.warn(`Acesso negado para o tipo ${user.tipo}. Redirecionando para dashboard...`);
-        return <Navigate to="/dashboard" replace />;
+        console.warn(`Acesso negado para o tipo ${user.tipo}. Redirecionando para ${fallbackRedirect}...`);
+        return <Navigate to={fallbackRedirect} replace />;
       }
     } else if (funcoesPermitidas) {
       if (!atendeFuncao) {
-        console.warn(`Acesso negado para a função ${user.funcao}. Redirecionando para dashboard...`);
-        return <Navigate to="/dashboard" replace />;
+        console.warn(`Acesso negado para a função ${user.funcao}. Redirecionando para ${fallbackRedirect}...`);
+        return <Navigate to={fallbackRedirect} replace />;
       }
     }
   }

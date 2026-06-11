@@ -172,7 +172,21 @@ function Cadastro({ usuarioLogado }) {
                     />
                     <div style={{ display: 'flex', gap: '10px', marginTop: '15px' }}>
                         <Button 
-                            onClick={() => navigate('/dashboard')} 
+                            onClick={() => {
+                                const usuarioLocal = localStorage.getItem("usuario");
+                                let targetPath = "/dashboard";
+                                if (usuarioLocal) {
+                                    try {
+                                        const parsed = JSON.parse(usuarioLocal);
+                                        const canAccessDashboard = parsed.tipo?.toLowerCase() === "empresa" || 
+                                                                   ["gerente", "moderador(a)"].includes(parsed.funcao?.toLowerCase());
+                                        if (!canAccessDashboard) targetPath = "/editarPerfil";
+                                    } catch(e) {
+                                        console.error(e);
+                                    }
+                                }
+                                navigate(targetPath);
+                            }} 
                             disabled={verificando} 
                             $bgcolor={cores.backgroundBotaoSemFoco}
                             type="button"

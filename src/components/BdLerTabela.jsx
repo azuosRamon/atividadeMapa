@@ -16,7 +16,13 @@ function LerDados({setLoading = false, tabela = "campi", listaColunas = ["id", "
 
   let query = supabase
     .from(tabela)
-    .select(tabela === 'quadro_de_funcionamento' ? '*, categorias(nome), produtos(nome), usuarios(nome), comodos(numero)' : '*')
+    .select(
+      tabela === 'quadro_de_funcionamento'
+        ? '*, categorias(nome), produtos(nome), usuarios(nome), comodos(numero)'
+        : tabela === 'usuarios_empresas'
+        ? '*, usuarios(nome), funcoes(nome), cargos(nome)'
+        : '*'
+    )
     
   const tabelasSemEmpresa = ["funcoes", "modelos", "tipos_areas", "usuarios", "empresas", "contratos_empresas"];
 
@@ -40,6 +46,14 @@ function LerDados({setLoading = false, tabela = "campi", listaColunas = ["id", "
                 [colProduto]: d.produtos?.nome || "-",
                 "Funcionário": d.usuarios?.nome || "-",
                 [colComodo]: d.comodos?.numero || "-"
+            }));
+            setDados(formatado);
+        } else if (tabela === "usuarios_empresas") {
+            const formatado = data.map(d => ({
+                ...d,
+                "Nome": d.usuarios?.nome || "-",
+                "Função": d.funcoes?.nome || "-",
+                "Cargo": d.cargos?.nome || "-"
             }));
             setDados(formatado);
         } else {

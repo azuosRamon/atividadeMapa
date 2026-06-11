@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react"
 import { supabase } from "../../supabaseClient" // importa o cliente já configurado
 import AbrirModalSubmit from "./SubModalSubmit"
+import mapa from "./BdObjetoTabelas"
 
 // 🔧 Função auxiliar para extrair path de URL pública
 function extractPathFromUrl(publicUrl, bucketName = "imagens") {
@@ -55,9 +56,18 @@ function useBancoDeDados({
     // remove o campo id (disciplina_id ou outro campoId)
     const { [campoId]: _, ...semId } = novoObjeto
 
+    // Filtra as chaves para enviar apenas as que existem na definição de campos da tabela no mapa
+    const camposConfig = mapa[nomeTabela]?.campos;
+    const camposValidos = Object.fromEntries(
+      Object.entries(semId).filter(([chave]) => {
+        if (chave === "empresa_id" || chave === "user_id") return true; // Sempre permitir empresa_id e user_id
+        return !chave.startsWith("_") && camposConfig && chave in camposConfig;
+      })
+    );
+
     const { error } = await supabase
         .from(nomeTabela)
-        .insert([semId])
+        .insert([camposValidos])
 
     if (error) throw error
     atualizarLista()
@@ -68,14 +78,18 @@ function useBancoDeDados({
     // remove o campo de id do objeto
     const { [campoId]: _, ...semId } = dadosAtualizados
 
-      // 🔹 Remove qualquer campo temporário (por exemplo, "_imagem_anterior")
+    // Filtra as chaves para enviar apenas as que existem na definição de campos da tabela no mapa
+    const camposConfig = mapa[nomeTabela]?.campos;
     const camposValidos = Object.fromEntries(
-      Object.entries(semId).filter(([chave]) => !chave.startsWith("_"))
+      Object.entries(semId).filter(([chave]) => {
+        if (chave === "empresa_id" || chave === "user_id") return true; // Sempre permitir empresa_id e user_id
+        return !chave.startsWith("_") && camposConfig && chave in camposConfig;
+      })
     );
 
     const { error } = await supabase
         .from(nomeTabela)
-        .update(camposValidos) // agora sem o campo id e sem campos temporários
+        .update(camposValidos) // agora sem o campo id, campos temporários e colunas virtuais/relacionais
         .eq(campoId, id)
 
     if (error) throw error

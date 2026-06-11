@@ -73,7 +73,10 @@ function Login() {
 
   useEffect(() => {
     if (!loading && user) {
-      navigate("/dashboard", { replace: true });
+      const canAccessDashboard = user.tipo?.toLowerCase() === "empresa" || 
+                                 ["gerente", "moderador(a)"].includes(user.funcao?.toLowerCase());
+      const targetPath = canAccessDashboard ? "/dashboard" : "/editarPerfil";
+      navigate(targetPath, { replace: true });
     }
   }, [user, loading, navigate]);
 
@@ -118,7 +121,9 @@ function Login() {
       if (modelo) localStorage.setItem("modelo", JSON.stringify(modelo));
       else localStorage.removeItem("modelo");
 
-      window.location.href = "/dashboard";
+      const canAccessDashboard = safeUser.tipo?.toLowerCase() === "empresa" || 
+                                 ["gerente", "moderador(a)"].includes(safeUser.funcao?.toLowerCase());
+      window.location.href = canAccessDashboard ? "/dashboard" : "/editarPerfil";
   };
 
 

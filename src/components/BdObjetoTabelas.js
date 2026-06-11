@@ -107,13 +107,7 @@ const mapa = {
         usuarios_empresas: {
             tabela : {
                 nome: "usuarios_empresas", 
-                lista:["id", "matricula"], 
-                camposPesquisa:false, 
-                mostrar: true
-            },
-            view : {
-                nome: "sessao_usuario_view",
-                lista:["usuario_id","nome","empresa", "funcao"], 
+                lista:["id", "matricula", "Nome", "Função", "Cargo"], 
                 camposPesquisa:false, 
                 mostrar: true
             },

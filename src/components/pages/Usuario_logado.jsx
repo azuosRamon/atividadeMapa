@@ -121,7 +121,45 @@ function Usuario({ fecharMenu, mobile=false, logo=false }) {
             </DivContent>
             
             <DivContent>
-                { (usuario.funcao?.toLowerCase() === "moderador(a)" || usuario.funcao?.toLowerCase() === "gerente") && (
+                {(usuario.funcao?.toLowerCase() === "colaborador(a)") && (
+                    <React.Fragment>
+                        <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>
+                        
+                        <Button onClick={()=>{navegar('/cadastrarDisponibilidade')}} $bgcolor="rgb(38, 38, 38)">Disponibilidade</Button>
+                        <Button onClick={()=>{navegar('/visualizarAgendaSemanal')}} $bgcolor="rgb(38, 38, 38)">Agenda</Button>
+                            
+                    </React.Fragment>
+
+                )}
+                {(usuario.funcao?.toLowerCase() === "administrador(a)" ) && (
+                    <React.Fragment>
+                        <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>       
+                        <Button onClick={()=>{navegar('/cadastrarDisponibilidade')}} $bgcolor="rgb(38, 38, 38)">Disponibilidade</Button>
+                        <Button onClick={()=>{navegar('/visualizarAgendaSemanal')}} $bgcolor="rgb(38, 38, 38)">Agenda</Button>
+                            <Colapse fontSize="1.2rem" nome = "Gerenciar" estadoInicial={false}> 
+                            <Button onClick={()=>{navegar('/quadroAulas')}} $bgcolor="rgb(38, 38, 38)">Quadro de funcionamento</Button>
+                            <Button onClick={()=>{navegar('/periodoHorarios')}} $bgcolor="rgb(38, 38, 38)">Horários</Button>
+                            <Button onClick={()=>{navegar('/produtos')}} $bgcolor="rgb(38, 38, 38)">{nomeProduto}</Button>
+                            <Button onClick={()=>{navegar('/categorias')}} $bgcolor="rgb(38, 38, 38)">{nomeCategoria}</Button>
+                            <Button onClick={()=>{navegar('/edificio')}} $bgcolor="rgb(38, 38, 38)">Edifício</Button>
+                        </Colapse>
+                    </React.Fragment>
+
+                )}
+                { (usuario.funcao?.toLowerCase() === "moderador(a)") && (
+                    <React.Fragment>
+                        <Button onClick={()=>{navegar('/dashboard')}} $bgcolor="rgb(38, 38, 38)">Início</Button>
+                        <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>
+
+                            <Colapse fontSize="1.2rem" nome = "Empresa" estadoInicial={false}>
+                            <Button onClick={()=>{navegar('/tiposAreas')}} $bgcolor="rgb(38, 38, 38)">Tipos de Áreas</Button>
+                            <Button onClick={()=>{navegar('/cargos')}} $bgcolor="rgb(38, 38, 38)">Cargos</Button>
+                            <Button onClick={()=>{navegar('/cadastroUsuario')}} $bgcolor="rgb(38, 38, 38)">Usuários</Button>
+                            <Button onClick={()=>{navegar('/relacionarUsuarios')}} $bgcolor="rgb(38, 38, 38)">Relacionamento</Button>
+                        </Colapse>
+                    </React.Fragment>
+                )}
+                {  (usuario.funcao?.toLowerCase() === "gerente") && (
                     <React.Fragment>
                         <Button onClick={()=>{navegar('/dashboard')}} $bgcolor="rgb(38, 38, 38)">Início</Button>
                         <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>
@@ -170,14 +208,7 @@ function Usuario({ fecharMenu, mobile=false, logo=false }) {
                         <Button onClick={()=>{navegar('/relacionarUsuarios')}} $bgcolor="rgb(38, 38, 38)">Relacionar Usuários</Button>
                     </React.Fragment>
                 )}
-                { (usuario.funcao?.toLowerCase() === "administrador(a)") && (
-                    <React.Fragment>
-                        <Button onClick={()=>{navegar('/dashboard')}} $bgcolor="rgb(38, 38, 38)">Início</Button>
-                        <Button onClick={()=>{navegar('/cadastrarDisponibilidade')}} $bgcolor="rgb(38, 38, 38)">Disponibilidade</Button>
-                        <Button onClick={()=>{navegar('/visualizarAgendaSemanal')}} $bgcolor="rgb(38, 38, 38)">Agenda</Button>
-                        <Button onClick={()=>{navegar('/editarPerfil')}} $bgcolor="rgb(38, 38, 38)">Perfil</Button>
-                    </React.Fragment>
-                )}
+                
             </DivContent>
 
 
