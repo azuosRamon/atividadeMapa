@@ -6,8 +6,7 @@ import Button from "./SubButton";
 import Input from "./SubInput";
 import Select from "./SubSelect";
 import Container from "./SubContainer";
-import logo_cliente from "../components/assets/UniVassouras-Vertical-Branca.png"
-import { MdHeight } from "react-icons/md";
+import logo_cliente from "./assets/Logo_antigo.png";
 import { pegarNomenclatura } from "./Nomenclaturas";
 import InputAutocomplete from "./SubInputAutocomplete";
 import cores from "./Cores";
@@ -82,22 +81,8 @@ const CardsContainer = styled.div`
 const Img = styled.img`
 height: 100px;
 margin: 15px auto;
-`;
-
-const Ul = styled.ul`
-position: absolute;
-top: 100%;
-left: 0;
-right: 0;
-zIndex: 1000;
-background: white;
-color: black;
-listStyle: none;
-padding: 0;
-margin: 0;
-border: 1px solid #ccc;
-maxHeight: 150px;
-overflowY: auto;
+max-width: 100%;
+object-fit: contain;
 `;
 
 const ButtonVoltar = styled(Button)`
@@ -105,40 +90,7 @@ height: 100%;
 margin-top: 0;
 `;
 
-/*
-const data = [
-    { professor: "Carlos Silva", bloco: "1", andar: "2", sala: "12", materia: "Física para Engenharia", dia: "Segunda-feira", horario: "18:50 - 22:10", foto: "" },
-    { professor: "Ana Souza", bloco: "1", andar: "3", sala: "03", materia: "Front End", dia: "Terça-feira", horario: "18:50 - 22:10", foto: "" },
-    { professor: "João Pereira", bloco: "1", andar: "3", sala: "03", materia: "POO", dia: "Quarta-feira", horario: "18:50 - 22:10", foto: "" },
-    { professor: "Maria Oliveira", bloco: "1", andar: "2", sala: "12", materia: "Práticas Extensionistas Integradoras III", dia: "Quinta-feira", horario: "18:50 - 22:10", foto: "" },
-    { professor: "Pedro Santos", bloco: "1", andar: "3", sala: "03", materia: "Estrutura de Dados", dia: "Sexta-feira", horario: "18:50 - 22:10", foto: "" },
-    { professor: "Lucia Costa", bloco: "1", andar: "2", sala: "12", materia: "Engenharia Econômica", dia: "Sabado", horario: "18:50 - 22:10", foto: "" }
-]; 
-*/
-
-function converterDados(dados){
-    const dadosCovertidos =  dados.quadroDeAulas.map((item) => (
-        {
-          "id": item.id, 
-          "disciplina": dados.disciplinas.filter(informacoes => informacoes.id === item.disciplinaId)[0].nome, 
-          "curso": dados.cursos.filter(informacoes => informacoes.id === item.cursoId)[0].nome, 
-          "usuario": dados.usuarios.filter(informacoes => informacoes.id === item.pessoasId)[0].funcao + " - " +  dados.usuarios.filter(informacoes => informacoes.id === item.pessoasId)[0].nome + " " + dados.usuarios.filter(informacoes => informacoes.id === item.pessoasId)[0].sobrenome, 
-          "diaSemana": dados.dias.filter(informacoes => informacoes.id === item.diaSemana)[0].nome, 
-          "inicio": dados.horarios.filter(informacoes => informacoes.id === item.inicioId)[0].inicio,
-          "termino": dados.horarios.filter(informacoes => informacoes.id === item.terminoId)[0].termino, 
-          "campus":dados.campus.filter(informacoes => informacoes.id === item.campusId)[0].nome, 
-            "bloco":dados.blocos.filter(informacoes => informacoes.id === item.blocoId)[0].nome, 
-          "pavimento":dados.pavimentos.filter(informacoes => informacoes.id === item.pavimentoId)[0].numero,
-          "sala": dados.salas.filter(informacoes => informacoes.id === item.salaId)[0].numero.toString() + " - " + dados.salas.filter(informacoes => informacoes.id === item.salaId)[0].apelido,
-          "salaApelido": dados.salas.filter(informacoes => informacoes.id === item.salaId)[0].apelido,
-          "ano": dados.horarios.filter(informacoes => informacoes.id === item.inicioId)[0].ano,
-          "foto": dados.usuarios.filter(informacoes => informacoes.id === item.pessoasId)[0].foto
-        }
-    ));
-    return dadosCovertidos;
-}
-
-function Pesquisa({dados, empresaId}){
+function PesquisaPublica({dados, empresaId, empresaImagem}){
     const data = dados || {};
     const [loading, setLoading] = useState(true);
     const [quadroAulas, setQuadroAulas] = useState([]);
@@ -289,27 +241,27 @@ function Pesquisa({dados, empresaId}){
     return(
         <Container>
             <Box>
-                <Img src={logo_cliente} alt="logo_universidade"/>
+                <Img src={empresaImagem || logo_cliente} alt="logo_universidade"/>
                 <Formulario onSubmit={buscarResultados}>
                     <InputAutocomplete
                         sugestoes={professoresAula}
                         valor={procurarProfessor}
-                        onChange={(val) => confProcurarProfessor(val)}       // Atualiza o valor enquanto digita
-                        onSelecionar={(val) => confProcurarProfessor(val)}    // Atualiza ao selecionar
+                        onChange={(val) => confProcurarProfessor(val)}
+                        onSelecionar={(val) => confProcurarProfessor(val)}
                         placeholder="Professor"
                         />
                         <InputAutocomplete
                         sugestoes={salas}
                         valor={procurarSala}
-                        onChange={(val) => confProcurarSala(val)}       // Atualiza o valor enquanto digita
-                        onSelecionar={(val) => confProcurarSala(val)}    // Atualiza ao selecionar
+                        onChange={(val) => confProcurarSala(val)}
+                        onSelecionar={(val) => confProcurarSala(val)}
                         placeholder={nomes.comodos}
                         />
                         <InputAutocomplete
                         sugestoes={cursosEDisciplinas}
                         valor={procurarCurso}
-                        onChange={(val) => confProcurarCurso(val)}       // Atualiza o valor enquanto digita
-                        onSelecionar={(val) => confProcurarCurso(val)}    // Atualiza ao selecionar
+                        onChange={(val) => confProcurarCurso(val)}
+                        onSelecionar={(val) => confProcurarCurso(val)}
                         placeholder={`${nomes.categorias} ou ${nomes.produtos}`}
                         />
                     
@@ -378,4 +330,4 @@ function Pesquisa({dados, empresaId}){
         </Container>
     )
 }
-export default Pesquisa;
+export default PesquisaPublica;

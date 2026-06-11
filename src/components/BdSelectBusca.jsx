@@ -1,9 +1,13 @@
 // SelectBancoDeDados.js
 import { supabase } from "../../supabaseClient"
 
-async function SelectBancoDeDados({ nomeTabela, setData, setLoading }) {
+async function SelectBancoDeDados({ nomeTabela, setData, setLoading, condicao = null }) {
   setLoading(true)
-  const { data, error } = await supabase.from(nomeTabela).select("*")
+  let query = supabase.from(nomeTabela).select("*")
+  if (condicao) {
+    query = query.eq(condicao.coluna, condicao.valor)
+  }
+  const { data, error } = await query
 
   if (error) {
     console.error(error)

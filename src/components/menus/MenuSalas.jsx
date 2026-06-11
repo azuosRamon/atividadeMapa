@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Select from "../SubSelect";
 import Input from "../SubInput";
@@ -23,33 +23,32 @@ import mapa from "../BdObjetoTabelas";
 import BussolaCarregando from "../BussolaLoading.jsx";
 import { supabase } from "/supabaseClient";
 import Title from "../SubTitleH2";
-import { use } from "react";
 
 async function LerNovosDados(empresaId, pavimentoId) {
     //informar uma lista composta de ['coluna', valorProcurado] para utilizar a condicao
     let query = supabase
-    .from('comodos')
-    .select(`*,
+        .from('comodos')
+        .select(`*,
                     tipos_areas(nome)
         `)
-    .eq("empresa_id", empresaId)
-    .eq('pavimento_id', pavimentoId)
-    .order('numero')
-    ;
+        .eq("empresa_id", empresaId)
+        .eq('pavimento_id', pavimentoId)
+        .order('numero')
+        ;
 
     try {
-    const { data, error } = await query;
-    
-    if (error) {
-      console.error("Erro ao ler dados na tabela:", error);
-      return [];
+        const { data, error } = await query;
+
+        if (error) {
+            console.error("Erro ao ler dados na tabela:", error);
+            return [];
+        }
+
+        return data || [];
+    } catch (err) {
+        console.error("Erro inesperado ao ler dados de ", err);
+        return [];
     }
-    
-    return data || [];
-} catch (err) {
-    console.error("Erro inesperado ao ler dados de ", err);
-    return [];
-}
 }
 
 
@@ -109,54 +108,86 @@ const TitleSublinhado = styled(Title)`
 `
 
 
-function SalaOpcoes({ usuarioLogado, operacaoEnviada, item = null, pavimentoId=null, onAtualizar }) {
+function SalaOpcoes({ usuarioLogado, operacaoEnviada, item = null, pavimentoId = null, onAtualizar }) {
     const tabela = mapa.comodos;
     const [pontos, setPontos] = useState("[]");
     const [objeto, setObjeto] = useState(
-            Object.fromEntries(
-                !item ?
-                Object.entries(tabela.campos).map(([k, v]) => ([k, k=="empresa_id" ? 
-                    usuarioLogado.empresa_id: k == "pavimento_id" ? pavimentoId : v.valor]))
+        Object.fromEntries(
+            !item ?
+                Object.entries(tabela.campos).map(([k, v]) => ([k, k == "empresa_id" ?
+                    usuarioLogado.empresa_id : k == "pavimento_id" ? pavimentoId : v.valor]))
                 :
                 Object.entries(item)
-    
-            )
-        );
+
+        )
+    );
 
     const [operacao, setOperacao] = useState(operacaoEnviada || "1");
+    const [imagemPavimento, setImagemPavimento] = useState(terreo);
+
+    useEffect(() => {
+        let active = true;
+        const targetId = pavimentoId || item?.pavimento_id;
+        if (!targetId) return;
+
+        async function carregarImagemPavimento() {
+            try {
+                const { data, error } = await supabase
+                    .from("pavimentos")
+                    .select("imagem")
+                    .eq("pavimento_id", targetId)
+                    .maybeSingle();
+
+                if (error) {
+                    console.error("Erro ao buscar imagem do pavimento:", error);
+                    return;
+                }
+
+                if (active && data?.imagem) {
+                    setImagemPavimento(data.imagem);
+                }
+            } catch (err) {
+                console.error("Erro ao carregar imagem do pavimento:", err);
+            }
+        }
+        carregarImagemPavimento();
+        return () => {
+            active = false;
+        };
+    }, [pavimentoId, item?.pavimento_id]);
 
     useEffect(() => {
         setObjeto(prev => ({ ...prev, ["lista_coordenadas"]: pontos }));
     }, [pontos])
 
-    
-     const {
+
+    const {
         data,
         pesquisa,
         loading,
         fazerEnvio,
         alterarObjeto
-      } = useBancoDeDados({
+    } = useBancoDeDados({
         nomeTabela: tabela.tabela.nome,
         objeto,
         setObjeto,
         operacao,
         campoId: tabela.tabela.lista[0],
         campoNome: tabela.tabela.lista[1],
-      });
+    });
 
-      const atualizarDados = async (e)=>{
+    const atualizarDados = async (e) => {
         e.preventDefault();
         try {
             await fazerEnvio(e);
             if (onAtualizar) await onAtualizar(); // 🔹 atualiza lista e fecha modal
         }
-        catch(error){
+        catch (error) {
             console.error("erro ao cadastrar salas", err.message);
         }
-      }
+    }
 
-    
+
     const [mostrarModal, setMostrarModal] = useState(false);
     const [mostrarMapa, setMostrarMapa] = useState(false)
 
@@ -166,18 +197,18 @@ function SalaOpcoes({ usuarioLogado, operacaoEnviada, item = null, pavimentoId=n
 
     const nomes = pegarNomenclatura();
 
-    return(
-            <div>
-                <TitleSublinhado>{nomes.comodos.toUpperCase()}</TitleSublinhado>
-                <FormGrid onSubmit={atualizarDados}>
-                    <CriarCamposFormulario 
-                                        item={tabela}
-                                        setFuncao={alterarObjeto}
-                                        operacao={operacao}
-                                        setOperacao={setOperacao}
-                                        objeto={objeto}
+    return (
+        <div>
+            <TitleSublinhado>{nomes.comodos.toUpperCase()}</TitleSublinhado>
+            <FormGrid onSubmit={atualizarDados}>
+                <CriarCamposFormulario
+                    item={tabela}
+                    setFuncao={alterarObjeto}
+                    operacao={operacao}
+                    setOperacao={setOperacao}
+                    objeto={objeto}
                     setObjeto={setObjeto}
-                                        >
+                >
 
                     <GridArea $area="croqui">
                         <Label htmlFor="croqui">Croqui:</Label>
@@ -188,79 +219,80 @@ function SalaOpcoes({ usuarioLogado, operacaoEnviada, item = null, pavimentoId=n
                         <Modal aberto={mostrarMapa} onFechar={() => setMostrarMapa(false)}>
                             <TitleSublinhado>Croqui</TitleSublinhado>
                             <Slide
-                                lista_imagens={[terreo]}
+                                lista_imagens={[imagemPavimento]}
                                 pagina_inicio={0}
-                                capturarCoordenadas = {true}
+                                capturarCoordenadas={true}
                                 setPontosArea={setPontos}
-                                />
+                                empresaId={usuarioLogado?.empresa_id}
+                                pavimentoId={pavimentoId || item?.pavimento_id}
+                            />
                             <ButtonVoltar $bgcolor="rgb(38, 38, 38)" onClick={() => setMostrarMapa(false)}>
                                 Fechar Croqui
                             </ButtonVoltar>
                         </Modal>
-                        
+
                     </GridArea>
 
-                                        </CriarCamposFormulario>
-                        
+                </CriarCamposFormulario>
 
 
-                </FormGrid>
 
-            </div>
+            </FormGrid>
+
+        </div>
     )
 }
 
 
-function CardComodos({dados, dadosUsuario, pavimentoId = null, onAtualizar}){
-        const [operacao, setOperacao] = useState("1")
-        const [itemModificar, setItemModificar] = useState(null)
-        const [mostrarModal, setMostrarModal] = useState(false);
-        const [comodos, setComodos] = useState(dados.comodos || []);
+function CardComodos({ dados, dadosUsuario, pavimentoId = null, onAtualizar }) {
+    const [operacao, setOperacao] = useState("1")
+    const [itemModificar, setItemModificar] = useState(null)
+    const [mostrarModal, setMostrarModal] = useState(false);
+    const [comodos, setComodos] = useState(dados.comodos || []);
 
-        const atualizarLista = async () => {
-            const novosDados = await LerNovosDados(dadosUsuario.empresa_id, pavimentoId);
-            if (novosDados.length > 0) {
-            setComodos(novosDados || []);
-            }
+    const atualizarLista = async () => {
+        const novosDados = await LerNovosDados(dadosUsuario.empresa_id, pavimentoId);
+        setComodos(novosDados || []);
 
-        };
+    };
 
-         useEffect(() => {
-                setComodos(dados?.comodos || []);
-                }, [dados]);
-            
-        const nomes = pegarNomenclatura();
+    useEffect(() => {
+        setComodos(dados?.comodos || []);
+    }, [dados]);
 
-    return(
+    const nomes = pegarNomenclatura();
+
+    return (
         <BoxComodos>
             <Modal aberto={mostrarModal} onFechar={() => setMostrarModal(false)}>
-                        <SalaOpcoes 
-                            usuarioLogado={dadosUsuario} 
-                            operacaoEnviada={operacao} 
-                            item={itemModificar}
-                            pavimentoId={pavimentoId || null}
-                            onAtualizar={async () => {
-                                await atualizarLista();
-                                await onAtualizar();
-                                setMostrarModal(false);
-                        }}>
-                        </SalaOpcoes>
-            
-                    </Modal>
+                <SalaOpcoes
+                    usuarioLogado={dadosUsuario}
+                    operacaoEnviada={operacao}
+                    item={itemModificar}
+                    pavimentoId={pavimentoId || null}
+                    onAtualizar={async () => {
+                        await atualizarLista();
+                        await onAtualizar();
+                        setMostrarModal(false);
+                    }}>
+                </SalaOpcoes>
+
+            </Modal>
             <TituloVertical>{nomes.comodos}</TituloVertical>
             <ListaSalas>
                 <BoxComodo>
-                    <AdicionarBtn  onClick={(e)=>{
+                    <AdicionarBtn onClick={(e) => {
                         e.preventDefault();
                         setItemModificar(null);
                         setOperacao("1");
-                        setMostrarModal(true)}}>+ Novo {nomes.comodos}</AdicionarBtn>
+                        setMostrarModal(true)
+                    }}>+ Novo {nomes.comodos}</AdicionarBtn>
                 </BoxComodo>
-                {comodos.map((item)=>(
+                {comodos.map((item) => (
                     <BoxComodo key={item.comodo_id}>
-                                <TituloHorizontal>{item.tipos_areas.nome}</TituloHorizontal>
+                        <TituloHorizontal>{item.tipos_areas.nome}</TituloHorizontal>
                         <DivInformacao>
-                                <Chave>{item.apelido || "Informaçoes"}</Chave>
+                            <Chave>{item.apelido || "Informaçoes"}</Chave>
                             <LinhaInformacao>
                                 <Chave>Número:</Chave>
                                 <Valor>{item.numero}</Valor>
@@ -270,22 +302,22 @@ function CardComodos({dados, dadosUsuario, pavimentoId = null, onAtualizar}){
                                 <Valor>{item.lotacao}</Valor>
                             </LinhaInformacao>
                         </DivInformacao>
-                        <HorizontalBtn 
-                          onClick={(e)=>{
+                        <HorizontalBtn
+                            onClick={(e) => {
                                 e.preventDefault();
                                 setItemModificar(item);
                                 setOperacao("2");
                                 setMostrarModal(true);
                             }}
-                        $bgcolor={cores.backgroundBotaoSemFoco}>Atualizar</HorizontalBtn>
-                        <HorizontalBtn 
-                        onClick={(e)=>{
-                            e.preventDefault();
-                            setItemModificar(item);
-                            setOperacao("3");
-                            setMostrarModal(true);
-                        }}
-                        $bgcolor={cores.corDeletar}>Excluir</HorizontalBtn>
+                            $bgcolor={cores.backgroundBotaoSemFoco}>Atualizar</HorizontalBtn>
+                        <HorizontalBtn
+                            onClick={(e) => {
+                                e.preventDefault();
+                                setItemModificar(item);
+                                setOperacao("3");
+                                setMostrarModal(true);
+                            }}
+                            $bgcolor={cores.corDeletar}>Excluir</HorizontalBtn>
                     </BoxComodo>
 
                 ))}

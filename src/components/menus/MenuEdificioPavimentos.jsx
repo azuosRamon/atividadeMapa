@@ -167,9 +167,7 @@ const VerificarImagem = ({ selecao }) => {
 
     const atualizarLista = async () => {
         const novosDados = await LerNovosDados(dadosUsuario.empresa_id, blocoId);
-        if (novosDados.length > 0) {
         setPavimentos(novosDados || []);
-        }
 
       };
 

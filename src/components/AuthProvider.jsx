@@ -9,6 +9,13 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem("usuario");
+    localStorage.removeItem("sb_tokens");
+    localStorage.removeItem("modelo");
+  };
+
   useEffect(() => {
     const usuarioLocal = JSON.parse(localStorage.getItem("usuario") || "null");
     const sbTokens = JSON.parse(localStorage.getItem("sb_tokens") || "null");
@@ -36,9 +43,7 @@ export function AuthProvider({ children }) {
          setLoading(false);
       }).catch((e) => {
          console.warn("Autenticação falhou: ", e);
-         setUser(null);
-         localStorage.removeItem("usuario");
-         localStorage.removeItem("sb_tokens");
+         logout();
          setLoading(false);
       });
     } else {
@@ -49,7 +54,7 @@ export function AuthProvider({ children }) {
 
 
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user, setUser, loading, logout }}>
         <BussolaCarregando aberto={loading} onFechar={() => setLoading(false)}>Carregando</BussolaCarregando>
       {children}
     </AuthContext.Provider>

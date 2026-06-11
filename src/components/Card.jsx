@@ -11,6 +11,7 @@ import terceiro_pavimento from "./Plantas/TERCEIRO_PAVIMENTO.png";
 import sala03 from "./Plantas/03.png";
 import sala12 from "./Plantas/12.png";
 import Slide from "./Slide";
+import Modal from "./SubModal";
 import { pegarNomenclatura } from "./Nomenclaturas";
 import cores from "./Cores"
 import GridArea from "./SubGridArea"
@@ -67,31 +68,7 @@ const Titulo3 = styled.h3`
     margin: 0 5px;
 `;
 
-const MapaBG = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: ${cores.backgroundMapa};
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-`;
-
-const FecharBotao = styled.button`
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: ${cores.backgroundBox};
-    color: ${cores.corTexto};
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    font-size: 20px;
-    border-radius: 50%;
-`;
+// MapaBG e FecharBotao foram removidos para utilizar o modal padrão do sistema
 
 const GridAreaFlex = styled(GridArea)`
 display: flex;
@@ -105,7 +82,7 @@ const imagensPorSalaEAndar = {
 };
 
 
-function CriarCard({ dados, nome, disciplina, dia, horarioInicial, horarioFinal, campus, bloco, pavimento, sala, fotoProfessor }) {
+function CriarCard({ dados, nome, disciplina, dia, horarioInicial, horarioFinal, campus, bloco, pavimento, sala, fotoProfessor, rawItem }) {
     const data = dados || {};
     
     const chaveSalaAndar = `${Number(pavimento)}-${Number(sala)}`;
@@ -160,14 +137,15 @@ function CriarCard({ dados, nome, disciplina, dia, horarioInicial, horarioFinal,
             </Box>
 
             {mostrarMapa && (
-                <MapaBG>
-                    <FecharBotao onClick={fecharImagem}>X</FecharBotao>
+                <Modal aberto={mostrarMapa} onFechar={fecharImagem}>
                     <Slide
                         lista_imagens={imagens}
                         pagina_inicio={Number(pavimento)-1}
                         dados={data}
+                        procurarComodoId={rawItem ? rawItem.comodo_id : null}
+                        empresaId={rawItem?.empresa_id}
                     />
-                </MapaBG>
+                </Modal>
             )}
         </Container>
     )

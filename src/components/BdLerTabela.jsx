@@ -18,7 +18,7 @@ function LerDados({setLoading = false, tabela = "campi", listaColunas = ["id", "
     .from(tabela)
     .select(tabela === 'quadro_de_funcionamento' ? '*, categorias(nome), produtos(nome), usuarios(nome), comodos(numero)' : '*')
     
-  const tabelasSemEmpresa = ["funcoes", "modelos", "tipos_areas", "usuarios"];
+  const tabelasSemEmpresa = ["funcoes", "modelos", "tipos_areas", "usuarios", "empresas", "contratos_empresas"];
 
   if (condicao) {
     query = query.eq(condicao.coluna, condicao.valor)

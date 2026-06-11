@@ -22,7 +22,7 @@ grid-template-columns: 1fr 1fr 1fr;
 grid-template-areas: 
     "tabela tabela tabela"
     "operacao operacao id"
-    "nome nome nascimento"
+    "nome sobrenome nascimento"
     "cpf telefone imagem"
     "email email visibilidade"
     "rede_social rede_social rede_social"

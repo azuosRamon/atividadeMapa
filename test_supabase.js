@@ -4,9 +4,24 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function test() {
-    console.log("Fetching horarios...");
-    const { data, error } = await supabase.from('horarios').select('*').order('horario_id', {ascending: false}).limit(5);
-    console.log("Data:", data);
-    console.log("Error:", error);
+    const tables = [
+        'empresas', 'imoveis', 'blocos', 'pavimentos', 'comodos', 
+        'quadro_de_funcionamento', 'usuarios', 'usuarios_empresas', 
+        'tipos_areas', 'cargos', 'funcoes'
+    ];
+    for (const table of tables) {
+        const { data, error } = await supabase.from(table).select('*');
+        console.log(`Table: ${table}`);
+        if (error) {
+            console.error(`Error fetching ${table}:`, error.message);
+        } else {
+            console.log(`Rows: ${data.length}`);
+            if (data.length > 0) {
+                console.log(`Sample Row:`, JSON.stringify(data[0]).substring(0, 300));
+            }
+        }
+        console.log('---');
+    }
 }
 test();
+

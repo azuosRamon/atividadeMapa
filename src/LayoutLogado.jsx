@@ -3,6 +3,7 @@ import Header from "./components/Header";
 import Usuario_logado from "./components/pages/Usuario_logado";
 import Footer from "./components/Footer";
 import styled from "styled-components";
+import { Outlet } from "react-router-dom";
 
 const DivGrid2 = styled.div`
   max-width: 1280px;
@@ -28,14 +29,14 @@ const Aside = styled.aside`
 `;
 
 
-const LayoutLogado = ({ usuarioDados, children }) => (
+const LayoutLogado = ({ children }) => (
   <div className="corpo">
     <Header />
     <DivGrid2>
       <Section>
         <Usuario_logado />
       </Section>
-      <Aside>{children}</Aside>
+      <Aside>{children || <Outlet />}</Aside>
     </DivGrid2>
     <Footer />
   </div>

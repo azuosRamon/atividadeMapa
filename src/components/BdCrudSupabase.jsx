@@ -96,7 +96,7 @@ function useBancoDeDados({
     let usuarioLocal = localStorage.getItem("usuario");
     let usuarioInfo = usuarioLocal ? JSON.parse(usuarioLocal) : null;
     let empresaIdLocal = usuarioInfo?.empresa_id || null;
-    const tabelasSemEmpresa = ["funcoes", "modelos", "tipos_areas", "usuarios"];
+    const tabelasSemEmpresa = ["funcoes", "modelos", "tipos_areas", "usuarios", "empresas", "contratos_empresas"];
 
     if (empresaIdLocal && !tabelasSemEmpresa.includes(nomeTabela) && !objetoEnviado.empresa_id) {
         objetoEnviado = { ...objetoEnviado, empresa_id: empresaIdLocal };
@@ -124,7 +124,8 @@ function useBancoDeDados({
   }
 
   const alterarObjeto = (event, campo) => {
-    setObjeto((prev) => ({ ...prev, [campo]: event.target.value }))
+    const valor = event.target.type === "checkbox" ? event.target.checked : event.target.value;
+    setObjeto((prev) => ({ ...prev, [campo]: valor }))
   }
 
   return { data, pesquisa, loading, fazerEnvio, alterarObjeto, atualizarLista }

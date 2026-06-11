@@ -15,7 +15,7 @@ function SelectComDados({tabela = "", listaColunas = ["id", "nome"], campoDeseja
     .from(tabela)
     .select("*")
     
-  const tabelasSemEmpresa = ["funcoes", "modelos", "tipos_areas", "usuarios"];
+  const tabelasSemEmpresa = ["funcoes", "modelos", "tipos_areas", "usuarios", "empresas"];
 
   if (condicao) {
     query = query.eq(condicao.coluna, condicao.valor)

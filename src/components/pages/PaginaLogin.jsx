@@ -243,7 +243,7 @@ function Login() {
         <ParagrafoInformacao>Ainda não tem uma conta?</ParagrafoInformacao>
         <ParagrafoInformacao>
           Envie um email para:
-          <SpamSublinhado> email@mail.com.br </SpamSublinhado>
+          <SpamSublinhado> meuatalhoparaalgo@gmail.com </SpamSublinhado>
         </ParagrafoInformacao>
       </Box>
       

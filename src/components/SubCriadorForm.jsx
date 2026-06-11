@@ -159,7 +159,8 @@
         <Input
             required={campo.required ?? false}
             disabled={nomeCampo.includes("_id") && Number(operacao) <= 1}
-            value={valor}
+            value={campo.tipo === "checkbox" ? undefined : valor}
+            checked={campo.tipo === "checkbox" ? !!objeto?.[nomeCampo] : undefined}
             type={campo.tipo || "text"}
             id={campo.nome}
             name={campo.nome}

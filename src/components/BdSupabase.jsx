@@ -162,7 +162,8 @@ function useBancoDeDados({
   }
 
   const alterarObjeto = (event, campo) => {
-    setObjeto((prev) => ({ ...prev, [campo]: event.target.value }))
+    const valor = event.target.type === "checkbox" ? event.target.checked : event.target.value;
+    setObjeto((prev) => ({ ...prev, [campo]: valor }))
   }
 
   return { data, pesquisa, loading, fazerEnvio, alterarObjeto, atualizarLista }

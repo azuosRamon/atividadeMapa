@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { CiSquareChevLeft, CiSquareChevRight } from "react-icons/ci";
 import { PiMouseRightClickFill } from "react-icons/pi";
@@ -11,6 +11,10 @@ const DivContent = styled.div`
   background-color: #222;
   padding: ${(props) => (props.$capturar ? "20px 0" : "50px 0")};
   box-shadow: ${cores.boxShadow} 5px -5px 8px;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  box-sizing: border-box;
 `;
 
 const SlideContainer = styled.div`
@@ -113,6 +117,7 @@ const DivSobreposta = styled.div`
   position: relative;
   display: inline-block;
   width: 40%;
+  aspect-ratio: 2900 / 2500;
   @media (max-width: 480px) {
     width: 90%;
   }
@@ -123,7 +128,9 @@ const DivSobreposta = styled.div`
 
 const Imagem = styled.img`
   width: 100%;
+  height: 100%;
   display: block;
+  object-fit: fill;
 `;
 
 const SVGOverlay = styled.svg`
@@ -136,13 +143,15 @@ const SVGOverlay = styled.svg`
 `;
 
 const AreaPoligonal = styled.polygon`
-  fill: ${(props) => (props.$procurado ? cores.cor3 : cores.cor4)};
-  stroke: ${(props) => props.$procurado || cores.cor4};
-  stroke-width: 10;
+  fill: ${(props) => (props.$procurado ? cores.cor3Transparente : cores.cor4)};
+  stroke: ${(props) => (props.$procurado ? cores.cor1 : cores.cor4)};
+  stroke-width: ${(props) => (props.$procurado ? "12" : "5")};
   cursor: pointer;
+  transition: all 0.3s ease;
+
   &:hover {
-    fill: ${(props) => props.$procurado || cores.cor3};
-    stroke: ${(props) => props.$procurado || cores.cor1};
+    fill: ${(props) => (props.$procurado ? "rgba(0, 162, 162, 0.75)" : cores.cor3)};
+    stroke: ${(props) => (props.$procurado ? cores.cor1 : cores.cor1)};
   }
 `;
 
@@ -159,42 +168,124 @@ function Slide({
   pavimento = 0,
   capturarCoordenadas = false,
   setPontosArea = null,
+  procurarComodoId = null,
+  empresaId = null,
+  pavimentoId = null,
 }) {
   // Estado interno caso não venha `setPontosArea` por props
   const [pontosInterno, setPontosInterno] = useState("");
   const setPontosAreaFinal = setPontosArea || setPontosInterno;
 
   const [pontosClicados, setPontosClicados] = useState([]);
-  const [slide_atual, mudarSlide] = useState(0);
-  const total_slides = lista_imagens.length;
-  const indiceAtivo = total_slides - (slide_atual + 1);
+  const [slide_atual_state, mudarSlide] = useState(null);
 
   const [startX, mudarStartX] = useState(null);
 
   // dados do banco
   const [listaPavimentos, setListaPavimentos] = useState([]);
   const [listaSalas, setListaSalas] = useState([]);
+  const [loadingDb, setLoadingDb] = useState(true);
+
+  // Derive active images and default slide index
+  const pavimentosOrdenados = [...listaPavimentos].sort((a, b) => a.numero - b.numero);
+  const imagensDoBanco = pavimentosOrdenados.map(p => p.imagem).filter(Boolean);
+
+  let activeImagens = (!capturarCoordenadas && imagensDoBanco.length > 0) ? imagensDoBanco : lista_imagens;
+  let defaultSlide = pagina_inicio;
+
+  if (procurarComodoId && listaSalas.length > 0 && listaPavimentos.length > 0) {
+    const comodoProcurado = listaSalas.find(s => s.comodo_id === procurarComodoId);
+    if (comodoProcurado) {
+      const pavimentoProcurado = listaPavimentos.find(p => p.pavimento_id === comodoProcurado.pavimento_id);
+      if (pavimentoProcurado) {
+        const pavimentosDoBloco = listaPavimentos
+          .filter(p => p.bloco_id === pavimentoProcurado.bloco_id)
+          .sort((a, b) => a.numero - b.numero);
+        
+        const imagens = pavimentosDoBloco.map(p => p.imagem).filter(Boolean);
+        if (imagens.length > 0) {
+          activeImagens = imagens;
+          const index = pavimentosDoBloco.findIndex(p => p.pavimento_id === pavimentoProcurado.pavimento_id);
+          if (index !== -1) {
+            defaultSlide = index;
+          }
+        }
+      }
+    }
+  }
+
+  const slide_atual = slide_atual_state !== null ? slide_atual_state : defaultSlide;
+  const total_slides = activeImagens.length;
+  const indiceAtivo = total_slides - (slide_atual + 1);
+
+  const activeEmpresaId = useMemo(() => {
+    if (empresaId) return empresaId;
+    try {
+      const usuarioLocal = JSON.parse(localStorage.getItem("usuario") || "null");
+      return usuarioLocal?.empresa_id || null;
+    } catch (e) {
+      console.warn("Erro ao obter empresa_id do localStorage:", e);
+      return null;
+    }
+  }, [empresaId]);
 
   useEffect(() => {
-    mudarSlide(pagina_inicio);
-    SelectBancoDeDados({
-      nomeTabela: "pavimentos",
-      setData: setListaPavimentos,
-      setLoading: () => {},
-    });
-    SelectBancoDeDados({
-      nomeTabela: "comodos",
-      setData: setListaSalas,
-      setLoading: () => {},
-    });
-  }, [pagina_inicio]);
+    let active = true;
+    async function load() {
+      try {
+        await Promise.all([
+          new Promise((resolve) => {
+            SelectBancoDeDados({
+              nomeTabela: "pavimentos",
+              setData: (data) => {
+                if (active) setListaPavimentos(data);
+                resolve();
+              },
+              setLoading: () => {},
+              condicao: activeEmpresaId ? { coluna: "empresa_id", valor: activeEmpresaId } : null,
+            });
+          }),
+          new Promise((resolve) => {
+            SelectBancoDeDados({
+              nomeTabela: "comodos",
+              setData: (data) => {
+                if (active) setListaSalas(data);
+                resolve();
+              },
+              setLoading: () => {},
+              condicao: activeEmpresaId ? { coluna: "empresa_id", valor: activeEmpresaId } : null,
+            });
+          }),
+        ]);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        if (active) setLoadingDb(false);
+      }
+    }
+    load();
+    return () => {
+      active = false;
+    };
+  }, [activeEmpresaId]);
+
+  // Reset slide state when searching a different room
+  useEffect(() => {
+    mudarSlide(null);
+  }, [procurarComodoId]);
 
   // troca de página
   const mudarPaginaSlide = (direcao) => {
     if (direcao === "proximo") {
-      mudarSlide((slide) => (slide + 1) % total_slides);
+      mudarSlide((slide) => {
+        const current = slide !== null ? slide : defaultSlide;
+        return (current + 1) % total_slides;
+      });
     } else {
-      mudarSlide((slide) => (slide - 1 + total_slides) % total_slides);
+      mudarSlide((slide) => {
+        const current = slide !== null ? slide : defaultSlide;
+        return (current - 1 + total_slides) % total_slides;
+      });
     }
   };
 
@@ -248,36 +339,21 @@ function Slide({
     setPontosClicados((prev) => [...prev, novoPonto]);
   };
 
-  // preparar polígonos
-  const poligonos = listaSalas
-    .map((item) => {
-      const pavimentoMatch = listaPavimentos.find(
-        (p) => p.pavimento_id === item.pavimento_id
-      );
-      if (!pavimentoMatch) return null;
-      if (pavimentoMatch.numero !== slide_atual + 1) return null;
-      try {
-        const coords = JSON.parse(item.lista_coordenadas)
-          .map(([x, y]) => `${x},${y}`)
-          .join(" ");
-        return {
-          id: item.comodo_id || item.id || Math.random(),
-          numero: item.numero,
-          apelido: item.apelido,
-          coords,
-        };
-      } catch (err) {
-        console.error("Erro ao parsear coordenadas:", err);
-        return null;
-      }
-    })
-    .filter(Boolean);
+  // Os polígonos são preparados e renderizados dinamicamente por slide/pavimento (índice) no retorno JSX para evitar desalinhamento.
+
+  if (procurarComodoId && loadingDb) {
+    return (
+      <DivContent style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "400px" }}>
+        <p style={{ color: "#fff", fontSize: "20px" }}>Carregando mapa...</p>
+      </DivContent>
+    );
+  }
 
   return (
     <DivContent $capturar={capturarCoordenadas}>
       {!capturarCoordenadas && (
         <DivAndares>
-          {lista_imagens.map((_, indice) => (
+          {activeImagens.map((_, indice) => (
             <SpamAndares
               key={indice}
               $active={indice === indiceAtivo}
@@ -302,16 +378,16 @@ function Slide({
 
         <DivSlide
           translate={-(slide_atual * (100 / total_slides))}
-          $lista_imagens_informada={lista_imagens}
+          $lista_imagens_informada={activeImagens}
         >
-          {lista_imagens.map((imagemBase, indice) => (
-            <DivItem key={indice} $lista_imagens_informada={lista_imagens}>
+          {activeImagens.map((imagemBase, indice) => (
+            <DivItem key={indice} $lista_imagens_informada={activeImagens}>
               <DivSobreposta>
                 <Imagem src={imagemBase} alt="Planta" />
 
                 <SVGOverlay
                   viewBox="0 0 2900 2500"
-                  preserveAspectRatio="xMidYMid meet"
+                  preserveAspectRatio="none"
                   onPointerDown={handlePointerDown}
                   onContextMenu={(e) => {
                     e.preventDefault();
@@ -319,17 +395,105 @@ function Slide({
                   }}
                 >
                   {/* Polígonos existentes */}
-                  {poligonos.map((poly) => (
-                    <AreaPoligonal
-                      key={`poly-${poly.id}`}
-                      points={poly.coords}
-                      onClick={() => {
-                        if (!capturarCoordenadas) {
-                          alert(`Clicou na sala ${poly.numero} - ${poly.apelido}`);
+                  {listaSalas
+                    .map((item) => {
+                      const pavimentoMatch = listaPavimentos.find(
+                        (p) => p.pavimento_id === item.pavimento_id
+                      );
+                      if (!pavimentoMatch) return null;
+                      
+                      // Ocultar se não for a sala procurada (quando procurarComodoId está ativo)
+                      if (procurarComodoId && item.comodo_id !== procurarComodoId) {
+                        return null;
+                      }
+
+                      let isThisSlide = false;
+                      if (capturarCoordenadas && pavimentoId) {
+                        isThisSlide = item.pavimento_id === pavimentoId;
+                      } else if (procurarComodoId) {
+                        const comodoProcurado = listaSalas.find(s => s.comodo_id === procurarComodoId);
+                        if (comodoProcurado) {
+                          const pavimentoProcurado = listaPavimentos.find(p => p.pavimento_id === comodoProcurado.pavimento_id);
+                          if (pavimentoProcurado) {
+                            const pavimentosDoBloco = listaPavimentos
+                              .filter(p => p.bloco_id === pavimentoProcurado.bloco_id)
+                              .sort((a, b) => a.numero - b.numero);
+                            const activePavimento = pavimentosDoBloco[indice];
+                            if (activePavimento && activePavimento.pavimento_id === item.pavimento_id) {
+                              isThisSlide = true;
+                            }
+                          }
                         }
-                      }}
-                    />
-                  ))}
+                       } else {
+                        if (!capturarCoordenadas && imagensDoBanco.length > 0) {
+                          const activePavimentoObj = pavimentosOrdenados[indice];
+                          if (activePavimentoObj && activePavimentoObj.pavimento_id === item.pavimento_id) {
+                            isThisSlide = true;
+                          }
+                        } else if (pavimentoMatch.numero === indice + 1) {
+                          isThisSlide = true;
+                        }
+                      }
+
+                      if (!isThisSlide) return null;
+
+                      try {
+                        const parsedCoords = JSON.parse(item.lista_coordenadas);
+                        const coords = parsedCoords.map(([x, y]) => `${x},${y}`).join(" ");
+                        
+                        let centerX = 0;
+                        let centerY = 0;
+                        if (parsedCoords.length > 0) {
+                          const xs = parsedCoords.map(([x]) => Number(x));
+                          const ys = parsedCoords.map(([, y]) => Number(y));
+                          const minX = Math.min(...xs);
+                          const maxX = Math.max(...xs);
+                          const minY = Math.min(...ys);
+                          const maxY = Math.max(...ys);
+                          centerX = Math.round((minX + maxX) / 2);
+                          centerY = Math.round((minY + maxY) / 2);
+                        }
+
+                        return {
+                          id: item.comodo_id || item.id || Math.random(),
+                          numero: item.numero,
+                          apelido: item.apelido,
+                          coords,
+                          centerX,
+                          centerY,
+                        };
+                      } catch (err) {
+                        console.error("Erro ao parsear coordenadas:", err);
+                        return null;
+                      }
+                    })
+                    .filter(Boolean)
+                    .map((poly) => (
+                      <g key={`poly-group-${poly.id}`}>
+                        <AreaPoligonal
+                          points={poly.coords}
+                          $procurado={procurarComodoId === poly.id}
+                          onClick={() => {
+                            if (!capturarCoordenadas) {
+                              alert(`Clicou na sala ${poly.numero} - ${poly.apelido}`);
+                            }
+                          }}
+                        />
+                        <text
+                          x={poly.centerX}
+                          y={poly.centerY}
+                          fill={procurarComodoId === poly.id ? "#ffffff" : "rgba(255,255,255,0.85)"}
+                          fontSize={procurarComodoId === poly.id ? "100" : "80"}
+                          fontWeight="bold"
+                          textAnchor="middle"
+                          dominantBaseline="central"
+                          style={{ pointerEvents: 'none' }}
+                        >
+                          {poly.numero}
+                        </text>
+                      </g>
+                    ))
+                  }
 
                   {/* Polígono customizado */}
                   {pontosClicados.length > 2 && (
@@ -353,7 +517,7 @@ function Slide({
         {/* ESCONDER A NAVEGACAO QUANDO FOR CRIAR POLIGONO */}
         {!capturarCoordenadas && (
           <UlNavegar>
-            {lista_imagens.map((_, indice) => (
+            {activeImagens.map((_, indice) => (
               <LiNavegar
                 key={indice}
                 $active={indice === slide_atual}

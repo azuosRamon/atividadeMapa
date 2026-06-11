@@ -143,9 +143,7 @@ function CardBloco({dadosBlocos, dadosUsuario, selecao, setSelecao, onAtualizar}
 
     const atualizarLista = async () => {
         const novosDados = await LerNovosDados(dadosUsuario.empresa_id, imovelId);
-        if (novosDados.length > 0) {
         setBlocos(novosDados || []);
-        }
       };
 
     useEffect(() => {

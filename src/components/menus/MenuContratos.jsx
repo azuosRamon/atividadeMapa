@@ -5,7 +5,6 @@ import Title from "../SubTitleH2";
 import useBancoDeDados from "../BdCrudSupabase";
 import CriarCamposFormulario from "../SubCriadorForm";
 import mapa from "../BdObjetoTabelas"
-import { use } from "react";
 
 
 const FormGrid = styled.form`

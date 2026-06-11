@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Login from "./components/pages/PaginaLogin";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -31,7 +31,8 @@ import RelacionarUsuarios from "./components/menus/MenuRelacionarUsuarios";
 import CadastroContratos from "./components/menus/MenuContratos";
 import VisualizarAgendaSemanal from "./components/menus/MenuAgendaSemanal";
 import MenuDashboardAdmin from "./components/menus/MenuDashboardAdmin";
-import { AuthProvider } from "./components/AuthProvider";
+import { AuthProvider, useAuth } from "./components/AuthProvider";
+import PublicSearch from "./components/pages/PublicSearch";
 
 import terreo from "./components/Plantas/TERREO_PAVIMENTO.png";
 import primeiro_pavimento from "./components/Plantas/PRIMEIRO_PAVIMENTO.png";
@@ -47,29 +48,44 @@ const imagens = [terreo, primeiro_pavimento, segundo_pavimento, terceiro_pavimen
 
 
 
-const data = []; 
+const data = [];
 
 const dadosJson = {
   "cliente": [],
-  "horarios":[],
+  "horarios": [],
   "usuarios": [],
   "pessoas": [],
-  "campus":[],
-  "blocos":[],
-  "pavimentos":[],
-  "salas":[],
-  "cursos":[],
-  "disciplinas":[],
-  "dias":[
-      { "id": 1, "nome": "Domingo"},
-      { "id": 2, "nome": "Segunda Feira"},
-      { "id": 3, "nome": "Terça Feira"},
-      { "id": 4, "nome": "Quarta Feira"},
-      { "id": 5, "nome": "Quinta Feira"},
-      { "id": 6, "nome": "Sexta Feira"},
-      { "id": 7, "nome": "Sábado"}
+  "campus": [],
+  "blocos": [],
+  "pavimentos": [],
+  "salas": [],
+  "cursos": [],
+  "disciplinas": [],
+  "dias": [
+    { "id": 1, "nome": "Domingo" },
+    { "id": 2, "nome": "Segunda Feira" },
+    { "id": 3, "nome": "Terça Feira" },
+    { "id": 4, "nome": "Quarta Feira" },
+    { "id": 5, "nome": "Quinta Feira" },
+    { "id": 6, "nome": "Sexta Feira" },
+    { "id": 7, "nome": "Sábado" }
   ],
-  "quadroDeAulas":[]
+  "quadroDeAulas": []
+}
+
+// Componente para injetar o usuarioLogado dinamicamente a partir do useAuth() context
+function DashboardRoute({ Component, ...rest }) {
+  const { user } = useAuth();
+  return <Component usuarioLogado={user} {...rest} />;
+}
+
+// Componente para redirecionar para dashboard se logado, ou raiz '/' se visitante
+function RedirectToHome() {
+  const { user, loading } = useAuth();
+  if (loading) {
+    return <div style={{ color: "#fff", textAlign: "center", marginTop: "20px" }}>Carregando...</div>;
+  }
+  return <Navigate to={user ? "/" : "/"} replace />;
 }
 
 
@@ -90,164 +106,87 @@ function App() {
     }, [navigate]);
     return null;
   }
-  const capturarUsuarioLogadoLocalStorage = () => {
-        let usuario = localStorage.getItem("usuario");
-        if (!usuario) return null;
-        try {
-            let parsedUsuario = JSON.parse(usuario);
-            return parsedUsuario
-        } catch (error){
-            console.log(error);
-            return null;
-        }
-    }
-  const [usuarioLogadoDados, setUsuario] = useState(capturarUsuarioLogadoLocalStorage());
-  //console.log(usuarioLogadoDados);
-  return(
+
+  return (
     <Router>
       <AuthProvider>
-      <Routes>
-        <Route path="/" element={
-          <div className="corpo">
-            <RootRedirector />
-            <Header/>
-            <Pesquisa dados={dadosJson} key={1}/>
-            <Slide
-              lista_imagens={imagens}
-              pagina_inicio={0}
-            />
-            <Footer/>
-          </div>
-          }/>
-        <Route path="/login" element={
-          <div className="corpo">
-            <Header/>
-            <Login dados={dadosJson}/>
-            <Footer/>
-          </div>
-        }/>
-        <Route path="/RecuperarSenha" element={
-          <div className="corpo">
-            <Header/>
-            <RecuperarSenha/>
-            <Footer/>
-          </div>
-        }/>
-        <Route path="/redefinir-senha" element={
-          <div className="corpo">
-            <Header/>
-            <RedefinirSenha/>
-            <Footer/>
-          </div>
-        }/>
-        <Route path="/dashboard" element={
-          <RotaProtegida>
-            <LayoutLogado usuarioDados={usuarioLogadoDados}>
-              {/* <Slide dados={dadosJson} lista_imagens={imagens} pagina_inicio={0}/> */}
-              <MenuDashboardAdmin usuarioLogado={usuarioLogadoDados} />
-            </LayoutLogado>
-          </RotaProtegida>
-      }/>
-        <Route path="/editarPerfil" element={
-          <RotaProtegida>
-            <LayoutLogado usuarioDados={usuarioLogadoDados}><Perfil usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
-          </RotaProtegida>
-        }/>
-        <Route path="/periodoHorarios" element={
-          <RotaProtegida>
-            <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuHorarios tableHorarios={dadosJson.horarios}/></LayoutLogado>
-          </RotaProtegida>
-        }/>
-        <Route path="/edificio" element={
-          <RotaProtegida>
-            
-            <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuEdificios usuarioLogado={usuarioLogadoDados} dados={dadosJson}/></LayoutLogado>
-          </RotaProtegida>
-        }/>
-        <Route path="/categorias" element={
-          <RotaProtegida>
-            <LayoutLogado usuarioDados={usuarioLogadoDados}><ConfigurarCursos usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
-          </RotaProtegida>
-        }/>
-        <Route path="/produtos" element={
-          <RotaProtegida>
-            <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuDisciplinas usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
-          </RotaProtegida>
-        }/>
-        <Route path="/pesquisarDados" element={
-          <RotaProtegida>
-            <LayoutLogado usuarioDados={usuarioLogadoDados}><Tabelas dados={dadosJson}/><pesquisarDados/></LayoutLogado>
-          </RotaProtegida>
-        }/>
-        <Route path="/quadroAulas" element={
-          <RotaProtegida>
-            <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuQuadroAulas usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
-          </RotaProtegida>
-        }/>
-        <Route path="/cadastroUsuario" element={
-          <RotaProtegida>
-            <LayoutLogado usuarioDados={usuarioLogadoDados}><MenuCadastro usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
-          </RotaProtegida>
-        }/>
-        <Route path="/cadastroEmpresas" element={
-          <RotaProtegida>
-            <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarEmpresa/></LayoutLogado>
-          </RotaProtegida>
-        }/>
-        <Route path="/funcoes" element={
-          <RotaProtegida>
-            <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarFuncao/></LayoutLogado>
-          </RotaProtegida>
-        }/>
-        <Route path="/cargos" element={
-          <RotaProtegida>
-            <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarCargos usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
-          </RotaProtegida>
-        }/>
-        <Route path="/tiposAreas" element={
-          <RotaProtegida>
-            <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarAreas usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
-          </RotaProtegida>
-        }/>
-        <Route path="/modelos" element={
-          <RotaProtegida>
-            <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastroModelos usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
-          </RotaProtegida>
-        }/>
-        <Route path="/cadastroContrato" element={
-          <RotaProtegida>
-            <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastroContratos usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
-          </RotaProtegida>
-        }/>
-        <Route path="/cadastrarDisponibilidade" element={
-          <RotaProtegida>
-            <LayoutLogado usuarioDados={usuarioLogadoDados}><CadastrarDisponibilidade usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
-          </RotaProtegida>
-        }/>
-        <Route path="/visualizarAgendaSemanal" element={
-          <RotaProtegida>
-            <LayoutLogado usuarioDados={usuarioLogadoDados}><VisualizarAgendaSemanal usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
-          </RotaProtegida>
-        }/>
-        <Route path="/relacionarUsuarios" element={
-          <RotaProtegida>
-            <LayoutLogado usuarioDados={usuarioLogadoDados}><RelacionarUsuarios usuarioLogado={usuarioLogadoDados}/></LayoutLogado>
-          </RotaProtegida>
-        }/>
-        <Route path="/slide" element={
-          <RotaProtegida>
-          <Slide
-            lista_imagens={imagens}
-            pagina_inicio={0}
-            dados={dadosJson}
-            capturarCoordenadas = {true}
-            />
-            </RotaProtegida>
-          }/>
+        <Routes>
+          <Route path="/" element={<PublicSearch dados={dadosJson} />} />
+          <Route path="/:cnpj" element={<PublicSearch dados={dadosJson} />} />
+          <Route path="/login" element={
+            <div className="corpo">
+              <Header />
+              <Login dados={dadosJson} />
+              <Footer />
+            </div>
+          } />
+          <Route path="/RecuperarSenha" element={
+            <div className="corpo">
+              <Header />
+              <RecuperarSenha />
+              <Footer />
+            </div>
+          } />
+          <Route path="/redefinir-senha" element={
+            <div className="corpo">
+              <Header />
+              <RedefinirSenha />
+              <Footer />
+            </div>
+          } />
 
-      </Routes>
+          {/* Grupo de rotas compartilhando LayoutLogado sob autenticação global */}
+          <Route element={<RotaProtegida><LayoutLogado /></RotaProtegida>}>
+            <Route path="/editarPerfil" element={<DashboardRoute Component={Perfil} />} />
+            <Route path="/dashboard" element={<DashboardRoute Component={MenuDashboardAdmin} />} />
+            <Route path="/cadastrarDisponibilidade" element={<DashboardRoute Component={CadastrarDisponibilidade} />} />
+            <Route path="/visualizarAgendaSemanal" element={<DashboardRoute Component={VisualizarAgendaSemanal} />} />
+
+            {/* Rotas restritas para tipo "empresa" ou função "gerente" */}
+            <Route element={<RotaProtegida tiposPermitidos={["empresa"]} funcoesPermitidas={["gerente"]} />}>
+              <Route path="/edificio" element={<DashboardRoute Component={MenuEdificios} dados={dadosJson} />}/>
+              <Route path="/cadastroUsuario" element={<DashboardRoute Component={MenuCadastro} />} />
+              <Route path="/cargos" element={<DashboardRoute Component={CadastrarCargos} />} />
+              <Route path="/relacionarUsuarios" element={<DashboardRoute Component={RelacionarUsuarios} />} />
+              <Route path="/tiposAreas" element={<DashboardRoute Component={CadastrarAreas} />} />
+            </Route>
+
+            {/* Rotas restritas apenas para a função "gerente" */}
+            <Route element={<RotaProtegida tiposPermitidos={["empresa"]} funcoesPermitidas={["Gerente", "Administrador(a)"]} />}>
+              <Route path="/pesquisarDados" element={<DashboardRoute Component={Tabelas} dados={dadosJson} />} />
+              <Route path="/periodoHorarios" element={<DashboardRoute Component={MenuHorarios} tableHorarios={dadosJson.horarios} />} />
+              <Route path="/categorias" element={<DashboardRoute Component={ConfigurarCursos} />} />
+              <Route path="/produtos" element={<DashboardRoute Component={MenuDisciplinas} />} />
+              <Route path="/quadroAulas" element={<DashboardRoute Component={MenuQuadroAulas} />} />
+            </Route>
+
+            {/* Rotas restritas apenas para o tipo "sakdnaskdja" (dono da plataforma) da empresa com id específico */}
+            <Route element={<RotaProtegida tiposPermitidos={["empresa"]} empresasPermitidas={["149721eb-86af-408e-82e5-c515a87120ce"]} />}>
+              <Route path="/cadastroEmpresas" element={<DashboardRoute Component={CadastrarEmpresa} />} />
+              <Route path="/funcoes" element={<DashboardRoute Component={CadastrarFuncao} />} />
+              <Route path="/modelos" element={<DashboardRoute Component={CadastroModelos} />} />
+              <Route path="/cadastroContrato" element={<DashboardRoute Component={CadastroContratos} />} />
+            </Route>
+          </Route>
+
+          {/* Rota Protegida sem LayoutLogado */}
+          <Route element={<RotaProtegida />}>
+            <Route path="/slide" element={
+              <Slide
+                lista_imagens={imagens}
+                pagina_inicio={0}
+                dados={dadosJson}
+                capturarCoordenadas={true}
+              />
+            } />
+          </Route>
+
+          {/* Redirecionamento curinga para rotas não cadastradas */}
+          <Route path="*" element={<RedirectToHome />} />
+
+        </Routes>
       </AuthProvider>
-      <BotaoFlutuante/>
+      <BotaoFlutuante />
       <ObserverEmail />
       <GlobalCrudModal />
     </Router>
